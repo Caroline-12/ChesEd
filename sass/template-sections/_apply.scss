@@ -1,0 +1,98 @@
+.apply-wrap-style-1 {
+    overflow: hidden;
+    @media (max-width: 1199px) {
+        padding-top: 110px;
+        padding-bottom: 110px;
+    }
+    @media (max-width: 991px) {
+        padding-top: 100px;
+        padding-bottom: 100px;
+    }
+    @media (max-width: 767px) {
+        padding-top: 90px;
+        padding-bottom: 90px;
+    }
+    @media (max-width: 575px) {
+        padding-top: 80px;
+        padding-bottom: 80px;
+    }
+}
+
+.apply-box.style-1 {
+    padding: 60px;
+    position: relative;
+    z-index: 1;
+    @media (max-width: 767px) {
+        padding: 0;
+    }
+    .shape {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        @media (max-width: 767px) {
+            display: none;
+        }
+    }
+    .inner {
+        padding: 60px 55px;
+        background-color: #ffffff;
+        position: relative;
+        z-index: 1;
+        @media (max-width: 767px) {
+            background-color: rgba(#ffffff, 0.95);
+            padding: 40px 35px;
+        }
+        &:before {
+            position: absolute;
+            z-index: 2;
+            content: url('../../media/elements/element34.png');
+            top: 50px;
+            right: 55px;
+            @media (max-width: 767px) {
+                transform: scale(0.7);
+                top: 20px;
+                right: 20px;
+            }
+        }
+        .heading-title {
+            font-size: 30px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+    }
+    form {
+        input {
+            background-color: transparent;
+            height: 50px;
+            margin-bottom: 30px;
+            border: 0;
+            border-bottom: 1px solid #e7e7e7;
+            border-radius: 0;
+            padding: 5px 0;
+            color: var(--color_text_heading);
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
+    input.form-control::-webkit-input-placeholder {
+        color: #929292;
+        font-size: 15px;
+        font-weight: 300;
+    }
+    input.form-control::-moz-placeholder {
+        color: #929292;
+        font-size: 15px;
+        font-weight: 300;
+    }
+    input.form-control:-moz-placeholder {
+        color: #929292;
+        font-size: 15px;
+        font-weight: 300;
+    }
+    input.form-control:-ms-input-placeholder {
+        color: #929292;
+        font-size: 15px;
+        font-weight: 300;
+    }
+}

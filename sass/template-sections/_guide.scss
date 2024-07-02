@@ -1,0 +1,119 @@
+.guide-wrap-style-1 {
+    overflow: hidden;
+    padding-top: 95px;
+    padding-bottom: 95px;
+    background-color: #ffffff;
+    position: relative;
+    z-index: 1;
+    @media (max-width: 1199px) {
+        padding-top: 85px;
+        padding-bottom: 85px;
+    }
+    @media (max-width: 991px) {
+        padding-top: 65px;
+        padding-bottom: 75px;
+    }
+    @media (max-width: 767px) {
+        padding-top: 55px;
+        padding-bottom: 65px;
+    }
+    @media (max-width: 575px) {
+        padding-top: 45px;
+        padding-bottom: 55px;
+    }
+    &:before {
+        content: "";
+        height: 450px;
+        width: 100%;
+        background-color: var(--color_primary);
+        top: 0;
+        left: 0;
+        right: 0;
+        position: absolute;
+        z-index: -1;
+    }
+    .shape-wrap-left {
+        list-style: none;
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        top: 0;
+    }
+    .shape-wrap-right {
+        list-style: none;
+        li {
+            position: absolute;
+            z-index: 1;
+            &:nth-child(1n) {
+                top: 100px;
+                right: calc(((100% - 1200px) / 2) - 100px);
+            }
+            &:nth-child(2n) {
+                top: 160px;
+                right: calc(((100% - 1200px) / 2) - 80px);
+            }
+        }
+    }
+}
+
+.guide-box.style-1 {
+    background-color: #ffffff;
+    padding: 73px 35px 68px;
+    text-align: center;
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 70px 0 rgba(#000000, 0.03);
+    margin-bottom: 15px;
+    transition: all 0.3s ease-in-out;
+    .line-shap {
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        &.after-shape {
+            opacity: 1;
+            visibility: visible;
+            transition: all 0.3s ease-in-out;
+        }
+        &.before-shape {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+    }
+    .icon-box {
+        font-size: 70px;
+        color: var(--color_primary);
+        line-height: 1;
+        margin-bottom: 15px;
+        transition: all 0.3s ease-in-out;
+    }
+    .title {
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+    .description {
+        margin-bottom: 0;
+        transition: all 0.3s ease-in-out;
+    }
+    &:hover {
+        background-color: var(--color_secondary);
+        .line-shap {
+            &.after-shape {
+                opacity: 0;
+                visibility: hidden;
+            }
+            &.before-shape {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+        .icon-box {
+            color: var(--color_text_heading);
+        }
+        .description {
+            color: #161616;
+        }
+    }
+}

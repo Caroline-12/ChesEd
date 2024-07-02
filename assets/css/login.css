@@ -1,0 +1,148 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.container {
+    text-align: center;
+}
+
+.logo h1 {
+    color: #FF6F00;
+}
+
+.signin-box {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.signin-box h2 {
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    text-align: left;
+    margin: 10px 0 5px;
+}
+
+input[type="email"],
+input[type="password"] {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+button[type="button"] {
+    background-color: #ddd;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.signin-btn {
+    background-color: #FF6F00;
+    color: #fff;
+    cursor: pointer;
+}
+
+.social-login {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.social-btn {
+    flex: 1;
+    margin: 0 5px;
+    background-color: #ddd;
+    color: #333;
+}
+
+.social-btn.apple { background-color: #000; color: #fff; }
+.social-btn.facebook { background-color: #3b5998; color: #fff; }
+.social-btn.google { background-color: #db4437; color: #fff; }
+
+.signup {
+    margin-top: 20px;
+}
+
+.signup p {
+    margin: 5px 0;
+}
+
+.signup a {
+    color: #FF6F00;
+    text-decoration: none;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.social-icons,
+.app-links {
+    display: flex;
+}
+
+.social-icons a,
+.app-links a {
+    margin: 0 5px;
+}
+
+/* forgot password 
+
+/* Add this to your existing styles.css */
+.forgot-password-box,
+.signup-box {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.reset-btn,
+.signup-btn {
+    background-color: #FF6F00;
+    color: #fff;
+    cursor: pointer;
+}
+
+.back-to-login {
+    margin-top: 20px;
+}
+
+.back-to-login a {
+    color: #FF6F00;
+    text-decoration: none;
+}
+
+/* sign up

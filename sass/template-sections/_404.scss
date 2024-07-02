@@ -1,0 +1,19 @@
+.error-box {
+    text-align: center;
+    .figure-box {
+        margin-bottom: 30px;
+    }
+    .content-box {
+        .title {
+            font-weight: 500;
+            max-width: 400px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 20px;
+        }
+        .description {
+            margin-bottom: 30px;
+        }
+    }
+}

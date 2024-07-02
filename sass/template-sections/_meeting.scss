@@ -1,0 +1,81 @@
+.meeting-wrap-style-1 {
+    padding-bottom: 90px;
+    @media (max-width: 1199px) {
+        padding-bottom: 80px;
+    }
+    @media (max-width: 991px) {
+        padding-bottom: 70px;
+    }
+    @media (max-width: 767px) {
+        padding-bottom: 60px;
+    }
+    @media (max-width: 575px) {
+        padding-bottom: 50px;
+    }
+}
+
+.meeting-box.style-1 {
+    box-shadow: 0 0 50px 0 rgba(#000000, 0.05);
+    margin-bottom: 30px;
+    transition: all 0.3s ease-in-out;
+    .figure-box {
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+        border-radius: 5px 5px 0 0;
+        img {
+            transform: scale(1);
+            transition: all 0.3s ease-in-out;
+            border-radius: 5px 5px 0 0;
+        }
+        .meeting-id {
+            position: absolute;
+            z-index: 1;
+            background-color: var(--color_primary);
+            padding: 4px 15px;
+            display: inline-block;
+            right: 15px;
+            top: 17px;
+            color: #ffffff;
+            border-radius: 2px;
+            font-size: 15px;
+            font-family: var(--font_family_heading);
+            transition: all 0.3s ease-in-out;
+        }
+    }
+    .content-box {
+        background-color: #ffffff;
+        padding: 20px 30px;
+        border-radius: 0 0 5px 5px;
+        .title {
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            a {
+                color: var(--color_text_heading);
+                transition: all 0.3s ease-in-out;
+                &:hover {
+                    color: var(--color_primary);
+                }
+            }
+        }
+        .entry-meta {
+            li {
+                color: #706f6f;
+                margin-right: 30px;
+            }
+        }
+    }
+    &:hover {
+        box-shadow: 0 0 50px 0 rgba(#000000, 0.1);
+        .figure-box {
+            img {
+                transform: scale(1.1);
+            }
+            .meeting-id {
+                background-color: var(--color_secondary);
+                color: var(--color_text_heading);
+            }
+        }
+    }
+}

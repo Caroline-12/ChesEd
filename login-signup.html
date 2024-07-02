@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chegg Sign In</title>
+    <link rel="stylesheet" href="/assets/css/login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>Chegg</h1>
+        </div>
+        <div class="signin-box">
+            <h2>Sign in to your Chegg account</h2>
+            <form>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <button type="button" onclick="togglePassword()">Show</button>
+
+                <div class="social-login">
+                    <!-- <button class="social-btn apple">Apple</button>
+                    <button class="social-btn facebook">Facebook</button> -->
+                    <button class="social-btn google">Google</button>
+                </div>
+
+                <button type="submit" class="signin-btn">Sign In</button>
+            </form>
+            <div class="signup">
+                <p>Don't have an account? <a href="sign-up.html">Sign up</a></p>
+                <p><a href="fogot-password.html">Forgot Password?</a></p>
+            </div>
+        </div>
+        <!--<div class="footer">
+            <div class="social-icons">
+                <a href="#"><img src="facebook-icon.png" alt="Facebook"></a>
+                <a href="#"><img src="twitter-icon.png" alt="Twitter"></a>
+                <a href="#"><img src="instagram-icon.png" alt="Instagram"></a>
+            </div> -->
+            <!-- <div class="app-links">
+                <a href="#"><img src="appstore-icon.png" alt="App Store"></a>
+                <a href="#"><img src="googleplay-icon.png" alt="Google Play"></a>
+            </div> 
+        </div> -->
+    </div>
+    <script src="/assets/js/login.js"></script>
+</body>
+</html>

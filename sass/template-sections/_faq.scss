@@ -1,0 +1,94 @@
+.faq-wrap-style-1 {
+    padding-bottom: 57px;
+    @media (max-width: 1199px) {
+        padding-bottom: 47px;
+    }
+    @media (max-width: 991px) {
+        padding-top: 70px;
+        padding-bottom: 70px;
+    }
+    @media (max-width: 767px) {
+        padding-top: 60px;
+        padding-bottom: 60px;
+    }
+    @media (max-width: 575px) {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+}
+
+.faq-box.style-1 {
+    margin-bottom: 30px;
+    @media (max-width: 991px) {
+        margin-bottom: 0;
+    }
+    .single-item {
+        border: none;
+        border-bottom: 1px solid #dedede!important;
+        .item-nav {
+            padding: 0;
+            border: none;
+            margin-bottom: 0;
+            background-color: transparent;
+            a {
+                border-radius: 0;
+                color: var(--color_text_heading);
+                width: 100%;
+                display: block;
+                padding: 10px 50px 0 0;
+                font-size: 24px;
+                position: relative;
+                font-weight: 400;
+                font-family: var(--font_family_heading);
+                transition: all 0.3s ease-in-out;
+                @media (max-width: 991px) {
+                    font-size: 22px;
+                }
+                @media (max-width: 767px) {
+                    font-size: 20px;
+                }
+                &:after {
+                    position: absolute;
+                    content: "\f068";
+                    top: 50%;
+                    transform: translateY(-50%);
+                    right: 30px;
+                    font-size: 14px;
+                    z-index: 5;
+                    font-family: "Font Awesome 5 Free";
+                    font-weight: 600;
+                    color: var(--color_primary);
+                    @media (max-width: 767px) {
+                        font-size: 12px;
+                    }
+                    @media (max-width: 575px) {
+                        font-size: 10px;
+                    }
+                }
+                &.collapsed {
+                    padding: 20px 50px 22px 0;
+                    background-color: #ffffff;
+                    color: var(--color_text_heading);
+                    &:after {
+                        color: #818080;
+                        content: "\f067";
+                    }
+                }
+            }
+        }
+        .item-content-wrap {
+            .item-content {
+                padding: 0 0 25px;
+                transition: all 0.3s ease-in-out;
+                p {
+                    margin-top: 20px;
+                    margin-bottom: 0;
+                    padding-right: 50px;
+                }
+            }
+        }
+        &:last-child {
+            border-bottom: 0!important;
+        }
+    }
+}
