@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChesEd Sign Up</title>
+    <link rel="stylesheet" href="/assets/css/login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>ChesEd</h1>
+        </div>
+        <div class="signup-box">
+            <h2>Sign Up for a ChesEd account</h2>
+            <form>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <button type="button" onclick="togglePassword()">Show</button>
+
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                <button type="button" onclick="toggleConfirmPassword()">Show</button>
+
+                <button type="submit" class="signup-btn">Sign Up</button>
+            </form>
+            <div class="back-to-login">
+                <p>Already have an account? <a href="login-signup.html">Sign in</a></p>
+            </div>
+        </div>
+        <!-- <div class="footer">
+            <div class="social-icons">
+                <a href="#"><img src="facebook-icon.png" alt="Facebook"></a>
+                <a href="#"><img src="twitter-icon.png" alt="Twitter"></a>
+                <a href="#"><img src="instagram-icon.png" alt="Instagram"></a>
+            </div>
+            <div class="app-links">
+                <a href="#"><img src="appstore-icon.png" alt="App Store"></a>
+                <a href="#"><img src="googleplay-icon.png" alt="Google Play"></a>
+            </div>
+        </div> -->
+    </div>
+    <script src="/assets/js/login.js"></script>
+</body>
+</html>
