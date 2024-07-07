@@ -13724,8 +13724,7 @@ body.slidemenuon .sidebarBtn .bar:nth-child(4) {
 =========================================================================*/
 .advantage-wrap-style-1 {
   overflow: hidden;
-  padding-top: 104px;
-  padding-bottom: 105px;
+  padding: 2%;
 }
 
 @media (max-width: 1199px) {
