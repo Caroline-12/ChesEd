@@ -22,10 +22,10 @@ const BecomeTutor = () => {
         style={{ backgroundImage: "url(media/banner/banner24.jpg)" }}
       >
         <div className="container mx-auto text-center">
-          <h2 className="text-2xl font-bold text-black mb-4">
+          <h2 className="text-4xl font-bold text-black mb-4">
             Become an Instructor Today
           </h2>
-          <p className="text-xs font-normal text-black mb-8">
+          <p className="text-md font-normal text-gray-600 text-black mb-8">
             Join the world's largest online learning marketplace.
           </p>
           <Button>Become a Tutor</Button>
@@ -36,15 +36,15 @@ const BecomeTutor = () => {
         <div className="container mx-auto">
           <div className="flex flex-wrap -mx-4">
             <div className="w-full xl:w-1/2 px-4 mb-8 xl:mb-0">
-              <div className=" bg-slate-200 m-4 p-6 rounded shadow-md">
-                <h3 className="text-xl font-medium mb-4">
+              <div className=" bg-slate-100 hover:-translate-y-1 hover:scale-110  duration-300 m-4 p-6 rounded shadow-md">
+                <h3 className="text-3xl font-medium mb-4">
                   Become an Instructor
                 </h3>
                 <div className="content-box mb-6">
-                  <h4 className=" text-sm font-medium mb-2">
+                  <h4 className=" text-md font-semibold mb-2">
                     Plan Your Course
                   </h4>
-                  <p className=" text-xs font-normal">
+                  <p className=" text-md font-normal text-gray-600">
                     Grursus mal suada faci lisis Lorem ipsum dolarorit more
                     ametion consectetur elit. Vesti at bulum nec odio aea the
                     dumm ipsumm ipsum that dolocons rsus mal suada and
@@ -54,10 +54,10 @@ const BecomeTutor = () => {
                   </p>
                 </div>
                 <div className="content-box">
-                  <h4 className=" text-sm font-medium mb-2">
+                  <h4 className=" text-md font-semibold mb-2">
                     Plan Your Course
                   </h4>
-                  <p className=" text-xs font-normal">
+                  <p className=" text-md font-normal text-gray-600">
                     Grursus mal suada faci lisis Lorem ipsum dolarorit more
                     ametion consectetur elit. Vesti at bulum nec odio aea the
                     dumm ipsumm mal suada and consectetur elit.
@@ -66,13 +66,13 @@ const BecomeTutor = () => {
               </div>
             </div>
             <div className="w-full xl:w-1/2 px-4 mb-8 xl:mb-0">
-              <div className=" bg-slate-200 m-4 p-6 rounded shadow-md">
-                <h3 className="text-xl font-medium mb-4">Instructor Rules</h3>
+              <div className=" bg-slate-100 hover:-translate-y-1 hover:scale-110  duration-300 m-4 p-6 rounded shadow-md">
+                <h3 className="text-3xl font-medium mb-4">Instructor Rules</h3>
                 <div className="content-box mb-6">
-                  <h4 className=" text-sm font-medium mb-2">
+                  <h4 className=" text-md font-semibold mb-2">
                     Plan Your Course
                   </h4>
-                  <p className=" text-xs font-normal">
+                  <p className=" text-md font-normal text-gray-600">
                     Grursus mal suada faci lisis Lorem ipsum dolarorit more
                     ametion consectetur elit. Vesti at bulum nec odio aea the
                     dumm ipsumm ipsum that dolocons rsus mal suada and
@@ -82,10 +82,10 @@ const BecomeTutor = () => {
                   </p>
                 </div>
                 <div className="content-box">
-                  <h4 className=" text-sm font-medium mb-2">
+                  <h4 className=" text-md font-semibold mb-2">
                     Plan Your Course
                   </h4>
-                  <p className=" text-xs font-normal">
+                  <p className=" text-md font-normal text-gray-600">
                     Grursus mal suada faci lisis Lorem ipsum dolarorit more
                     ametion consectetur elit. Vesti at bulum nec odio aea the
                     dumm ipsumm mal suada and consectetur elit.
@@ -94,13 +94,15 @@ const BecomeTutor = () => {
               </div>
             </div>
             <div className="w-full xl:w-1/2 px-4 mb-8 xl:mb-0">
-              <div className=" bg-slate-200 m-4 p-6 rounded shadow-md">
-                <h3 className="text-xl font-medium mb-4">Start with Courses</h3>
+              <div className=" bg-slate-100 hover:-translate-y-1 hover:scale-110  duration-300 m-4 p-6 rounded shadow-md">
+                <h3 className="text-3xl font-medium mb-4">
+                  Start with Courses
+                </h3>
                 <div className="content-box mb-6">
-                  <h4 className=" text-sm font-medium mb-2">
+                  <h4 className=" text-md font-semibold mb-2">
                     Plan Your Course
                   </h4>
-                  <p className=" text-xs font-normal">
+                  <p className=" text-md font-normal text-gray-600">
                     Grursus mal suada faci lisis Lorem ipsum dolarorit more
                     ametion consectetur elit. Vesti at bulum nec odio aea the
                     dumm ipsumm ipsum that dolocons rsus mal suada and
@@ -110,10 +112,10 @@ const BecomeTutor = () => {
                   </p>
                 </div>
                 <div className="content-box">
-                  <h4 className=" text-sm font-medium mb-2">
+                  <h4 className=" text-md font-semibold mb-2">
                     Plan Your Course
                   </h4>
-                  <p className=" text-xs font-normal">
+                  <p className=" text-md font-normal text-gray-600">
                     Grursus mal suada faci lisis Lorem ipsum dolarorit more
                     ametion consectetur elit. Vesti at bulum nec odio aea the
                     dumm ipsumm mal suada and consectetur elit.
@@ -122,23 +124,27 @@ const BecomeTutor = () => {
               </div>
             </div>
             <div className="w-full xl:w-1/2 px-4">
-              <div className=" bg-slate-200 m-4 p-6 rounded shadow-md flex items-center">
+              <div className=" bg-slate-100 hover:-translate-y-1 hover:scale-110  duration-300 m-4 pl-6 rounded shadow-md flex items-center">
                 <div className="mr-6">
-                  <h3 className="text-xl font-medium mb-4">
+                  <h3 className="text-3xl font-medium mb-4">
                     We're here to help
                   </h3>
-                  <p className=" text-xs font-normal mb-4">
+                  <p className=" text-md font-normal text-gray-600 mb-4">
                     Grursus mal suada faci lisis Lorem ipsum dolarorit more
                     consectetur elit. Vesti at bulum nec odio aea the dumm
                     ipsumm ipsum dolocons ad rsus mal suada fadolorit dummy at
                     consectetur elit.
                   </p>
-                  <p className=" text-xs font-normal">
+                  <p className=" text-md font-normal text-gray-600">
                     Vesti at bulum nec odio the dumm ipsumm ipsum dolocons ad
                     rsus mal suada fadolorit dummy at the consectetur elit.
                   </p>
                 </div>
-                <img src="chesed-logo.png" alt="banner" className="" />
+                <img
+                  src="https://via.placeholder.com/261x459"
+                  alt="banner"
+                  className=""
+                />
               </div>
             </div>
           </div>
@@ -148,45 +154,46 @@ const BecomeTutor = () => {
         <div className="container mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold">Professional Skill</h2>
-            <p className="text-xs font-normal mt-4">
+            <p className="text-md font-normal text-gray-600 mt-4">
               Grursus mal suada faci lisis Lorem ipsum dolarorit more ametion
               consectetur elit. Vesti bulum fadolorit to the consectetur elit.
             </p>
           </div>
           <div className="flex justify-center items-center ">
-            <div className="w-full hover:h-60 h-full transition duration-500 md:w-1/4 bg-blue-600 mb-8 md:mb-0 rounded-bl-xl rounded-tl-xl">
+            <div className="transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300 w-full h-60 md:w-1/4 bg-blue-600 mb-8 md:mb-0 rounded-bl-xl rounded-tl-xl">
               <div className="text-white p-6 rounded text-start">
                 <div className="icon-box mb-4">
                   <FaSackDollar className=" w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-medium mb-2">Earn Money</h3>
-                <p className=" text-xs font-normal">
+                <h3 className="text-3xl font-medium mb-2">Earn Money</h3>
+                <p className=" text-md font-normal ">
                   Grursus mal suada faci lisis Lorem ipsum dolarorit more
                   ametion consecte elit. The fadolorit consectetur elit.
                 </p>
               </div>
             </div>
-            <div className="w-full hover:h-60 h-full transition duration-500 md:w-1/4 bg-blue-600 mb-8 md:mb-0">
+            <div className="transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300 w-full h-60 md:w-1/4 bg-blue-600 mb-8 md:mb-0">
               <div className="text-white p-6 rounded text-start">
                 <div className="icon-box mb-4">
                   <PiStudentFill className=" w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-medium mb-2">Inspire Students</h3>
-                <p className=" text-xs font-normal">
+                <h3 className="text-3xl font-medium mb-2">Inspire Students</h3>
+                <p className=" text-md font-normal ">
                   Grursus mal suada faci lisis Lorem ipsum dolarorit more
                   ametion consecte elit. The fadolorit consectetur elit.
                 </p>
               </div>
             </div>
-            <div className="w-full hover:h-60 h-full transition duration-500 md:w-1/4 bg-blue-600 rounded-br-xl rounded-tr-xl animate_animated animate__pulse">
+            <div className="transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300 w-full h-60 md:w-1/4 bg-blue-600 rounded-br-xl rounded-tr-xl animate_animated animate__pulse">
               <div className="text-white p-6 rounded text-start ">
                 <div className="icon-box mb-4">
                   <SiCrowdsource className=" w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-medium mb-2">Join Our Community</h3>
-                <p className=" text-xs font-normal">
+                <h3 className="text-3xl font-medium mb-2">
+                  Join Our Community
+                </h3>
+                <p className=" text-md font-normal ">
                   Grursus mal suada faci lisis Lorem ipsum dolarorit more
-                  ametion consecte elit. The fadolorit consectetur elit.
                 </p>
               </div>
             </div>

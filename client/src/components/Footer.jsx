@@ -8,7 +8,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-gray-300 py-10">
+    <footer className="bg-gray-900 text-gray-300 py-10 mt-10">
       <div className="container flex flex-row justify-between">
         <div className="w-full md:w-1/3 mb-6 md:mb-0 text-sm">
           <h2 className="text-2xl font-bold text-orange-500 mb-4">Chesed</h2>
@@ -121,8 +121,8 @@ const Footer = () => {
         <p>
           <a href="#" className="hover:underline text-xs">
             Privacy Policy
-          </a>{" "}
-          |{" "}
+          </a>
+
           <a href="#" className="hover:underline text-xs">
             Terms of Use
           </a>

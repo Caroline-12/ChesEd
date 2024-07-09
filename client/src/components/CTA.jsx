@@ -54,8 +54,8 @@ const CTA = () => {
                 </div>
               </div>
               <div className="flex items-start flex-col gap-3 mt-4">
-                <div className="bg-blue-100 p-4 rounded-md">
-                  <IoAlarm className="text-blue-500" />
+                <div className="bg-orange-100 p-4 rounded-md">
+                  <IoAlarm className="text-orange-500" />
                 </div>
                 <div>
                   <h4 className="text-xl font-semibold text-gray-800">
@@ -80,7 +80,7 @@ const CTA = () => {
                 </div>
               </div>
             </div>
-            <button className="bg-blue-500 text-white px-6 py-2 mt-10 rounded">
+            <button className="bg-orange-500 text-white px-6 py-2 mt-10 rounded">
               Get Started
             </button>
           </div>
