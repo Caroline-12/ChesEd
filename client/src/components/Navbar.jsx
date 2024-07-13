@@ -7,7 +7,7 @@ import { FaSearch } from "react-icons/fa";
 import { Button } from "./ui/button";
 export default function Navbar() {
   const { user } = useContext(AuthContext);
-  console.log(user);
+  // console.log(user);
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -33,7 +33,7 @@ export default function Navbar() {
               </li>
               <li className="relative group">
                 <Link
-                  to="/course-categories"
+                  to="/popular-courses"
                   className="text-black  font-bold hover:text-orange-600"
                 >
                   Courses

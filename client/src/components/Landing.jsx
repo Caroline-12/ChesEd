@@ -11,13 +11,13 @@ import PartnersSection from "./PartnersSection";
 import NewsAndBlogsSection from "./NewsAndBlogsSection";
 export default function Landing() {
   const { user } = useContext(AuthContext);
-  console.log(user);
+  // console.log(user);
   return (
     <div className="">
       <Navbar />
       <CTA />
       <CategoriesPage />
-      <PopularCourses />
+      {/* <PopularCourses /> */}
       <Testimonials />
       <Instructors />
       <PartnersSection />

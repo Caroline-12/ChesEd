@@ -70,19 +70,22 @@ export function LoginForm() {
         }
       );
       // Handle the response here
-      console.log(response);
-      console.log(JSON.stringify(response.data));
+      // console.log(response);
+      // console.log(JSON.stringify(response.data));
       const accessToken = response.data.token;
-      localStorage.setItem("accessToken", accessToken);
-      console.log("User: ", response.data.user);
-      console.log(localStorage.getItem("accessToken"));
+      localStorage.setItem("chesed-user", accessToken);
+      // console.log("User: ", response.data.user);
+      // console.log(localStorage.getItem("accessToken"));
       setUser(response.data.user);
       toast.success("Login successful");
       naigate("/");
     } catch (error) {
       // Handle the error here
-      console.error("Login failed", error);
-      toast.error("Login failed");
+      // console.error("Login failed", error);
+      toast.error(
+        "Login failed: ",
+        error.response.data.message || "Unknown error"
+      );
     }
   };
 

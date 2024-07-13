@@ -1,15 +1,16 @@
 import jwt from "jsonwebtoken";
-import User from "../models/userModel.js";
+import prisma from "../prisma.js";
 import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 export const register = async (req, res) => {
-  const { username, password, first_name, last_name, email, role } = req.body;
+  console.log("Register request received:", req.body);
+  const { username, firstName, lastName, email, password, role } = req.body;
 
   try {
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
 
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
@@ -17,17 +18,19 @@ export const register = async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
 
-    const newUser = await User.create({
-      username,
-      password: hashedPassword,
-      first_name,
-      last_name,
-      email,
-      role,
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        email,
+        role,
+      },
     });
 
     const token = jwt.sign(
-      { id: newUser.user_id, role: newUser.role },
+      { id: newUser.id, role: newUser.role },
       process.env.SECRET_KEY,
       {
         expiresIn: "1h",
@@ -37,7 +40,7 @@ export const register = async (req, res) => {
     res.status(201).json({
       message: "User created successfully",
       user: {
-        id: newUser.user_id,
+        id: newUser.id,
         username: newUser.username,
         email: newUser.email,
         role: newUser.role,
@@ -56,7 +59,7 @@ export const login = async (req, res) => {
   try {
     console.log("Login request received for email:", email);
 
-    const user = await User.findOne({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email } });
     console.log("User found:", user);
 
     if (!user) {
@@ -73,7 +76,7 @@ export const login = async (req, res) => {
     console.log("SECRET_KEY:", process.env.SECRET_KEY);
 
     const token = jwt.sign(
-      { id: user.user_id, role: user.role },
+      { id: user.id, role: user.role },
       process.env.SECRET_KEY,
       {
         expiresIn: "1h",
@@ -83,7 +86,7 @@ export const login = async (req, res) => {
     res.json({
       token,
       user: {
-        id: user.user_id,
+        id: user.id,
         username: user.username,
         email: user.email,
         role: user.role,

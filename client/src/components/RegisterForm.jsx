@@ -105,7 +105,7 @@ export function RegisterForm() {
     }
 
     try {
-      console.log({ username, firstName, lastName, email, password });
+      // console.log({ username, firstName, lastName, email, password });
       const response = await axios.post(
         "http://localhost:5000/api/auth/register",
         { username, firstName, lastName, email, password, role: "user" },
@@ -117,7 +117,7 @@ export function RegisterForm() {
         }
       );
       // Handle the response here
-      console.log(response);
+      // console.log(response);
       setUser(response.data.user);
       const accessToken = response.data.token;
       localStorage.setItem("chesed-user", accessToken);
@@ -129,7 +129,7 @@ export function RegisterForm() {
     }
   };
 
-  console.log(user);
+  // console.log(user);
   return (
     <div className="flex justify-center items-center h-screen flex-col">
       <h1 className="text-4xl font-bold mb-8 text-orange-600"> ChesEd</h1>

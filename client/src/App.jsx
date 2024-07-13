@@ -4,6 +4,7 @@ import Dashboard from "./components/Dashboard";
 import Landing from "./components/Landing";
 import { RegisterForm } from "./components/RegisterForm";
 import BecomeTutor from "./components/BecomeTutor";
+import PopularCourses from "./components/PopularCourses";
 export default function App() {
   return (
     <Router>
@@ -13,6 +14,7 @@ export default function App() {
         <Route exact path="/" element={<Landing />}></Route>
         <Route path="/sign-in" element={<LoginForm />}></Route>
         <Route path="/sign-up" element={<RegisterForm />}></Route>
+        <Route path="/popular-courses" element={<PopularCourses />}></Route>
       </Routes>
     </Router>
   );
