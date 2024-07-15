@@ -1,0 +1,94 @@
+[
+  {
+    "id": 1,
+    "title": "Master Native English Class | Speaking Skills",
+    "category": "English",
+    "description": "Improve your English speaking skills with our comprehensive course.",
+    "imgSrc": "path/to/image1.jpg",
+    "lessons": 9,
+    "type": "Online Class",
+    "price": "$19.99",
+    "rating": 4.5,
+    "ratingCount": 19,
+    "content": [
+      "Introduction",
+      "Lesson 1: Basics",
+      "Lesson 2: Intermediate",
+      "Lesson 3: Advanced"
+    ],
+    "instructor": {
+      "name": "Dabiv Marina",
+      "bio": "Expert in English language with over 10 years of teaching experience.",
+      "profileImg": "path/to/profile1.jpg"
+    }
+  },
+  {
+    "id": 2,
+    "title": "The Basic Of Financial Analyst Online Course",
+    "category": "Marketing",
+    "description": "Learn the basics of financial analysis in this beginner-friendly course.",
+    "imgSrc": "path/to/image2.jpg",
+    "lessons": 9,
+    "type": "Online Class",
+    "price": "$19.99",
+    "rating": 4.7,
+    "ratingCount": 19,
+    "content": [
+      "Introduction",
+      "Lesson 1: Financial Statements",
+      "Lesson 2: Ratio Analysis",
+      "Lesson 3: Forecasting"
+    ],
+    "instructor": {
+      "name": "Dabiv Marina",
+      "bio": "Expert in marketing and financial analysis with over 8 years of industry experience.",
+      "profileImg": "path/to/profile2.jpg"
+    }
+  },
+  {
+    "id": 3,
+    "title": "Introduction to Javascript for Beginners",
+    "category": "Programming",
+    "description": "Get started with JavaScript programming with this comprehensive course.",
+    "imgSrc": "path/to/image3.jpg",
+    "lessons": 9,
+    "type": "Online Class",
+    "price": "Free",
+    "rating": 4.8,
+    "ratingCount": 36,
+    "content": [
+      "Introduction",
+      "Lesson 1: JavaScript Basics",
+      "Lesson 2: Functions",
+      "Lesson 3: DOM Manipulation"
+    ],
+    "instructor": {
+      "name": "Madga Alvarez",
+      "bio": "Professional web developer and JavaScript enthusiast with over 5 years of experience.",
+      "profileImg": "path/to/profile3.jpg"
+    }
+  },
+  {
+    "id": 4,
+    "title": "Introduction to LearnPress LMS Plugin and others",
+    "category": "Accounting",
+    "description": "A detailed course on LearnPress LMS plugin for WordPress.",
+    "imgSrc": "path/to/image4.jpg",
+    "lessons": 9,
+    "type": "Online Class",
+    "price": "$19.99",
+    "rating": 4.9,
+    "ratingCount": 19,
+    "content": [
+      "Introduction",
+      "Lesson 1: Installation",
+      "Lesson 2: Configuration",
+      "Lesson 3: Usage"
+    ],
+    "instructor": {
+      "name": "Dabiv Marina",
+      "bio": "Accounting expert with extensive knowledge in LMS plugins.",
+      "profileImg": "path/to/profile4.jpg"
+    }
+  }
+]
