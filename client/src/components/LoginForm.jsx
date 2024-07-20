@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,20 +9,21 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
 import { toast, Toaster } from "sonner";
-import axios from "axios";
-import { useContext } from "react";
-import AuthContext from "../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import { useState, useEffect } from "react";
+import axios from "../api/axios";
+const LOGIN_URL = "/auth";
 export function LoginForm() {
+  const { setAuth, persist, setPersist } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
-  const { setUser } = useContext(AuthContext);
 
-  const naigate = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   const validateEmail = (email) => {
     // Regular expression for email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,25 +61,21 @@ export function LoginForm() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { email, password },
+        LOGIN_URL,
+        JSON.stringify({ user: email, pwd: password }),
         {
-          withCredentials: true, // Include credentials if needed
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         }
       );
-      // Handle the response here
-      // console.log(response);
-      // console.log(JSON.stringify(response.data));
-      const accessToken = response.data.token;
-      localStorage.setItem("chesed-user", accessToken);
-      // console.log("User: ", response.data.user);
-      // console.log(localStorage.getItem("accessToken"));
-      setUser(response.data.user);
-      toast.success("Login successful");
-      naigate("/");
+      console.log(JSON.stringify(response?.data));
+      //console.log(JSON.stringify(response));
+      const accessToken = response?.data?.accessToken;
+      const roles = response?.data?.roles;
+      setAuth({ email, password, roles, accessToken });
+      setEmail("");
+      setPassword("");
+      navigate(from, { replace: true });
     } catch (error) {
       // Handle the error here
       // console.error("Login failed", error);
@@ -88,6 +85,14 @@ export function LoginForm() {
       );
     }
   };
+
+  const togglePersist = () => {
+    setPersist((prev) => !prev);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("persist", persist);
+  }, [persist]);
 
   return (
     <div className="flex justify-center items-center h-screen flex-col">
@@ -135,6 +140,15 @@ export function LoginForm() {
               {!isPasswordValid && (
                 <div className="text-red-500">Invalid password</div>
               )}
+            </div>
+            <div className="">
+              <input
+                type="checkbox"
+                id="persist"
+                onChange={togglePersist}
+                checked={persist}
+              />
+              <label htmlFor="persist">Trust This Device</label>
             </div>
             <Button type="submit" className="w-full " onClick={handleSubmit}>
               Login
