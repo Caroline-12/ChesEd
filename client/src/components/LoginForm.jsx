@@ -62,7 +62,7 @@ export function LoginForm() {
     try {
       const response = await axios.post(
         LOGIN_URL,
-        JSON.stringify({ user: email, pwd: password }),
+        JSON.stringify({ email, pwd: password }),
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -72,7 +72,9 @@ export function LoginForm() {
       //console.log(JSON.stringify(response));
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
-      setAuth({ email, password, roles, accessToken });
+      const username = response?.data?.username;
+      const ID = response?.data?.ID;
+      setAuth({ ID, username, email, password, roles, accessToken });
       setEmail("");
       setPassword("");
       navigate(from, { replace: true });
@@ -159,7 +161,7 @@ export function LoginForm() {
           </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link to="/sign-up" className="underline">
+            <Link to="/register" className="underline">
               Sign up
             </Link>
           </div>

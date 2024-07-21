@@ -1,7 +1,10 @@
 const Course = require("../model/Courses");
 
 const getAllCourses = async (req, res) => {
-  const courses = await Course.find().populate("tutor admin reviews.user");
+  const courses = await Course.find().populate(
+    "tutor admin",
+    "-password -refreshToken"
+  );
   if (!courses) return res.status(204).json({ message: "No courses found." });
   res.json(courses);
 };

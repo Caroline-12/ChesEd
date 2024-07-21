@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,12 +11,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { toast, Toaster } from "sonner";
-import axios from "axios";
-import { useContext } from "react";
-import AuthContext from "../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import axios from "../api/axios";
+const REGISTER_URL = "/register";
+
 export function RegisterForm() {
-  const { user, setUser } = useContext(AuthContext);
+  const { setAuth } = useAuth();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -104,26 +104,25 @@ export function RegisterForm() {
       return;
     }
 
+    console.log(
+      `Registering user... ${email} ${password} ${username} ${firstName} ${lastName}  `
+    );
+
     try {
-      // console.log({ username, firstName, lastName, email, password });
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        { username, firstName, lastName, email, password, role: "user" },
+        REGISTER_URL,
+        JSON.stringify({ email, pwd: password, username, firstName, lastName }),
         {
-          withCredentials: true, // Include credentials if needed
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         }
       );
-      // Handle the response here
-      // console.log(response);
-      setUser(response.data.user);
-      const accessToken = response.data.token;
-      localStorage.setItem("chesed-user", accessToken);
-      toast.success("Registration successful: " + response.data.message);
-      // redirect to the landing page or root url
-      navigate("/");
+      console.log(JSON.stringify(response?.data));
+      //console.log(JSON.stringify(response));
+
+      setEmail("");
+      setPassword("");
+      navigate("/login", { replace: true });
     } catch (error) {
       toast.error("Registration failed: " + error.response.data.message);
     }
@@ -227,9 +226,9 @@ export function RegisterForm() {
             <Button type="submit" className="w-full" onClick={handleSubmit}>
               Create an account
             </Button>
-            <Button variant="outline" className="w-full">
+            {/* <Button variant="outline" className="w-full">
               Sign up with GitHub
-            </Button>
+            </Button> */}
           </div>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}

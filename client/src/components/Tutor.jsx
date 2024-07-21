@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
-import Users from "./Users";
 
-const Admin = () => {
+const Tutor = () => {
   return (
     <section>
-      <h1>Admins Page</h1>
+      <h1>Tutors Page</h1>
       <br />
-      <Users />
-      <br />
+      <p>You must have been assigned a Tutor role.</p>
       <div className="flexGrow">
         <Link to="/">Home</Link>
       </div>
@@ -15,4 +13,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Tutor;

@@ -31,8 +31,27 @@ const getUser = async (req, res) => {
   res.json(user);
 };
 
+const updateUser = async (req, res) => {
+  if (!req?.body?.id)
+    return res.status(400).json({ message: "User ID required" });
+
+  const { id, name, email } = req.body;
+
+  const user = await User.findOne({ _id: id }).exec();
+  if (!user) {
+    return res.status(204).json({ message: `User ID ${id} not found` });
+  }
+
+  user.name = name || user.name;
+  user.email = email || user.email;
+
+  const updatedUser = await user.save();
+  res.json(updatedUser);
+};
+
 module.exports = {
   getAllUsers,
   deleteUser,
   getUser,
+  updateUser,
 };

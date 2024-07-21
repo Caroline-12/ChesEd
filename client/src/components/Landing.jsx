@@ -17,7 +17,7 @@ export default function Landing() {
       <Navbar />
       <CTA />
       <CategoriesPage />
-      {/* <PopularCourses /> */}
+      <PopularCourses />
       <Testimonials />
       <Instructors />
       <PartnersSection />

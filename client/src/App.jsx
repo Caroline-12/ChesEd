@@ -12,8 +12,8 @@ import LinkPage from "./components/LinkPage";
 import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import RequireAuth from "./components/RequireAuth";
-import Editor from "./components/Editor";
-import Admin from "./components/Admin";
+import Editor from "./components/Tutor";
+import Admin from "./components/Admin/Admin";
 import Missing from "./components/Missing";
 
 const ROLES = {

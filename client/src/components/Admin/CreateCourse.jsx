@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { toast, Toaster } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -17,24 +18,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axios from "axios";
+import axios from "@/api/axios";
+import useAuth from "../../hooks/useAuth";
+
+const COURSES_URL = "/courses";
 
 export function CreateCourse({ toggleModal }) {
+  const { auth } = useAuth();
   const [courseDetails, setCourseDetails] = useState({
-    courseID: "",
     title: "",
-    category: "",
     description: "",
     content: "",
-    tutorId: 0,
-    adminId: 0,
+    tutor: "",
+    admin: "669c5d3980267bb6fb7d9c56",
+    category: "",
+    duration: 0,
+    level: "",
     price: 0,
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     let parsedValue = value;
-    if (name === "tutorId" || name === "adminId" || name === "price") {
+    if (name === "duration" || name === "price") {
       parsedValue = parseInt(value);
     }
     setCourseDetails((prevDetails) => ({
@@ -43,30 +49,41 @@ export function CreateCourse({ toggleModal }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:5000/api/courses", courseDetails)
-      .then((response) => {
-        console.log(response.data);
-        setCourseDetails({
-          courseID: "",
-          title: "",
-          category: "",
-          description: "",
-          content: "",
-          tutorId: 0,
-          adminId: 0,
-          price: 0,
-        });
-        toggleModal();
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error(error);
+    console.log(
+      `Creating course with details: ${JSON.stringify(courseDetails)}`
+    );
+    console.log(
+      `Creating course with details: ${JSON.stringify(courseDetails)}`
+    );
+    try {
+      const response = await axios.post(
+        COURSES_URL,
+        JSON.stringify({ ...courseDetails }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+          withCredentials: true,
+        }
+      );
+      console.log(JSON.stringify(response?.data));
+      //console.log(JSON.stringify(response));
+      setCourseDetails({
+        title: "",
+        description: "",
+        content: "",
+        tutor: "",
+        category: "",
+        duration: 0,
+        level: "",
+        price: 0,
       });
-
-    console.log(courseDetails);
+    } catch (error) {
+      toast.error("Registration failed: " + error.response.data.message);
+    }
   };
 
   return (
@@ -76,18 +93,9 @@ export function CreateCourse({ toggleModal }) {
         <CardDescription>Deploy your new project in one-click.</CardDescription>
       </CardHeader>
       <CardContent>
+        <Toaster />
         <form onSubmit={handleSubmit}>
           <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="courseID">Course ID</Label>
-              <Input
-                id="courseID"
-                name="courseID"
-                placeholder="Enter course ID"
-                value={courseDetails.courseID}
-                onChange={handleInputChange}
-              />
-            </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="title">Title</Label>
               <Input
@@ -95,16 +103,6 @@ export function CreateCourse({ toggleModal }) {
                 name="title"
                 placeholder="Enter title"
                 value={courseDetails.title}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="category">Category</Label>
-              <Input
-                id="category"
-                name="category"
-                placeholder="Enter category"
-                value={courseDetails.category}
                 onChange={handleInputChange}
               />
             </div>
@@ -129,24 +127,43 @@ export function CreateCourse({ toggleModal }) {
               />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="tutorId">Tutor ID</Label>
+              <Label htmlFor="category">Category</Label>
               <Input
-                id="tutorId"
-                name="tutorId"
-                type="number"
-                placeholder="Enter tutor ID"
-                value={courseDetails.tutorId}
+                id="category"
+                name="category"
+                placeholder="Enter category"
+                value={courseDetails.category}
                 onChange={handleInputChange}
               />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="adminId">Admin ID</Label>
+              <Label htmlFor="tutor">Assign Tutor</Label>
               <Input
-                id="adminId"
-                name="adminId"
+                id="tutor"
+                name="tutor"
+                placeholder="Enter tutor ID"
+                value={courseDetails.tutor}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="level">Level</Label>
+              <Input
+                id="level"
+                name="level"
+                placeholder="Enter course level"
+                value={courseDetails.level}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="duration">Duration</Label>
+              <Input
+                id="duration"
+                name="duration"
                 type="number"
-                placeholder="Enter admin ID"
-                value={courseDetails.adminId}
+                placeholder="Enter Duration"
+                value={courseDetails.duration}
                 onChange={handleInputChange}
               />
             </div>
@@ -156,7 +173,6 @@ export function CreateCourse({ toggleModal }) {
                 id="price"
                 name="price"
                 type="number"
-                step="0.01"
                 placeholder="Enter price"
                 value={courseDetails.price}
                 onChange={handleInputChange}

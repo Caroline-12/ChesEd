@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import Navbar from "./Navbar";
-import { CreateCourse } from "./CreateCourse";
-import coursesData from "../../courses.json"; // Import the JSON data
+// import Navbar from "./Navbar";
+import { CreateCourse } from "./Admin/CreateCourse";
+import useAuth from "@/hooks/useAuth";
+import axios from "../api/axios";
+const COURSES_URL = "/courses";
 
 const PopularCourses = () => {
+  const { auth } = useAuth();
   const [courses, setCourses] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -13,8 +16,20 @@ const PopularCourses = () => {
     fetchCourses();
   }, []);
 
-  const fetchCourses = () => {
-    setCourses(coursesData);
+  const fetchCourses = async () => {
+    try {
+      const response = await axios.get(COURSES_URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
+        withCredentials: true,
+      });
+      setCourses(response?.data);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   };
 
   const toggleModal = () => {
@@ -23,7 +38,7 @@ const PopularCourses = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="bg-gray-50 py-16">
         <div className="container mx-auto px-4 md:px-40">
           <h2 className="text-3xl font-bold mb-8 text-center">

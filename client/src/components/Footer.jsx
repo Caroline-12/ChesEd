@@ -4,6 +4,8 @@ import { FaTwitter } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa6";
 import { FaPinterest } from "react-icons/fa";
 import { BsYoutube } from "react-icons/bs";
+import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -114,6 +116,9 @@ const Footer = () => {
               Subscribe
             </button>
           </div>
+          <Button className=" text-sm text-white p-2 rounded-r">
+            <Link to="/admin">Admin </Link>
+          </Button>
         </div>
       </div>
       <div className="text-center mt-10 text-gray-500 text-sm">
