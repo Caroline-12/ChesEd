@@ -15,6 +15,8 @@ import RequireAuth from "./components/RequireAuth";
 import Editor from "./components/Tutor";
 import Admin from "./components/Admin/Admin";
 import Missing from "./components/Missing";
+import SubmitAssignment from "./components/Student/SubmitAssignment";
+import { CreateCourse } from "./components/Admin/CreateCourse";
 
 const ROLES = {
   User: 2001,
@@ -31,11 +33,12 @@ export default function App() {
         <Route path="register" element={<RegisterForm />} />
         <Route path="linkpage" element={<LinkPage />} />
         <Route path="unauthorized" element={<Unauthorized />} />
+        <Route path="/" element={<Landing />} />
 
         {/* we want to protect these routes */}
         <Route element={<PersistLogin />}>
           <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-            <Route path="/" element={<Landing />} />
+            <Route path="submit-assignment" element={<SubmitAssignment />} />
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Editor]} />}>
@@ -44,6 +47,7 @@ export default function App() {
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
             <Route path="admin" element={<Admin />} />
+            <Route path="create-course" element={<CreateCourse />} />
           </Route>
 
           {/* <Route

@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 import axios from "../api/axios";
 const LOGIN_URL = "/auth";
 export function LoginForm() {
-  const { setAuth, persist, setPersist } = useAuth();
+  const { setAuth, persist, setPersist, setIsLoggedIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(true);
@@ -75,6 +75,8 @@ export function LoginForm() {
       const username = response?.data?.username;
       const ID = response?.data?.ID;
       setAuth({ ID, username, email, password, roles, accessToken });
+      setIsLoggedIn(true);
+      console.log("Login successful", response?.data);
       setEmail("");
       setPassword("");
       navigate(from, { replace: true });

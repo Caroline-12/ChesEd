@@ -7,13 +7,30 @@ export const AuthProvider = ({ children }) => {
   const [persist, setPersist] = useState(
     JSON.parse(localStorage.getItem("persist")) || false
   );
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track if user is logged in
+
+  const logout = () => {
+    // Perform logout logic here
+    setAuth({});
+    setIsLoggedIn(false);
+  };
 
   useEffect(() => {
-    console.log("Auth context state changed:", { auth, persist });
-  }, [auth, persist]);
+    console.log("Auth context state changed:", { auth, persist, isLoggedIn });
+  }, [auth, persist, isLoggedIn]);
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, persist, setPersist }}>
+    <AuthContext.Provider
+      value={{
+        auth,
+        setAuth,
+        persist,
+        setPersist,
+        isLoggedIn,
+        logout,
+        setIsLoggedIn,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

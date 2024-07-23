@@ -9,13 +9,17 @@ import Testimonials from "./Testimonials";
 import Instructors from "./Instructors";
 import PartnersSection from "./PartnersSection";
 import NewsAndBlogsSection from "./NewsAndBlogsSection";
+import Heroes from "./Heroes";
+import StudentLanding from "./Student/StudentLanding";
 export default function Landing() {
   const { user } = useContext(AuthContext);
   // console.log(user);
   return (
     <div className="">
       <Navbar />
+      <Heroes />
       <CTA />
+      <StudentLanding />
       <CategoriesPage />
       <PopularCourses />
       <Testimonials />

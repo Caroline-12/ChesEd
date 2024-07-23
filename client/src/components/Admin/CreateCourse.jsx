@@ -20,11 +20,13 @@ import {
 } from "@/components/ui/select";
 import axios from "@/api/axios";
 import useAuth from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const COURSES_URL = "/courses";
 
-export function CreateCourse({ toggleModal }) {
+export function CreateCourse() {
   const { auth } = useAuth();
+  const navigate = useNavigate();
   const [courseDetails, setCourseDetails] = useState({
     title: "",
     description: "",
@@ -35,6 +37,7 @@ export function CreateCourse({ toggleModal }) {
     duration: 0,
     level: "",
     price: 0,
+    thumbnail: "",
   });
 
   const handleInputChange = (e) => {
@@ -80,113 +83,131 @@ export function CreateCourse({ toggleModal }) {
         duration: 0,
         level: "",
         price: 0,
+        thumbnail: "",
       });
+      toast.success("Course created successfully!");
     } catch (error) {
       toast.error("Registration failed: " + error.response.data.message);
     }
   };
 
+  const goback = () => navigate(-1);
+
   return (
-    <Card className="w-[350px]">
-      <CardHeader>
-        <CardTitle>Create project</CardTitle>
-        <CardDescription>Deploy your new project in one-click.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Toaster />
-        <form onSubmit={handleSubmit}>
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                name="title"
-                placeholder="Enter title"
-                value={courseDetails.title}
-                onChange={handleInputChange}
-              />
+    <div className="flex justify-center items-center">
+      <Card className="w-full md:w-1/2">
+        <CardHeader>
+          <CardTitle>Create project</CardTitle>
+          <CardDescription>
+            Deploy your new project in one-click.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Toaster />
+          <form onSubmit={handleSubmit}>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  name="title"
+                  placeholder="Enter title"
+                  value={courseDetails.title}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="description">Description</Label>
+                <Input
+                  id="description"
+                  name="description"
+                  placeholder="Enter description"
+                  value={courseDetails.description}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="content">Content</Label>
+                <Input
+                  id="content"
+                  name="content"
+                  placeholder="Enter content URL"
+                  value={courseDetails.content}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="thumbnail">Thumbnail URL</Label>
+                <Input
+                  id="thumbnail"
+                  name="thumbnail"
+                  placeholder="Enter thumbnail URL"
+                  value={courseDetails.thumbnail}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="category">Category</Label>
+                <Input
+                  id="category"
+                  name="category"
+                  placeholder="Enter category"
+                  value={courseDetails.category}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="tutor">Assign Tutor</Label>
+                <Input
+                  id="tutor"
+                  name="tutor"
+                  placeholder="Enter tutor ID"
+                  value={courseDetails.tutor}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="level">Level</Label>
+                <Input
+                  id="level"
+                  name="level"
+                  placeholder="Enter course level"
+                  value={courseDetails.level}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="duration">Duration</Label>
+                <Input
+                  id="duration"
+                  name="duration"
+                  type="number"
+                  placeholder="Enter Duration"
+                  value={courseDetails.duration}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="price">Price</Label>
+                <Input
+                  id="price"
+                  name="price"
+                  type="number"
+                  placeholder="Enter price"
+                  value={courseDetails.price}
+                  onChange={handleInputChange}
+                />
+              </div>
             </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="description">Description</Label>
-              <Input
-                id="description"
-                name="description"
-                placeholder="Enter description"
-                value={courseDetails.description}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="content">Content</Label>
-              <Input
-                id="content"
-                name="content"
-                placeholder="Enter content URL"
-                value={courseDetails.content}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="category">Category</Label>
-              <Input
-                id="category"
-                name="category"
-                placeholder="Enter category"
-                value={courseDetails.category}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="tutor">Assign Tutor</Label>
-              <Input
-                id="tutor"
-                name="tutor"
-                placeholder="Enter tutor ID"
-                value={courseDetails.tutor}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="level">Level</Label>
-              <Input
-                id="level"
-                name="level"
-                placeholder="Enter course level"
-                value={courseDetails.level}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="duration">Duration</Label>
-              <Input
-                id="duration"
-                name="duration"
-                type="number"
-                placeholder="Enter Duration"
-                value={courseDetails.duration}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="price">Price</Label>
-              <Input
-                id="price"
-                name="price"
-                type="number"
-                placeholder="Enter price"
-                value={courseDetails.price}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={toggleModal}>
-              Cancel
-            </Button>
-            <Button type="submit">Create</Button>
-          </CardFooter>
-        </form>
-      </CardContent>
-    </Card>
+            <CardFooter className="flex justify-between">
+              <Button variant="outline" onClick={goback}>
+                Cancel
+              </Button>
+              <Button type="submit">Create</Button>
+            </CardFooter>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
