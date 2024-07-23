@@ -48,6 +48,7 @@ app.use("/logout", require("./routes/logout"));
 app.use(verifyJWT);
 app.use("/users", require("./routes/api/users"));
 app.use("/courses", require("./routes/api/courses"));
+app.use("/assignments", require("./routes/api/assignments"));
 
 app.all("*", (req, res) => {
   res.status(404);

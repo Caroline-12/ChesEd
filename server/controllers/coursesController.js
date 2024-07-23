@@ -20,8 +20,9 @@ const createNewCourse = async (req, res) => {
     duration,
     level,
     price,
+    thumbnail,
   } = req.body;
-
+  console.log(req.body);
   if (
     !title ||
     !description ||
@@ -31,7 +32,8 @@ const createNewCourse = async (req, res) => {
     !category ||
     !duration ||
     !level ||
-    !price
+    !price ||
+    !thumbnail
   ) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -47,6 +49,7 @@ const createNewCourse = async (req, res) => {
       duration,
       level,
       price,
+      thumbnail,
     });
 
     res.status(201).json(result);
@@ -79,6 +82,7 @@ const updateCourse = async (req, res) => {
     level,
     price,
     isPublished,
+    thumbnail,
   } = req.body;
 
   if (title) course.title = title;
@@ -90,6 +94,7 @@ const updateCourse = async (req, res) => {
   if (duration) course.duration = duration;
   if (level) course.level = level;
   if (price) course.price = price;
+  if (thumbnail) course.thumbnail = thumbnail;
   if (typeof isPublished !== "undefined") course.isPublished = isPublished;
 
   try {

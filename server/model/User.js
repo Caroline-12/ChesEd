@@ -30,6 +30,12 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  enrolledCourses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
+  completedCourses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
+  assignments: [{ type: Schema.Types.ObjectId, ref: "Assignment" }],
+  bio: String,
+  dateOfBirth: Date,
+  educationLevel: String,
   refreshToken: String,
 });
 

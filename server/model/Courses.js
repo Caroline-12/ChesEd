@@ -24,6 +24,10 @@ const courseSchema = new Schema({
     ref: "User",
     required: true,
   },
+  thumbnail: {
+    type: String,
+    default: "https://example.com/default-thumbnail.jpg",
+  },
   category: {
     type: String,
     required: true,
