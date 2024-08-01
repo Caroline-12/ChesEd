@@ -25,6 +25,7 @@ const createAssignment = async (req, res) => {
 
 const assignTutor = async (req, res) => {
   const { assignmentId, tutorId, assignee } = req.body;
+  console.log(req.body);
 
   if (!assignmentId || !tutorId) {
     return res
@@ -34,13 +35,15 @@ const assignTutor = async (req, res) => {
 
   try {
     const assignment = await Assignment.findById(assignmentId);
+    console.log(assignment);
     if (!assignment) {
       return res.status(404).json({ message: "Assignment not found" });
     }
 
     assignment.tutor = tutorId;
     assignment.admin = assignee;
-    assignment.status = "assigned";
+    console.log(assignment.status);
+    assignment.status = "in_progress";
 
     const updatedAssignment = await assignment.save();
     res.json(updatedAssignment);
@@ -63,7 +66,25 @@ const getAllAssignments = async (req, res) => {
   }
 };
 
-// Generate other necessary functions like updateAssignment, deleteAssignment
+const getAssignmentsByStudentId = async (req, res) => {
+  const { studentId } = req.params;
+
+  if (!studentId) {
+    return res.status(400).json({ message: "Student ID is required" });
+  }
+
+  try {
+    const assignments = await Assignment.find({ student: studentId })
+      .populate("student", "username")
+      .populate("tutor", "username")
+      .populate("admin", "username");
+    res.json(assignments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch assignments" });
+  }
+};
+
 const updateAssignment = async (req, res) => {
   const { assignmentId, title, description, price, dueDate } = req.body;
 
@@ -142,4 +163,5 @@ module.exports = {
   updateAssignment,
   deleteAssignment,
   getAssignment,
+  getAssignmentsByStudentId,
 };

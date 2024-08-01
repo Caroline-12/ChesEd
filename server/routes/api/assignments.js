@@ -18,4 +18,11 @@ router
   .route("/:assignmentId")
   .get(verifyRoles(ROLES_LIST.User), assignmentController.getAssignment);
 
+router
+  .route("/student/:studentId")
+  .get(
+    verifyRoles(ROLES_LIST.User),
+    assignmentController.getAssignmentsByStudentId
+  );
+
 module.exports = router;

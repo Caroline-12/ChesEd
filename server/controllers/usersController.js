@@ -6,6 +6,15 @@ const getAllUsers = async (req, res) => {
   res.json(users);
 };
 
+const getAllTutors = async (req, res) => {
+  console.log("Getting all tutors");
+  const users = await User.find({ "roles.Editor": { $exists: true } });
+  if (!users || users.length === 0) {
+    return res.status(204).json({ message: "No users with Editor role found" });
+  }
+  res.json(users);
+};
+
 const deleteUser = async (req, res) => {
   if (!req?.body?.id)
     return res.status(400).json({ message: "User ID required" });
@@ -54,4 +63,5 @@ module.exports = {
   deleteUser,
   getUser,
   updateUser,
+  getAllTutors,
 };

@@ -1,6 +1,17 @@
 const Course = require("../model/Courses");
 
 const getAllCourses = async (req, res) => {
+  console.log("getAllCourses");
+  const courses = await Course.find().populate(
+    "tutor admin",
+    "-password -refreshToken"
+  );
+  console.log(courses);
+  if (!courses) return res.status(204).json({ message: "No courses found." });
+  res.json(courses);
+};
+
+const getPopularCourses = async (req, res) => {
   const courses = await Course.find().populate(
     "tutor admin",
     "-password -refreshToken"
@@ -8,7 +19,6 @@ const getAllCourses = async (req, res) => {
   if (!courses) return res.status(204).json({ message: "No courses found." });
   res.json(courses);
 };
-
 const createNewCourse = async (req, res) => {
   const {
     title,
@@ -146,4 +156,5 @@ module.exports = {
   updateCourse,
   deleteCourse,
   getCourse,
+  getPopularCourses,
 };

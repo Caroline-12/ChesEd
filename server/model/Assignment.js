@@ -27,11 +27,6 @@ const assignmentSchema = new Schema({
     type: Number,
     required: true,
   },
-  status: {
-    type: String,
-    enum: ["pending", "assigned", "completed"],
-    default: "pending",
-  },
   dueDate: {
     type: Date,
     required: true,
