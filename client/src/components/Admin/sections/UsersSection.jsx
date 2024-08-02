@@ -51,7 +51,7 @@ export default function UsersSection() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white">
+            <table className="min-w-full text-left bg-white">
               <thead>
                 <tr>
                   <th className="py-2">Name</th>
@@ -74,7 +74,7 @@ export default function UsersSection() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white">
+            <table className="min-w-full text-left bg-white">
               <thead>
                 <tr>
                   <th className="py-2">Name</th>

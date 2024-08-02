@@ -228,7 +228,7 @@ export function AdminLayout() {
               path="assignments"
               element={<Assignments assignments={assignments} />}
             />
-            <Route path="courses" element={<CreateCourse />} />
+            <Route path="courses" element={<ManageCourses />} />
             <Route path="payments" element={<Payments />} />
             <Route path="users" element={<UsersSection />} />
           </Routes>

@@ -1,9 +1,19 @@
 import { useState, useEffect } from "react";
 import axios from "@/api/axios";
-import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
 import CourseForm from "../CourseForm";
+import useAuth from "@/hooks/useAuth";
+import { MdEdit, MdDelete } from "react-icons/md";
+import { CreateCourse } from "../CreateCourse";
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -12,6 +22,7 @@ const ManageCourses = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const navigate = useNavigate();
+  const { auth } = useAuth();
 
   useEffect(() => {
     fetchCourses();
@@ -19,7 +30,15 @@ const ManageCourses = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get("/courses");
+      const config = {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      };
+      if (auth?.accessToken) {
+        config.headers.Authorization = `Bearer ${auth.accessToken}`;
+      }
+
+      const response = await axios.get("/courses", config);
       setCourses(response.data);
       setLoading(false);
     } catch (err) {
@@ -63,34 +82,43 @@ const ManageCourses = () => {
         Create New Course
       </Button>
       {showForm && (
-        <CourseForm course={selectedCourse} onClose={handleFormClose} />
+        <CreateCourse course={selectedCourse} onClose={handleFormClose} />
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {courses.map((course) => (
-          <Card key={course._id} className="bg-white shadow-lg">
-            <CardHeader>
-              <CardTitle>{course.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{course.description}</p>
-              <div className="flex justify-between mt-4">
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell className="text-left">Title</TableCell>
+            <TableCell className="text-left">Description</TableCell>
+            <TableCell className="text-left">Category</TableCell>
+            <TableCell className="text-left">Price</TableCell>
+            <TableCell className="text-left">Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {courses.map((course) => (
+            <TableRow key={course._id}>
+              <TableCell className="text-left">{course.title}</TableCell>
+              <TableCell className="text-left">{course.description}</TableCell>
+              <TableCell className="text-left">{course.category}</TableCell>
+              <TableCell className="text-left">{course.price}</TableCell>
+              <TableCell className="text-left">
                 <Button
                   onClick={() => handleEdit(course)}
-                  className="bg-yellow-500 text-white"
+                  className="mr-2 bg-yellow-500 text-white"
                 >
-                  Edit
+                  <MdEdit />
                 </Button>
                 <Button
                   onClick={() => handleDelete(course._id)}
                   className="bg-red-500 text-white"
                 >
-                  Delete
+                  <MdDelete />
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };

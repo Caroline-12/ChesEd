@@ -171,7 +171,7 @@ export function CreateCourse() {
                 <Input
                   id="level"
                   name="level"
-                  placeholder="Enter course level"
+                  placeholder='Enter course level: "Beginner", "Intermediate", "Advanced"'
                   value={courseDetails.level}
                   onChange={handleInputChange}
                 />
