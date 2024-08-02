@@ -15,14 +15,14 @@ const StudentLanding = () => {
           "You need to be logged in to submit an assignment. Would you like to log in now?"
         )
       ) {
-        navigate("/login", { state: { from: "/submit-assignment" } });
+        navigate("/login", { state: { from: "submit-assignment" } });
       }
     }
   };
 
   return (
     <div className="container mx-auto px-4">
-      <div className="text-center py-20 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg shadow-xl my-10">
+      <div className="text-center py-20 bg-gradient-to-t from-orange-400 to-red-600 text-white rounded-lg shadow-xl my-10">
         <h1 className="text-5xl font-bold mb-4">
           Need Help with Your Assignment?
         </h1>

@@ -17,6 +17,16 @@ module.exports = {
       },
     },
     extend: {
+      gradientColorStops: {
+        "orange-to-red": ["#f59e0b", "#c23616"],
+        "blue-to-green": ["#167bff", "#119200"],
+      },
+      gradients: {
+        "orange-to-red":
+          "linear-gradient(to right, var(--tw-gradient-stops-orange-to-red), var(--tw-gradient-stops-orange-to-red))",
+        "blue-to-green":
+          "linear-gradient(to left, var(--tw-gradient-stops-blue-to-green), var(--tw-gradient-stops-blue-to-green))",
+      },
       fontFamily: {
         sans: ["Roboto", "sans-serif"],
       },

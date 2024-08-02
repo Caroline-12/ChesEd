@@ -10,6 +10,7 @@ import {
   FaDatabase,
   FaLongArrowAltRight,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const categories = [
   { title: "Art & Design", courses: "5+ Courses", icon: <FaPalette /> },
@@ -25,7 +26,7 @@ const categories = [
 
 const CategoriesPage = () => {
   return (
-    <div className=" bg-orange-50 py-16">
+    <div className="bg-gradient-to-tr from-orange-100 to-red-100  py-16">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
           Top Categories
@@ -34,7 +35,7 @@ const CategoriesPage = () => {
           {categories.map((category, index) => (
             <div
               key={index}
-              className="p-6 rounded-lg shadow-md hover:bg-orange-500  hover:text-white bg-white transition-transform transform hover:scale-105  border-2"
+              className="p-6 hover:cursor-pointer rounded-lg shadow-md hover:bg-gradient-to-tr from-orange-300 to-red-300  hover:text-white bg-white transition-transform transform hover:scale-105  border-2"
             >
               <div className="flex items-center space-x-4">
                 <div className="text-orange-500 hover:text-white text-3xl">
@@ -47,7 +48,10 @@ const CategoriesPage = () => {
               </div>
             </div>
           ))}
-          <div className="p-6 rounded-lg shadow-md bg-transparent flex items-center justify-center hover:border border-orange-500 transition-transform transform hover:scale-105 hover:border-orange-500 border-2">
+          <Link
+            to="dashboard"
+            className="p-6 hover:cursor-pointer rounded-lg shadow-md bg-transparent flex items-center justify-center hover:border border-orange-500 transition-transform transform hover:scale-105 hover:border-orange-500 border-2"
+          >
             <div>
               <h4 className="text-xl font-bold text-gray-800">Explore more</h4>
               <p className="text-yellow-500">50+ Categories</p>
@@ -55,7 +59,7 @@ const CategoriesPage = () => {
                 <FaLongArrowAltRight />
               </div>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </div>

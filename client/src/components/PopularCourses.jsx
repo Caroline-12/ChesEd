@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import useAuth from "@/hooks/useAuth";
 import axios from "../api/axios";
 import { Toaster, toast } from "sonner";
-const COURSES_URL = "/courses";
+const COURSES_URL = "/popular-courses";
 
 const PopularCourses = () => {
   const { auth, isLoggedIn } = useAuth();
@@ -42,9 +42,11 @@ const PopularCourses = () => {
     }
   };
 
-  const handleCourseClick = () => {
+  console.log(courses);
+
+  const handleCourseClick = (course) => {
     if (isLoggedIn) {
-      navigate(`/courses/${course.category}/${course.id}`);
+      navigate(`/courses/${course._id}`);
     } else {
       if (
         window.confirm(
@@ -59,7 +61,7 @@ const PopularCourses = () => {
   return (
     <>
       <Toaster />
-      <div className="bg-gray-50 py-16">
+      <div className="bg-gradient-to-br from-orange-100 to-red-100  py-16">
         <div className="container mx-auto px-4 md:px-40">
           <h2 className="text-3xl font-bold mb-8 text-center">
             Our Popular Courses
@@ -94,40 +96,36 @@ const PopularCourses = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {courses.map((course) => (
                   <div
-                    onClick={handleCourseClick}
+                    onClick={() => handleCourseClick(course)}
                     key={course.id}
-                    className="no-underline"
+                    className=" p-6 no-underline hover:cursor-pointer hover:bg-transparent bg-orange-50  rounded-lg shadow-sm transition-transform transform hover:scale-105"
                   >
-                    <div className="bg-orange-50 p-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
-                      <div className="mb-4 h-40 bg-gray-200 flex items-center justify-center">
-                        <img
-                          src={course.thumbnail}
-                          alt={course.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="mb-2 text-xs font-semibold text-pink-500 uppercase">
-                        {course.category}
-                      </div>
-                      <h3 className="text-xl font-bold mb-2">{course.title}</h3>
-                      <p className="mb-2 text-sm">{course.description}</p>
-                      <div className="flex items-center justify-between mb-4 text-sm">
-                        <span>{course.lessons} Lessons</span>
-                        <span>{course.type}</span>
-                      </div>
-                      <div className="flex items-center justify-between border-t-2 pt-2">
-                        <span className="text-lg font-bold">
-                          {course.price}
-                        </span>
-                        <div className="flex items-center">
-                          <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                          <span className="ml-2">({course.ratingCount})</span>
-                        </div>
+                    <div className="mb-4 h-40 bg-gray-200 flex items-center justify-center">
+                      <img
+                        src={course.thumbnail}
+                        alt={course.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="mb-2 text-xs font-semibold text-pink-500 uppercase">
+                      {course.category}
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{course.title}</h3>
+                    <p className="mb-2 text-sm">{course.description}</p>
+                    <div className="flex items-center justify-between mb-4 text-sm">
+                      <span>{course.lessons} Lessons</span>
+                      <span>{course.type}</span>
+                    </div>
+                    <div className="flex items-center justify-between border-t-2 pt-2">
+                      <span className="text-lg font-bold">{course.price}</span>
+                      <div className="flex items-center">
+                        <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2">{course.ratingCount}</span>
                       </div>
                     </div>
                   </div>
                 ))}
-                <div className="cursor-pointer p-6 bg-orange-100 rounded-lg shadow-md flex items-center justify-center transition-transform transform hover:scale-105 hover:border-orange-500 border-2">
+                <div className="cursor-pointer p-6 bg-orange-50 rounded-lg shadow-md flex items-center justify-center transition-transform transform hover:scale-105 hover:border-orange-500 border-2">
                   <div>
                     <h4 className="text-xl font-bold">
                       The World's Largest Selection of Online Courses

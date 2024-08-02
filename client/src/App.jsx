@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { LoginForm } from "./components/LoginForm";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Student/Dashboard";
 import Landing from "./components/Landing";
 import { RegisterForm } from "./components/RegisterForm";
 import BecomeTutor from "./components/BecomeTutor";
@@ -12,23 +12,36 @@ import LinkPage from "./components/LinkPage";
 import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import RequireAuth from "./components/RequireAuth";
-import Editor from "./components/Tutor";
+import Tutor from "./components/Tutor";
 import Admin from "./components/Admin/Admin";
 import Missing from "./components/Missing";
 import SubmitAssignment from "./components/Student/SubmitAssignment";
 import { CreateCourse } from "./components/Admin/CreateCourse";
-
-const ROLES = {
-  User: 2001,
-  Editor: 1984,
-  Admin: 5150,
-};
-
+import StudentProfilePage from "./components/Student/StudentProfilePage";
+import AdminDashboard from "./components/Admin/AdminDashboard";
+import AssignmentDetail from "./components/Admin/AssignmentDetail";
+import TutorAssignmentForm from "./components/Admin/TutorAssignmentForm";
+import Profile from "./components/Student/Profile";
+import AdminLayout from "./components/Admin/AdminLayout";
+import UsersSection from "./components/Admin/sections/UsersSection";
+import StudentAssignments from "./components/Student/sections/StudentAssignments";
+import StudentCourses from "./components/Student/StudentCourses";
+import Assignments from "./components/Admin/sections/Assignments";
+import Courses from "./components/Admin/sections/ManageCourses";
+import Payments from "./components/Admin/sections/Payments";
+import StudentPayments from "./components/Student/sections/StudentPayments";
+import AllCourses from "./components/Admin/sections/ManageCourses";
+// import { PaymentMethod } from "./components/Student/PaymentMethod";
+import { ROLES } from "./utils/roles";
+import DashboardLanding from "./components/Student/sections/DashboardLanding";
+import { PaymentMethod } from "./components/Student/PaymentMethod";
+import PaymentPage from "./components/Student/sections/PaymentPage";
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         {/* public routes */}
+        {/* <Route path="payment" element={<PaymentMethod />} /> */}
         <Route path="login" element={<LoginForm />} />
         <Route path="register" element={<RegisterForm />} />
         <Route path="linkpage" element={<LinkPage />} />
@@ -37,21 +50,52 @@ export default function App() {
 
         {/* we want to protect these routes */}
         <Route element={<PersistLogin />}>
-          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+          {/* <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+            <Route path="profile" element={<Profile />} />
             <Route path="submit-assignment" element={<SubmitAssignment />} />
+            <Route path="courses" element={<StudentCourses />} />
+            <Route path="dashboard" element={<Dashboard />}>
+              <Route path="assignments" element={<StudentAssignments />} />
+              <Route path="courses" element={<StudentCourses />} />
+              <Route path="payments" element={<StudentPayments />} />
+              <Route path="/" element={<DashboardLanding />} />
+            </Route>
+            <Route path="courses/:courseId" element={<CourseDetail />} />
+          </Route> */}
+          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+            <Route path="dashboard/*" element={<Dashboard />} />
+            <Route path="submit-assignment" element={<SubmitAssignment />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="courses/:courseId" element={<CourseDetail />} />
+            {/* <Route path="/payment/:courseId" element={<PaymentPage />} /> */}
+            <Route path="/payment/:courseId" element={<PaymentMethod />} />
           </Route>
 
-          <Route element={<RequireAuth allowedRoles={[ROLES.Editor]} />}>
-            <Route path="editor" element={<Editor />} />
+          <Route element={<RequireAuth allowedRoles={[ROLES.Tutor]} />}>
+            <Route path="tutor" element={<Tutor />} />
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-            <Route path="admin" element={<Admin />} />
-            <Route path="create-course" element={<CreateCourse />} />
+            <Route path="admin" element={<AdminLayout />}>
+              <Route path="create-course" element={<CreateCourse />} />
+              <Route path="users" element={<UsersSection />} />
+              <Route path="assignments" element={<Assignments />} />
+              <Route path="courses" element={<Courses />} />
+              <Route path="payments" element={<Payments />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route
+                path="assignment/:assignmentId"
+                element={<AssignmentDetail />}
+              />
+              <Route
+                path="assign-tutor/:assignmentId"
+                element={<TutorAssignmentForm />}
+              />
+            </Route>
           </Route>
 
           {/* <Route
-            element={<RequireAuth allowedRoles={[ROLES.Editor, ROLES.Admin]} />}
+            element={<RequireAuth allowedRoles={[ROLES.Tutor, ROLES.Admin]} />}
           >
             <Route path="lounge" element={<Lounge />} />
           </Route> */}

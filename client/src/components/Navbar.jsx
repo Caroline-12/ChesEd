@@ -3,7 +3,7 @@ import useAuth from "@/hooks/useAuth";
 import { Button } from "./ui/button";
 
 export default function Navbar() {
-  const { isLoggedIn, auth } = useAuth();
+  const { isLoggedIn, auth, logout } = useAuth();
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
       <div className="container mx-auto p-4">
@@ -19,7 +19,7 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              to="/popular-courses"
+              to="/courses"
               className="text-black  font-bold hover:text-orange-600"
             >
               Courses
@@ -34,10 +34,10 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-4">
             {isLoggedIn && auth?.accessToken ? (
               <>
-                <Link to="/profile" className="text-black font-bold">
+                <Link to="/dashboard" className="text-black font-bold">
                   Profile
                 </Link>
-                <Button onClick={() => auth.logout()} variant="secondary">
+                <Button onClick={logout} variant="secondary">
                   Logout
                 </Button>
               </>

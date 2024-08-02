@@ -39,21 +39,6 @@ const PartnersSection = () => {
           ))}
         </div>
       </div>
-      <div className="bg-orange-50 py-8 mt-16">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
-          <div className="text-center md:text-left mb-4 md:mb-0">
-            <p className="text-orange-500">Let Us Help</p>
-            <h3 className="text-2xl font-bold text-gray-800">
-              Finding Your Right Courses
-            </h3>
-          </div>
-          <div>
-            <Button className="bg-orange-500 text-white py-2 px-6 font-semibold">
-              Get Started
-            </Button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

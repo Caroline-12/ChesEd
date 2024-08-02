@@ -53,7 +53,7 @@ const NewsAndBlogsSection = () => {
               key={index}
               className={`relative bg-gray-200 ${
                 item.size === "large"
-                  ? "md:col-span-2 md:row-span-2"
+                  ? "md:col-span-2 md:row-span-2 h-80"
                   : "col-span-1"
               } p-4`}
             >
@@ -71,34 +71,6 @@ const NewsAndBlogsSection = () => {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-      <div className="bg-orange-50 py-8 mt-16">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
-          <div className="flex-1 text-center md:text-left mb-4 md:mb-0">
-            <h3 className="text-2xl font-bold text-gray-800">
-              Become An Instructor
-            </h3>
-            <p className="text-gray-600">
-              Grursus mal suada faci lisis Lorem ipsum dolor sit ametion
-              consectetur elit. Vesti at bulum et cons ectetur elit.
-            </p>
-            <Button className="mt-4 bg-yellow-500 text-white py-2 px-6 font-semibold">
-              Apply Now
-            </Button>
-          </div>
-          <div className="flex-1 text-center md:text-left mb-4 md:mb-0">
-            <h3 className="text-2xl font-bold text-gray-800">
-              Free Courses Ready!
-            </h3>
-            <p className="text-gray-600">
-              Grursus mal suada faci lisis Lorem ipsum dolor sit ametion
-              consectetur elit. Vesti at bulum et cons ectetur elit.
-            </p>
-            <Button className="mt-4 bg-orange-500 text-white py-2 px-6 font-semibold">
-              Apply Now
-            </Button>
-          </div>
         </div>
       </div>
     </div>

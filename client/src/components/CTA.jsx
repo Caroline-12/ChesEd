@@ -2,6 +2,7 @@ import { GrUserExpert } from "react-icons/gr";
 import { SlNotebook } from "react-icons/sl";
 import { IoAlarm } from "react-icons/io5";
 import { LiaIndustrySolid } from "react-icons/lia";
+import { Link } from "react-router-dom";
 const CTA = () => {
   return (
     <div className="bg-white py-16">
@@ -81,7 +82,7 @@ const CTA = () => {
               </div>
             </div>
             <button className="bg-orange-500 text-white px-6 py-2 mt-10 rounded">
-              Get Started
+              <Link to="/register">Get Started</Link>
             </button>
           </div>
         </div>
