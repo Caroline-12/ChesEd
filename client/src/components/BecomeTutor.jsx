@@ -5,7 +5,10 @@ import { PiStudentFill } from "react-icons/pi";
 import { SiCrowdsource } from "react-icons/si";
 import { Button } from "./ui/button";
 import Footer from "./Footer";
+import { useNavigate } from "react-router-dom";
+
 const BecomeTutor = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     fetch("become-instructor-navbar.html")
       .then((response) => response.text())
@@ -28,7 +31,13 @@ const BecomeTutor = () => {
           <p className="text-md font-normal text-gray-600 text-black mb-8">
             Join the world's largest online learning marketplace.
           </p>
-          <Button>Become a Tutor</Button>
+          <Button
+            onClick={() => {
+              navigate("/tutor-registration");
+            }}
+          >
+            Become a Tutor
+          </Button>
         </div>
       </section>
 

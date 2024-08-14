@@ -14,8 +14,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
 import { toast } from "sonner";
 
-const TutorAssignmentForm = ({ assignmentId }) => {
+const TutorAssignmentForm = () => {
   const { auth } = useAuth();
+  const { assignmentId } = useParams();
   const [tutors, setTutors] = useState([]);
   const [selectedTutor, setSelectedTutor] = useState("");
   const [loading, setLoading] = useState(true);
@@ -58,7 +59,7 @@ const TutorAssignmentForm = ({ assignmentId }) => {
         }
       );
       toast.success("Tutor assigned successfully");
-      navigate("/admin");
+      navigate("/admin-dashboard");
     } catch (err) {
       console.error("Error assigning tutor:", err);
       setError("Failed to assign tutor. Please try again later.");
@@ -73,37 +74,42 @@ const TutorAssignmentForm = ({ assignmentId }) => {
     return <div className="text-center mt-8 text-red-500">{error}</div>;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Assign Tutor</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div>
-          <Select
-            onValueChange={(value) => setSelectedTutor(value)}
-            value={selectedTutor}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select tutor" />
-            </SelectTrigger>
-            <SelectContent>
-              {tutors.map((tutor) => (
-                <SelectItem key={tutor._id} value={tutor._id}>
-                  {tutor.username}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button
-            variant="outline"
-            className="mt-4 text-orange-800 border-orange-800 hover:bg-orange-200"
-            onClick={handleAssignTutor}
-          >
-            Assign
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+    <>
+      <Navbar />
+      <div className="container mx-auto p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Assign Tutor</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div>
+              <Select
+                onValueChange={(value) => setSelectedTutor(value)}
+                value={selectedTutor}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select tutor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tutors.map((tutor) => (
+                    <SelectItem key={tutor._id} value={tutor._id}>
+                      {tutor.username}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
+                variant="outline"
+                className="mt-4 text-orange-800 border-orange-800 hover:bg-orange-200"
+                onClick={handleAssignTutor}
+              >
+                Assign
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 };
 

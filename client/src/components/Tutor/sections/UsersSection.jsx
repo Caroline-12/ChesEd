@@ -4,62 +4,47 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import Spinner from "@/components/Spinner";
 
 export default function UsersSection() {
   const { auth } = useAuth();
-  const [tutors, setTutors] = useState([]);
-  const [students, setStudents] = useState([]);
-
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchAllTutors();
-    fetchAllStudents();
+    fetchAllUsers();
   }, []);
 
-  const fetchAllTutors = async () => {
-    try {
-      const response = await axios.get("/tutors", {
-        headers: {
-          Authorization: `Bearer ${auth.accessToken}`,
-        },
-      });
-      setTutors(response.data);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching users:", err);
-      setError("Failed to load tutors. Please try again later.");
-      setLoading(false);
-    }
-  };
-
-  const fetchAllStudents = async () => {
+  const fetchAllUsers = async () => {
     try {
       const response = await axios.get("/users", {
         headers: {
           Authorization: `Bearer ${auth.accessToken}`,
         },
       });
-      setStudents(response.data);
+      setUsers(response.data);
       setLoading(false);
     } catch (err) {
       console.error("Error fetching users:", err);
-      setError("Failed to load tutors. Please try again later.");
+      setError("Failed to load users. Please try again later.");
       setLoading(false);
     }
   };
 
-  console.log(tutors);
+  console.log(users);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (error) {
     return <div>{error}</div>;
   }
 
+  const students = users.filter((user) => user.roles === "student");
+  const tutors = users.filter((user) => user.roles === "tutor");
+
   return (
     <div className="container mx-auto p-4 space-y-8">
-      {loading && <Spinner />}
       <Card>
         <CardHeader>
           <CardTitle>Students</CardTitle>
@@ -75,12 +60,9 @@ export default function UsersSection() {
                 </tr>
               </thead>
               <tbody>
-                {students.map(
-                  (student) =>
-                    student.roles.User && (
-                      <UserItem key={student._id} user={student} />
-                    )
-                )}
+                {users.map((student) => (
+                  <UserItem key={student._id} user={student} />
+                ))}
               </tbody>
             </table>
           </div>
@@ -101,7 +83,7 @@ export default function UsersSection() {
                 </tr>
               </thead>
               <tbody>
-                {tutors.map((tutor) => (
+                {users.map((tutor) => (
                   <UserItem key={tutor._id} user={tutor} />
                 ))}
               </tbody>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,52 +13,95 @@ const ASSIGNMENTS_URL = "/assignments";
 const SubmitAssignment = () => {
   const { auth } = useAuth();
   const navigate = useNavigate();
-  if (!auth?.accessToken) {
-    navigate("/login", { state: { from: "/submit-assignment" } });
-  }
-  // else if (auth?.role !== 2001) {
-  // navigate("/unauthorized");
-  // }
+  const [categories, setCategories] = useState([]);
   const [assignmentDetails, setAssignmentDetails] = useState({
     title: "",
     description: "",
-    price: 0,
+    proposedBudget: 0,
     dueDate: "",
-    studentId: auth?.ID,
+    category: "",
+    studentId: auth.ID,
+    file: null,
   });
 
+  useEffect(() => {
+    if (!auth?.accessToken) {
+      navigate("/login", { state: { from: "/submit-assignment" } });
+    } else {
+      setAssignmentDetails((prev) => ({ ...prev, studentId: auth.ID }));
+    }
+  }, [auth, navigate]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const config = {
+          headers: { Authorization: `Bearer ${auth.accessToken}` },
+          withCredentials: true,
+        };
+
+        const response = await axios.get(
+          "http://localhost:3500/categories",
+          config
+        );
+        setCategories(response.data);
+      } catch (error) {
+        toast.error("Failed to fetch categories");
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     setAssignmentDetails((prev) => ({
       ...prev,
-      [name]: name === "price" ? parseFloat(value) : value,
+      [name]: name === "proposedBudget" ? parseFloat(value) : value,
     }));
+    setAssignmentDetails((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
+  };
+
+  const handleCategoryChange = (e) => {
+    setAssignmentDetails({ ...assignmentDetails, category: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+
+    formData.append("title", assignmentDetails.title);
+    formData.append("description", assignmentDetails.description);
+    formData.append("proposedBudget", assignmentDetails.proposedBudget);
+    formData.append("dueDate", assignmentDetails.dueDate);
+    formData.append("category", assignmentDetails.category);
+    formData.append("studentId", assignmentDetails.studentId);
+    formData.append("file", assignmentDetails.file);
+
+    console.log("Form data:", formData);
     try {
-      const response = await axios.post(
-        ASSIGNMENTS_URL,
-        JSON.stringify(assignmentDetails),
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth?.accessToken}`,
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(ASSIGNMENTS_URL, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
+        withCredentials: true,
+      });
       console.log(JSON.stringify(response?.data));
       toast.success("Assignment submitted successfully!");
       setAssignmentDetails({
         title: "",
         description: "",
-        price: 0,
+        proposedBudget: 0,
         dueDate: "",
+        category: "",
+        studentId: "",
       });
       setTimeout(() => {
-        navigate("/profile");
+        navigate("/dashboard");
       }, 2000);
     } catch (error) {
       toast.error(
@@ -76,7 +119,12 @@ const SubmitAssignment = () => {
       <h2 className="text-3xl font-bold mb-6 text-center">
         Submit Your Assignment
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6"
+        encType="multipart/form-data"
+        method="POST"
+      >
         <div>
           <Label htmlFor="title">Assignment Title</Label>
           <Input
@@ -101,14 +149,29 @@ const SubmitAssignment = () => {
           />
         </div>
         <div>
-          <Label htmlFor="price">Budget (in $)</Label>
+          <Label htmlFor="category">Category</Label>
+          <select
+            id="category"
+            value={assignmentDetails.category}
+            onChange={handleCategoryChange}
+          >
+            <option value="">Select a category</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <Label htmlFor="proposedBudget">Proposed Budget (in $)</Label>
           <Input
-            id="price"
-            name="price"
+            id="proposedBudget"
+            name="proposedBudget"
             type="number"
-            value={assignmentDetails.price}
+            value={assignmentDetails.proposedBudget}
             onChange={handleInputChange}
-            placeholder="Enter your budget"
+            placeholder="Enter your proposed budget"
             required
             min="0"
             step="0.01"
@@ -124,6 +187,10 @@ const SubmitAssignment = () => {
             onChange={handleInputChange}
             required
           />
+        </div>
+        <div>
+          <Label htmlFor="document">Upload Document</Label>
+          <input type="file" name="file" onChange={handleInputChange} />
         </div>
         <div className="flex justify-end">
           <Button type="submit">Submit Assignment</Button>

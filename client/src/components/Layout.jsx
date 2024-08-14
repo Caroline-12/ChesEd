@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   return (
-    <main className="App">
+    <main className="App  font-raleway">
       <Outlet />
     </main>
   );

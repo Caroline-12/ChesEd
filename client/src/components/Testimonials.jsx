@@ -64,8 +64,10 @@ export default function Testimonials() {
     <>
       <section className="w-full py-4 bg-gray-50">
         <div className="mx-auto lg:max-w-6xl px-3">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8">
-            What Our Customers Say About Us
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 flex justify-center items-center">
+            <span className="border-t border-yellow-500 w-16 mr-2"></span>
+            Our Instructors
+            <span className="border-t border-yellow-500 w-16 ml-2"></span>
           </h2>
           <Carousel
             opts={{

@@ -31,7 +31,7 @@ function StudentAssignments({ assignments }) {
           <p className="text-xl mb-8">Get expert assistance from our tutors!</p>
           <Button
             onClick={handleSubmitAssignment}
-            className="hover:bg-purple-100 transition duration-300 ease-in-out transform hover:scale-105"
+            className=" transition duration-300 ease-in-out transform hover:scale-105"
           >
             Submit Your Assignment
           </Button>
@@ -75,11 +75,11 @@ const AssignmentItem = ({ assignment }) => {
 
   return (
     <tr className="border-b">
-      <td className="py-2 px-4">{assignment.title}</td>
+      <td className="py-2 px-4  font-medium">{assignment.title}</td>
       <td className="py-2 px-4">
         {new Date(assignment.dueDate).toLocaleDateString()}
       </td>
-      <td className="py-2 px-4">${assignment.price}</td>
+      <td className="py-2 px-4">${assignment.agreedPrice}</td>
       <td className="py-2 px-4">{assignment.status}</td>
       <td className="py-2 px-4">{assignment.paid ? "Yes" : "No"}</td>
       <td className="py-2 px-4 flex gap-2">

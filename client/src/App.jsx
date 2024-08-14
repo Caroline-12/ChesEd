@@ -36,6 +36,10 @@ import { ROLES } from "./utils/roles";
 import DashboardLanding from "./components/Student/sections/DashboardLanding";
 import { PaymentMethod } from "./components/Student/PaymentMethod";
 import PaymentPage from "./components/Student/sections/PaymentPage";
+import TutorLayout from "./components/Tutor/TutorLayout";
+import TutorRegistrationForm from "./components/Tutor/TutorRegistrationForm";
+import ApproveTrainersSection from "./components/Admin/sections/ApproveTrainersSection";
+import AdminCategoryManagement from "./components/Admin/sections/AdminCategoryManagement";
 export default function App() {
   return (
     <Routes>
@@ -46,6 +50,8 @@ export default function App() {
         <Route path="register" element={<RegisterForm />} />
         <Route path="linkpage" element={<LinkPage />} />
         <Route path="unauthorized" element={<Unauthorized />} />
+        <Route path="become-tutor" element={<BecomeTutor />} />
+        <Route path="tutor-registration" element={<TutorRegistrationForm />} />
         <Route path="/" element={<Landing />} />
 
         {/* we want to protect these routes */}
@@ -72,7 +78,10 @@ export default function App() {
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Tutor]} />}>
-            <Route path="tutor" element={<Tutor />} />
+            <Route path="tutor" element={<TutorLayout />}>
+              <Route path="assignments" element={<Assignments />} />
+              <Route path="payments" element={<Payments />} />
+            </Route>
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
@@ -84,6 +93,10 @@ export default function App() {
               <Route path="payments" element={<Payments />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route
+                path="approvetutors"
+                element={<ApproveTrainersSection />}
+              />
+              <Route
                 path="assignment/:assignmentId"
                 element={<AssignmentDetail />}
               />
@@ -91,6 +104,7 @@ export default function App() {
                 path="assign-tutor/:assignmentId"
                 element={<TutorAssignmentForm />}
               />
+              <Route path="categories" element={<AdminCategoryManagement />} />
             </Route>
           </Route>
 

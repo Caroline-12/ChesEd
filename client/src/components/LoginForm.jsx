@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 import axios from "../api/axios";
 const LOGIN_URL = "/auth";
 export function LoginForm() {
-  const { setAuth, persist, setPersist, setIsLoggedIn } = useAuth();
+  const { auth, setAuth, persist, setPersist, setIsLoggedIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(true);
@@ -68,18 +68,37 @@ export function LoginForm() {
           withCredentials: true,
         }
       );
-      console.log(JSON.stringify(response?.data));
+      // console.log(JSON.stringify(response?.data));
       //console.log(JSON.stringify(response));
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
+      // console.log("roles", roles);
       const username = response?.data?.username;
       const ID = response?.data?.ID;
-      setAuth({ ID, username, email, password, roles, accessToken });
+      const specialization = response?.data?.specialization;
+      setAuth({
+        ID,
+        username,
+        email,
+        password,
+        roles,
+        accessToken,
+        specialization,
+      });
       setIsLoggedIn(true);
-      console.log("Login successful", response?.data);
+      // console.log("Login successful", response?.data);
+      toast.success("Login successful");
       setEmail("");
       setPassword("");
-      navigate(from, { replace: true });
+
+      // include logic to check if tutor is approved if not redirect to waiting lobby
+      if (roles.includes(1984)) {
+        navigate("/tutor", { replace: true });
+      } else if (roles.includes(5150)) {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       // Handle the error here
       // console.error("Login failed", error);
@@ -98,6 +117,7 @@ export function LoginForm() {
     localStorage.setItem("persist", persist);
   }, [persist]);
 
+  console.log(auth);
   return (
     <div className="flex justify-center items-center h-screen flex-col">
       <h1 className="text-4xl font-bold mb-8 text-orange-600"> ChesEd</h1>

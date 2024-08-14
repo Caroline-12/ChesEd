@@ -38,6 +38,8 @@ import ManageCourses from "./sections/ManageCourses";
 import Payments from "./sections/Payments";
 import DashboardLanding from "./AdminDashboard";
 import { CreateCourse } from "./CreateCourse";
+import ApproveTrainersSection from "./sections/ApproveTrainersSection";
+import AdminCategoryManagement from "./sections/AdminCategoryManagement";
 
 export function AdminLayout() {
   const { auth } = useAuth();
@@ -76,7 +78,7 @@ export function AdminLayout() {
         <div className="p-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
             <img src="/chesed-logo.png" alt="Logo" className="h-8 w-8" />
-            <span>Chesed</span>
+            <span>ChesedAdmin</span>
           </Link>
         </div>
         <nav className="flex-1 px-2 py-4">
@@ -97,6 +99,24 @@ export function AdminLayout() {
           >
             <Package className="h-5 w-5" />
             Assignments
+          </Link>
+          <Link
+            to="/admin/approvetutors"
+            className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
+              location.pathname === "/admin/approvetutors" ? "bg-gray-700" : ""
+            }`}
+          >
+            <Package className="h-5 w-5" />
+            Approve Tutors
+          </Link>
+          <Link
+            to="/admin/categories"
+            className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
+              location.pathname === "/admin/categories" ? "bg-gray-700" : ""
+            }`}
+          >
+            <Package className="h-5 w-5" />
+            Categories
           </Link>
           <Link
             to="/admin/courses"
@@ -184,6 +204,28 @@ export function AdminLayout() {
                   Assignments
                 </Link>
                 <Link
+                  to="/admin/approvetutors"
+                  className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
+                    location.pathname === "/admin/approvetutors"
+                      ? "bg-gray-700"
+                      : ""
+                  }`}
+                >
+                  <Package className="h-5 w-5" />
+                  Approve Tutors
+                </Link>
+                <Link
+                  to="/admin/categories"
+                  className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
+                    location.pathname === "/admin/categories"
+                      ? "bg-gray-700"
+                      : ""
+                  }`}
+                >
+                  <Package className="h-5 w-5" />
+                  Categories
+                </Link>
+                <Link
                   to="/admin/courses"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
                     location.pathname === "/admin/courses"
@@ -231,6 +273,8 @@ export function AdminLayout() {
             <Route path="courses" element={<ManageCourses />} />
             <Route path="payments" element={<Payments />} />
             <Route path="users" element={<UsersSection />} />
+            <Route path="approvetutors" element={<ApproveTrainersSection />} />
+            <Route path="categories" element={<AdminCategoryManagement />} />
           </Routes>
         </main>
       </div>

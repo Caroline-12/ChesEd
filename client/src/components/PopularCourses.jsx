@@ -61,10 +61,10 @@ const PopularCourses = () => {
   return (
     <>
       <Toaster />
-      <div className="bg-gradient-to-br from-orange-100 to-red-100  py-16">
+      <div className="bg-gradient-to-b from-orange-100 to-red-100  py-16">
         <div className="container mx-auto px-4 md:px-40">
           <h2 className="text-3xl font-bold mb-8 text-center">
-            Our Popular Courses
+            Our Popular Subjects
           </h2>
           {loading ? (
             <p>Loading...</p>

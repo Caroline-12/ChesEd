@@ -18,14 +18,14 @@ export default function Landing() {
     <div className="">
       <Navbar />
       <Heroes />
-      <CTA />
+      {/* <CTA /> */}
       <StudentLanding />
       <CategoriesPage />
       <PopularCourses />
       <Testimonials />
-      <Instructors />
+      {/* <Instructors /> */}
       <PartnersSection />
-      <NewsAndBlogsSection />
+      {/* <NewsAndBlogsSection /> */}
       <Footer />
     </div>
   );

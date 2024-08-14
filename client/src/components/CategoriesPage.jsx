@@ -26,7 +26,7 @@ const categories = [
 
 const CategoriesPage = () => {
   return (
-    <div className="bg-gradient-to-tr from-orange-100 to-red-100  py-16">
+    <div className="bg-orange-100  py-16">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
           Top Categories

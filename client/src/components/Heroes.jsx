@@ -40,18 +40,14 @@ const Heroes = () => {
   return (
     <>
       <div
-        className="relative bg-cover bg-center h-screen flex flex-col items-center justify-center text-center bg-gradient-to-r from-orange-400 to-red-600"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1660245094600-c45a01fcc8e3?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
-        }}
+        className=" h-screen flex flex-col items-center justify-center text-center bg-gradient-to-t from-orange-100 to-red-100"
         onClick={toggleDropdown}
       >
-        <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-50"></div>
         <div className="container mx-auto px-6 py-12 relative">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-orange-900 tracking-wide leading-loose mb-6">
             We Help to Upgrade Your Knowledge Effectively
           </h1>
-          <p className="text-lg md:text-xl text-white mb-12">
+          <p className="text-lg md:text-xl text-orange-900 tracking-wide leading-loose mb-12">
             Grursus mal suada faci lisis Lorem ipsum dolor sit ametion
             consectetur adipiscing elit
           </p>
@@ -72,6 +68,7 @@ const Heroes = () => {
                     As a Student
                   </Button>
                   <Button
+                    onClick={() => navigate("/become-tutor")}
                     variant="outline"
                     className="block w-full text-left px-6 py-3 text-gray-700  hover:bg-gray-100 transition"
                   >
@@ -113,7 +110,7 @@ const Heroes = () => {
                 </SelectContent>
               </Select>
               <Button className="absolute right-0  bg-orange-600 text-white px-4 py-2 rounded-r-lg hover:bg-orange-500 transition">
-                <FaSearch />
+                Find me a tutor
               </Button>
             </div>
           </div>
