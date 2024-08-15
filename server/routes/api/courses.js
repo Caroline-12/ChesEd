@@ -8,11 +8,11 @@ router
   .route("/")
   .get(coursesController.getAllCourses)
   .post(
-    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor),
+    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Tutor),
     coursesController.createNewCourse
   )
   .put(
-    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor),
+    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Tutor),
     coursesController.updateCourse
   )
   .delete(verifyRoles(ROLES_LIST.Admin), coursesController.deleteCourse);

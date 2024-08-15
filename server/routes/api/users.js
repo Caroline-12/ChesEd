@@ -14,4 +14,8 @@ router
   .route("/:id")
   .get(verifyRoles(ROLES_LIST.Admin), usersController.getUser);
 
+router
+  .route("/students")
+  .get(verifyRoles(ROLES_LIST.Admin), usersController.getAllStudents);
+
 module.exports = router;

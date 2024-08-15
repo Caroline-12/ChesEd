@@ -38,6 +38,7 @@ const handleLogin = async (req, res) => {
     console.log(roles);
     const username = foundUser.username;
     const ID = foundUser.id;
+    const specialization = foundUser.specialization;
 
     // Creates Secure Cookie with refresh token
     res.cookie("jwt", refreshToken, {
@@ -48,7 +49,13 @@ const handleLogin = async (req, res) => {
     });
 
     // Send authorization roles and access token to user
-    res.json({ ID, username, roles, accessToken });
+    res.json({
+      ID,
+      username,
+      roles,
+      accessToken,
+      specialization,
+    });
   } else {
     res.sendStatus(401);
   }

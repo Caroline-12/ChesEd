@@ -5,10 +5,12 @@ const userSchema = new Schema({
   username: {
     type: String,
     required: true,
+    unique: true,
   },
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   firstName: {
     type: String,
@@ -19,11 +21,8 @@ const userSchema = new Schema({
     required: true,
   },
   roles: {
-    User: {
-      type: Number,
-      default: 2001,
-    },
-    Editor: Number,
+    User: Number,
+    Tutor: Number,
     Admin: Number,
   },
   password: {
@@ -35,8 +34,25 @@ const userSchema = new Schema({
   assignments: [{ type: Schema.Types.ObjectId, ref: "Assignment" }],
   bio: String,
   dateOfBirth: Date,
-  educationLevel: String,
   refreshToken: String,
+
+  tutorStatus: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+  },
+  specialization: [
+    {
+      type: String,
+    },
+  ],
+  documents: [
+    {
+      type: String, // This will store file paths or URLs of submitted documents
+    },
+  ],
+  balance: { type: Number, default: 0 },
+  profilePicture: String,
 });
 
 module.exports = mongoose.model("User", userSchema);

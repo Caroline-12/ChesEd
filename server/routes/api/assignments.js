@@ -6,17 +6,22 @@ const verifyRoles = require("../../middleware/verifyRoles");
 
 router
   .route("/")
-  .get(verifyRoles(ROLES_LIST.Admin), assignmentController.getAllAssignments)
+  .get(
+    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Tutor),
+    assignmentController.getAllAssignments
+  )
   .post(verifyRoles(ROLES_LIST.User), assignmentController.createAssignment)
-  .put(verifyRoles(ROLES_LIST.User), assignmentController.updateAssignment)
+  // .put(verifyRoles(ROLES_LIST.User), assignmentController.updateAssignment)
   .delete(verifyRoles(ROLES_LIST.Admin), assignmentController.deleteAssignment);
 router
   .route("/assign")
   .put(verifyRoles(ROLES_LIST.Admin), assignmentController.assignTutor);
 
-router
-  .route("/:assignmentId")
-  .get(verifyRoles(ROLES_LIST.User), assignmentController.getAssignment);
+router.route("/:assignmentId").get(assignmentController.getAssignment);
+// .put(
+//   verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Tutor),
+//   assignmentController.updateAssignment
+// );
 
 router
   .route("/student/:studentId")
@@ -25,4 +30,17 @@ router
     assignmentController.getAssignmentsByStudentId
   );
 
+router
+  .route("/category/:category")
+  .get(
+    verifyRoles(ROLES_LIST.Tutor),
+    assignmentController.getAssignmentsByCategory
+  );
+
+router
+  .route("/changeprice")
+  .put(
+    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Tutor),
+    assignmentController.changeAssignmentPrice
+  );
 module.exports = router;

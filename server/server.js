@@ -12,6 +12,18 @@ const credentials = require("./middleware/credentials");
 const mongoose = require("mongoose");
 const connectDB = require("./config/dbConn");
 const PORT = process.env.PORT || 3500;
+// const multer = require("multer");
+// // File upload configuration
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, file.originalname);
+//   },
+// });
+
+// const upload = multer({ storage });
 
 // Connect to MongoDB
 connectDB();
@@ -37,8 +49,21 @@ app.use(cookieParser());
 
 //serve static files
 app.use("/", express.static(path.join(__dirname, "/public")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // routes
+
+// File upload route
+// app.post("/api/upload", upload.single("file"), (req, res) => {
+//   const { title, description, category, proposedBudget, dueDate, studentId } =
+//     req.body;
+//   console.log(title, description, category, proposedBudget, dueDate, studentId);
+//   const file = req.file;
+//   console.log(req.body);
+//   console.log(req.file);
+//   res.send("Data received successfully");
+// });
+
 app.use("/", require("./routes/root"));
 app.use("/register", require("./routes/register"));
 app.use("/auth", require("./routes/auth"));
@@ -46,7 +71,7 @@ app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/logout"));
 // app.use("/forgot", require("./routes/forgot"));
 // app.use("/reset", require("./routes/reset"));
-
+app.use("/categories", require("./routes/api/category"));
 app.use("/popular-courses", require("./routes/api/public"));
 app.use(verifyJWT);
 app.use("/users", require("./routes/api/users"));

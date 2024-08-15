@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
-const assignmentSchema = new Schema({
+const AssignmentSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -10,31 +9,44 @@ const assignmentSchema = new Schema({
     type: String,
     required: true,
   },
+  category: {
+    type: String,
+    required: true,
+  },
+  proposedBudget: {
+    type: Number,
+    required: true,
+  },
+  documents: [
+    {
+      type: String, // This will store file paths or URLs
+    },
+  ],
   student: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
   tutor: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
   admin: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  price: {
+  status: {
+    type: String,
+    enum: ["pending", "in_progress", "completed"],
+    default: "pending",
+  },
+  agreedPrice: {
     type: Number,
-    required: true,
+    default: 0,
   },
   dueDate: {
     type: Date,
     required: true,
-  },
-  status: {
-    type: String,
-    enum: ["pending", "in_progress", "completed", "cancelled"],
-    default: "pending",
   },
   createdAt: {
     type: Date,
@@ -42,4 +54,4 @@ const assignmentSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("Assignment", assignmentSchema);
+module.exports = mongoose.model("Assignment", AssignmentSchema);

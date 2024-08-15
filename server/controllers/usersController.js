@@ -8,9 +8,18 @@ const getAllUsers = async (req, res) => {
 
 const getAllTutors = async (req, res) => {
   console.log("Getting all tutors");
-  const users = await User.find({ "roles.Editor": { $exists: true } });
+  const users = await User.find({ "roles.Tutor": { $exists: true } });
   if (!users || users.length === 0) {
-    return res.status(204).json({ message: "No users with Editor role found" });
+    return res.status(204).json({ message: "No users with Tutor role found" });
+  }
+  res.json(users);
+};
+
+const getAllStudents = async (req, res) => {
+  console.log("Getting all tutors");
+  const users = await User.find({ "roles.User": { $exists: true } });
+  if (!users || users.length === 0) {
+    return res.status(204).json({ message: "No users with Tutor role found" });
   }
   res.json(users);
 };
@@ -64,4 +73,5 @@ module.exports = {
   getUser,
   updateUser,
   getAllTutors,
+  getAllStudents,
 };
