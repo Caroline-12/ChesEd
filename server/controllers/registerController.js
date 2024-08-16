@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Middleware to handle file upload
-const uploadMiddleware = upload.single("file");
+const uploadMiddleware = upload.single("profilePhoto");
 
 const handleNewUser = async (req, res) => {
   uploadMiddleware(req, res, async function (err) {

@@ -1,127 +1,97 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast, Toaster } from "sonner";
 import useAuth from "@/hooks/useAuth";
 import axios from "@/api/axios";
+import Step1 from "./Step1";
+import Step2 from "./Step2";
+import Step3 from "./Step3";
+import Step4 from "./Step4";
+import Step5 from "./Step5";
+import Step3and4 from "./Step3and4";
+import RegistrationProgress from "./RegistrationProgress";
 
 const TUTOR_REGISTER_URL = "/register";
-const CATEGORIES_URL = "/categories";
 
 const TutorRegistrationForm = () => {
-  const { auth, setAuth } = useAuth();
+  const { auth } = useAuth();
   const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(1);
+
   const [formData, setFormData] = useState({
     username: "",
     firstName: "",
     lastName: "",
     email: "",
-    password: "",
+    pwd: "",
     confirmPassword: "",
+    specialization: [],
+    teachingExperience: "",
+    interests: "",
+    strongestSubjects: [],
+    documents: [],
+    file: null,
+    governmentId: null,
+    englishProficiency: "",
+    roles: { Tutor: 1984 },
   });
-  const [validationErrors, setValidationErrors] = useState({});
-  const [specialization, setSpecialization] = useState([]);
-  const [documents, setDocuments] = useState([]);
-  const [categories, setCategories] = useState([]);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(CATEGORIES_URL, {
-          headers: { Authorization: `Bearer ${auth?.accessToken}` },
-          withCredentials: true,
-        });
-        setCategories(response.data);
-      } catch (error) {
-        toast.error("Failed to fetch categories");
-      }
-    };
-
-    fetchCategories();
-  }, [auth]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
-    validateField(name, value);
   };
 
-  const validateField = (name, value) => {
-    let error = "";
-    switch (name) {
-      case "username":
-      case "firstName":
-      case "lastName":
-        error = value ? "" : `${name} is required`;
-        break;
-      case "email":
-        error = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "" : "Invalid email";
-        break;
-      case "password":
-        error =
-          value.length >= 8 ? "" : "Password must be at least 8 characters";
-        break;
-      case "confirmPassword":
-        error = value === formData.password ? "" : "Passwords do not match";
-        break;
-      default:
-        break;
-    }
-    setValidationErrors({ ...validationErrors, [name]: error });
+  const handleFileChange = (name, file) => {
+    setFormData({ ...formData, [name]: file });
   };
 
-  const handleSpecializationChange = (category) => {
-    setSpecialization((prev) =>
-      prev.includes(category)
-        ? prev.filter((item) => item !== category)
-        : [...prev, category]
-    );
+  const nextStep = () => {
+    setCurrentStep(currentStep + 1);
   };
 
-  const handleDocumentsChange = (index, file) => {
-    const newDocuments = [...documents];
-    newDocuments[index] = file;
-    setDocuments(newDocuments);
+  const prevStep = () => {
+    setCurrentStep(currentStep - 1);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    Object.keys(formData).forEach((key) => validateField(key, formData[key]));
-    if (
-      Object.values(validationErrors).some((error) => error) ||
-      specialization.length === 0 ||
-      documents.length === 0
-    ) {
-      toast.error("Please correct all errors and fill all required fields");
-      return;
-    }
+  const onSubmit = async () => {
     try {
-      const response = await axios.post(
-        TUTOR_REGISTER_URL,
-        JSON.stringify({
-          ...formData,
-          specialization,
-          documents,
-          tutorStatus: "pending",
-          roles: { Tutor: 1984 },
-        }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      console.log(formData);
-      console.log(JSON.stringify(response?.data));
+      // const formDataToSend = new FormData();
+
+      // // Append all text fields
+      // Object.keys(formData).forEach((key) => {
+      //   if (
+      //     typeof formData[key] === "string" ||
+      //     formData[key] instanceof Blob
+      //   ) {
+      //     formDataToSend.append(key, formData[key]);
+      //   } else if (Array.isArray(formData[key])) {
+      //     formData[key].forEach((item, index) => {
+      //       formDataToSend.append(`${key}[${index}]`, item);
+      //     });
+      //   }
+      // });
+
+      // // Append file fields
+      // formData.documents.forEach((doc, index) => {
+      //   formDataToSend.append(`documents[${index}]`, doc);
+      // });
+      // if (formData.file) {
+      //   formDataToSend.append("file", formData.file);
+      // }
+      // // if (formData.governmentId) {
+      // //   formDataToSend.append("governmentId", formData.governmentId);
+      // // }
+      // formDataToSend.append("roles", JSON.stringify({ Tutor: 1984 }));
+
+      console.log("Sending form data: ", formData);
+
+      const response = await axios.post(TUTOR_REGISTER_URL, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+
+      console.log(response);
       toast.success("Registration successful!");
       navigate("/login", { replace: true });
     } catch (error) {
@@ -131,6 +101,38 @@ const TutorRegistrationForm = () => {
     }
   };
 
+  const steps = [
+    <Step1
+      formData={formData}
+      onChange={handleChange}
+      nextStep={nextStep}
+      key={currentStep}
+    />,
+    <Step2
+      formData={formData}
+      onChange={handleChange}
+      nextStep={nextStep}
+      prevStep={prevStep}
+      key={currentStep}
+    />,
+    <Step3and4
+      formData={formData}
+      onChange={handleChange}
+      onFileChange={handleFileChange}
+      nextStep={nextStep}
+      prevStep={prevStep}
+      key={currentStep}
+    />,
+    <Step5
+      formData={formData}
+      onChange={handleChange}
+      onFileChange={handleFileChange}
+      prevStep={prevStep}
+      onSubmit={onSubmit}
+      key={currentStep}
+    />,
+  ];
+
   return (
     <div className="flex justify-center items-center min-h-screen flex-col p-4">
       <h1 className="text-4xl font-bold mb-8 text-orange-600">ChesEd</h1>
@@ -138,113 +140,14 @@ const TutorRegistrationForm = () => {
         <Toaster />
         <CardHeader>
           <CardTitle className="text-xl">Tutor Registration</CardTitle>
-          <CardDescription>
-            Enter your information to register as a tutor
-          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {[
-              "username",
-              "firstName",
-              "lastName",
-              "email",
-              "password",
-              "confirmPassword",
-            ].map((field) => (
-              <div key={field} className="space-y-2">
-                <Label htmlFor={field}>
-                  {field.charAt(0).toUpperCase() + field.slice(1)}
-                </Label>
-                <Input
-                  id={field}
-                  name={field}
-                  type={
-                    field.includes("password" || "confirmPassword")
-                      ? "password"
-                      : "text"
-                  }
-                  value={formData[field]}
-                  onChange={handleInputChange}
-                  required
-                />
-                {validationErrors[field] && (
-                  <p className="text-red-500 text-sm">
-                    {validationErrors[field]}
-                  </p>
-                )}
-              </div>
-            ))}
-
-            <div className="space-y-2">
-              <Label>Specialization</Label>
-              <div className="grid grid-cols-2 gap-2">
-                {categories.map((category) => (
-                  <div
-                    key={category._id}
-                    className="flex items-center space-x-2"
-                  >
-                    <Checkbox
-                      id={category._id}
-                      checked={specialization.includes(category.name)}
-                      onCheckedChange={() =>
-                        handleSpecializationChange(category.name)
-                      }
-                    />
-                    <label
-                      htmlFor={category._id}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {category.name}
-                    </label>
-                  </div>
-                ))}
-              </div>
-              {specialization.length === 0 && (
-                <p className="text-red-500 text-sm">
-                  Please select at least one specialization
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label>Documents</Label>
-              <div className="space-y-2">
-                {documents.map((doc, index) => (
-                  <Input
-                    key={index}
-                    type="file"
-                    onChange={(e) =>
-                      handleDocumentsChange(index, e.target.files[0])
-                    }
-                  />
-                ))}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setDocuments([...documents, null])}
-                >
-                  Add Document
-                </Button>
-              </div>
-              {documents.length === 0 && (
-                <p className="text-red-500 text-sm">
-                  Please upload at least one document
-                </p>
-              )}
-            </div>
-
-            <Button type="submit" className="w-full">
-              Register as Tutor
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
-            <Link to="/login" className="underline">
-              Sign in
-            </Link>
-          </div>
-        </CardContent>
+        <div className="max-w-2xl mx-auto p-4">
+          <RegistrationProgress
+            currentStep={currentStep}
+            totalSteps={steps.length}
+          />
+          <div className="mt-4">{steps[currentStep - 1]}</div>
+        </div>
       </Card>
     </div>
   );

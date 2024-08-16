@@ -9,13 +9,6 @@ import { useNavigate } from "react-router-dom";
 
 const BecomeTutor = () => {
   const navigate = useNavigate();
-  useEffect(() => {
-    fetch("become-instructor-navbar.html")
-      .then((response) => response.text())
-      .then((data) => {
-        document.getElementById("navbar").innerHTML = data;
-      });
-  }, []);
 
   return (
     <div id="wrapper" className="wrapper">
