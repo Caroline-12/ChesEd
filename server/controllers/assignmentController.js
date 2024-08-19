@@ -236,6 +236,17 @@ const getAssignment = async (req, res) => {
   }
 };
 
+// delete all assignments
+const deleteAllAssignments = async (req, res) => {
+  try {
+    const result = await Assignment.deleteMany();
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to delete assignments" });
+  }
+};
+
 module.exports = {
   createAssignment,
   getAssignmentsByCategory,
@@ -246,4 +257,5 @@ module.exports = {
   deleteAssignment,
   getAssignment,
   getAssignmentsByStudentId,
+  deleteAllAssignments,
 };

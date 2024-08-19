@@ -36,6 +36,7 @@ const TutorRegistrationForm = () => {
     governmentId: null,
     englishProficiency: "",
     roles: { Tutor: 1984 },
+    tutorStatus: "pending",
   });
 
   const handleChange = (name, value) => {
@@ -56,37 +57,47 @@ const TutorRegistrationForm = () => {
 
   const onSubmit = async () => {
     try {
-      // const formDataToSend = new FormData();
+      const formDataToSend = new FormData();
 
-      // // Append all text fields
-      // Object.keys(formData).forEach((key) => {
-      //   if (
-      //     typeof formData[key] === "string" ||
-      //     formData[key] instanceof Blob
-      //   ) {
-      //     formDataToSend.append(key, formData[key]);
-      //   } else if (Array.isArray(formData[key])) {
-      //     formData[key].forEach((item, index) => {
-      //       formDataToSend.append(`${key}[${index}]`, item);
-      //     });
-      //   }
-      // });
+      // Append all text fields
+      Object.keys(formData).forEach((key) => {
+        if (key !== "documents" && key !== "file" && key !== "governmentId") {
+          if (typeof formData[key] === "string") {
+            formDataToSend.append(key, formData[key]);
+          } else if (Array.isArray(formData[key])) {
+            formData[key].forEach((item) => {
+              formDataToSend.append(key, item);
+            });
+          } else if (
+            typeof formData[key] === "object" &&
+            formData[key] !== null
+          ) {
+            if (key === "roles") {
+              // Stringify the roles object before appending
+              formDataToSend.append(key, JSON.stringify(formData[key]));
+            } else {
+              formDataToSend.append(key, JSON.stringify(formData[key]));
+            }
+          }
+        }
+      });
 
-      // // Append file fields
-      // formData.documents.forEach((doc, index) => {
-      //   formDataToSend.append(`documents[${index}]`, doc);
-      // });
-      // if (formData.file) {
-      //   formDataToSend.append("file", formData.file);
-      // }
-      // // if (formData.governmentId) {
-      // //   formDataToSend.append("governmentId", formData.governmentId);
-      // // }
-      // formDataToSend.append("roles", JSON.stringify({ Tutor: 1984 }));
+      // Append file fields
+      if (formData.file) {
+        formDataToSend.append("profilePhoto", formData.file);
+      }
+      if (formData.governmentId) {
+        formDataToSend.append("governmentId", formData.governmentId);
+      }
+      formData.documents.forEach((doc) => {
+        if (doc) {
+          formDataToSend.append("documents", doc);
+        }
+      });
 
-      console.log("Sending form data: ", formData);
+      console.log("Sending form data: ", formDataToSend);
 
-      const response = await axios.post(TUTOR_REGISTER_URL, formData, {
+      const response = await axios.post(TUTOR_REGISTER_URL, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
@@ -95,11 +106,59 @@ const TutorRegistrationForm = () => {
       toast.success("Registration successful!");
       navigate("/login", { replace: true });
     } catch (error) {
+      console.error("Error in onSubmit:", error);
       toast.error(
         "Registration failed: " + error.response?.data?.message || error.message
       );
     }
   };
+
+  // const onSubmit = async () => {
+  //   try {
+  //     // const formDataToSend = new FormData();
+
+  //     // // Append all text fields
+  //     // Object.keys(formData).forEach((key) => {
+  //     //   if (
+  //     //     typeof formData[key] === "string" ||
+  //     //     formData[key] instanceof Blob
+  //     //   ) {
+  //     //     formDataToSend.append(key, formData[key]);
+  //     //   } else if (Array.isArray(formData[key])) {
+  //     //     formData[key].forEach((item, index) => {
+  //     //       formDataToSend.append(`${key}[${index}]`, item);
+  //     //     });
+  //     //   }
+  //     // });
+
+  //     // // Append file fields
+  //     // formData.documents.forEach((doc, index) => {
+  //     //   formDataToSend.append(`documents[${index}]`, doc);
+  //     // });
+  //     // if (formData.file) {
+  //     //   formDataToSend.append("file", formData.file);
+  //     // }
+  //     // // if (formData.governmentId) {
+  //     // //   formDataToSend.append("governmentId", formData.governmentId);
+  //     // // }
+  //     // formDataToSend.append("roles", JSON.stringify({ Tutor: 1984 }));
+
+  //     console.log("Sending form data: ", formData);
+
+  //     const response = await axios.post(TUTOR_REGISTER_URL, formData, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //       withCredentials: true,
+  //     });
+
+  //     console.log(response);
+  //     toast.success("Registration successful!");
+  //     navigate("/login", { replace: true });
+  //   } catch (error) {
+  //     toast.error(
+  //       "Registration failed: " + error.response?.data?.message || error.message
+  //     );
+  //   }
+  // };
 
   const steps = [
     <Step1

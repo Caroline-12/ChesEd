@@ -18,4 +18,12 @@ router
   .route("/students")
   .get(verifyRoles(ROLES_LIST.Admin), usersController.getAllStudents);
 
+router
+  .route("/tutors")
+  .get(verifyRoles(ROLES_LIST.Admin), usersController.getAllTutors);
+
+router
+  .route("/deleteAll")
+  .delete(verifyRoles(ROLES_LIST.Admin), usersController.deleteAllUsers);
+
 module.exports = router;

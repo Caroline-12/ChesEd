@@ -43,4 +43,11 @@ router
     verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Tutor),
     assignmentController.changeAssignmentPrice
   );
+
+router
+  .route("/deleteAll")
+  .delete(
+    verifyRoles(ROLES_LIST.Admin),
+    assignmentController.deleteAllAssignments
+  );
 module.exports = router;

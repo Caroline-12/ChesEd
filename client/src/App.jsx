@@ -40,6 +40,7 @@ import TutorLayout from "./components/Tutor/TutorLayout";
 import TutorRegistrationForm from "./components/Tutor/TutorRegistrationForm";
 import ApproveTrainersSection from "./components/Admin/sections/ApproveTrainersSection";
 import AdminCategoryManagement from "./components/Admin/sections/AdminCategoryManagement";
+import WaitingLobby from "./components/WaitingLobby";
 export default function App() {
   return (
     <Routes>
@@ -51,6 +52,7 @@ export default function App() {
         <Route path="linkpage" element={<LinkPage />} />
         <Route path="unauthorized" element={<Unauthorized />} />
         <Route path="become-tutor" element={<BecomeTutor />} />
+        <Route path="waiting-lobby" element={<WaitingLobby />} />
         <Route path="tutor-registration" element={<TutorRegistrationForm />} />
         <Route path="/" element={<Landing />} />
 

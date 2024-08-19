@@ -76,6 +76,7 @@ export function LoginForm() {
       const username = response?.data?.username;
       const ID = response?.data?.ID;
       const specialization = response?.data?.specialization;
+      const tutorStatus = response?.data?.tutorStatus;
       setAuth({
         ID,
         username,
@@ -84,6 +85,7 @@ export function LoginForm() {
         roles,
         accessToken,
         specialization,
+        tutorStatus,
       });
       setIsLoggedIn(true);
       // console.log("Login successful", response?.data);
@@ -93,7 +95,11 @@ export function LoginForm() {
 
       // include logic to check if tutor is approved if not redirect to waiting lobby
       if (roles.includes(1984)) {
-        navigate("/tutor", { replace: true });
+        if (tutorStatus === "pending") {
+          navigate("/waiting-lobby", { replace: true });
+        } else if (tutorStatus === "approved") {
+          navigate("/tutor", { replace: true });
+        }
       } else if (roles.includes(5150)) {
         navigate("/admin", { replace: true });
       } else {

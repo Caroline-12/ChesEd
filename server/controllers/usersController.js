@@ -67,6 +67,18 @@ const updateUser = async (req, res) => {
   res.json(updatedUser);
 };
 
+// delete all users
+const deleteAllUsers = async (req, res) => {
+  const result = await User.deleteMany();
+  res.json(result);
+};
+
+// delete all tutors
+// const deleteAllTutors = async (req, res) => {
+//   const result = await User.deleteMany({ "roles.Tutor": { $exists: true } });
+//   res.json(result);
+// };
+
 module.exports = {
   getAllUsers,
   deleteUser,
@@ -74,4 +86,6 @@ module.exports = {
   updateUser,
   getAllTutors,
   getAllStudents,
+  deleteAllUsers,
+  // deleteAllTutors,
 };

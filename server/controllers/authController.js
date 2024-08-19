@@ -39,6 +39,7 @@ const handleLogin = async (req, res) => {
     const username = foundUser.username;
     const ID = foundUser.id;
     const specialization = foundUser.specialization;
+    const tutorStatus = foundUser.tutorStatus;
 
     // Creates Secure Cookie with refresh token
     res.cookie("jwt", refreshToken, {
@@ -55,6 +56,7 @@ const handleLogin = async (req, res) => {
       roles,
       accessToken,
       specialization,
+      tutorStatus,
     });
   } else {
     res.sendStatus(401);
