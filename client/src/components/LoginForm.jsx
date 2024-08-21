@@ -107,11 +107,11 @@ export function LoginForm() {
       }
     } catch (error) {
       // Handle the error here
-      // console.error("Login failed", error);
-      toast.error(
-        "Login failed: ",
-        error.response.data.message || "Unknown error"
-      );
+      toast.error("Login failed", error);
+      // toast.error(
+      //   "Login failed: ",
+      //   error.response.data.message || "Unknown error"
+      // );
     }
   };
 

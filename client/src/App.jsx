@@ -41,6 +41,7 @@ import TutorRegistrationForm from "./components/Tutor/TutorRegistrationForm";
 import ApproveTrainersSection from "./components/Admin/sections/ApproveTrainersSection";
 import AdminCategoryManagement from "./components/Admin/sections/AdminCategoryManagement";
 import WaitingLobby from "./components/WaitingLobby";
+import TutorProfile from "./components/TutorProfile";
 export default function App() {
   return (
     <Routes>
@@ -58,18 +59,6 @@ export default function App() {
 
         {/* we want to protect these routes */}
         <Route element={<PersistLogin />}>
-          {/* <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-            <Route path="profile" element={<Profile />} />
-            <Route path="submit-assignment" element={<SubmitAssignment />} />
-            <Route path="courses" element={<StudentCourses />} />
-            <Route path="dashboard" element={<Dashboard />}>
-              <Route path="assignments" element={<StudentAssignments />} />
-              <Route path="courses" element={<StudentCourses />} />
-              <Route path="payments" element={<StudentPayments />} />
-              <Route path="/" element={<DashboardLanding />} />
-            </Route>
-            <Route path="courses/:courseId" element={<CourseDetail />} />
-          </Route> */}
           <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
             <Route path="dashboard/*" element={<Dashboard />} />
             <Route path="submit-assignment" element={<SubmitAssignment />} />
@@ -77,6 +66,7 @@ export default function App() {
             <Route path="courses/:courseId" element={<CourseDetail />} />
             {/* <Route path="/payment/:courseId" element={<PaymentPage />} /> */}
             <Route path="/payment/:courseId" element={<PaymentMethod />} />
+            <Route path="tutor/:id" element={<TutorProfile />} />
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Tutor]} />}>

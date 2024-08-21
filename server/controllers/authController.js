@@ -59,6 +59,7 @@ const handleLogin = async (req, res) => {
       tutorStatus,
     });
   } else {
+    console.log("Password does not match");
     res.sendStatus(401);
   }
 };

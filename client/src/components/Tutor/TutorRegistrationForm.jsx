@@ -13,7 +13,7 @@ import Step5 from "./Step5";
 import Step3and4 from "./Step3and4";
 import RegistrationProgress from "./RegistrationProgress";
 
-const TUTOR_REGISTER_URL = "/register";
+const TUTOR_REGISTER_URL = "/register/tutor";
 
 const TutorRegistrationForm = () => {
   const { auth } = useAuth();
@@ -32,7 +32,7 @@ const TutorRegistrationForm = () => {
     interests: "",
     strongestSubjects: [],
     documents: [],
-    file: null,
+    profilePhoto: null,
     governmentId: null,
     englishProficiency: "",
     roles: { Tutor: 1984 },
@@ -61,7 +61,12 @@ const TutorRegistrationForm = () => {
 
       // Append all text fields
       Object.keys(formData).forEach((key) => {
-        if (key !== "documents" && key !== "file" && key !== "governmentId") {
+        if (
+          key !== "documents" &&
+          key !== "file" &&
+          key !== "governmentId" &&
+          key !== "profilePhoto"
+        ) {
           if (typeof formData[key] === "string") {
             formDataToSend.append(key, formData[key]);
           } else if (Array.isArray(formData[key])) {
@@ -83,8 +88,8 @@ const TutorRegistrationForm = () => {
       });
 
       // Append file fields
-      if (formData.file) {
-        formDataToSend.append("profilePhoto", formData.file);
+      if (formData.profilePhoto) {
+        formDataToSend.append("profilePhoto", formData.profilePhoto);
       }
       if (formData.governmentId) {
         formDataToSend.append("governmentId", formData.governmentId);

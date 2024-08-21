@@ -75,11 +75,18 @@ export default function UsersSection() {
                 </tr>
               </thead>
               <tbody>
-                {students.map(
-                  (student) =>
-                    student.roles.User && (
-                      <UserItem key={student._id} user={student} />
-                    )
+                {students.length > 0 ? (
+                  students.map(
+                    (student) =>
+                      // search for this question mark implimentation
+                      student.roles?.User && (
+                        <UserItem key={student._id} user={student} />
+                      )
+                  )
+                ) : (
+                  <tr>
+                    <td colSpan="3">No students found.</td>
+                  </tr>
                 )}
               </tbody>
             </table>
@@ -101,9 +108,15 @@ export default function UsersSection() {
                 </tr>
               </thead>
               <tbody>
-                {tutors.map((tutor) => (
-                  <UserItem key={tutor._id} user={tutor} />
-                ))}
+                {tutors.length > 0 ? (
+                  tutors.map((tutor) => (
+                    <UserItem key={tutor._id} user={tutor} />
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3">No tutors found.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

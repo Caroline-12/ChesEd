@@ -5,7 +5,7 @@ import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
 import CategoriesPage from "./CategoriesPage";
 import PopularCourses from "./PopularCourses";
-import Testimonials from "./Testimonials";
+import BrowseTutors from "./BrowseTutors";
 import Instructors from "./Instructors";
 import PartnersSection from "./PartnersSection";
 import NewsAndBlogsSection from "./NewsAndBlogsSection";
@@ -19,10 +19,11 @@ export default function Landing() {
       <Navbar />
       <Heroes />
       {/* <CTA /> */}
+      <BrowseTutors />
+
       <StudentLanding />
       <CategoriesPage />
       <PopularCourses />
-      <Testimonials />
       {/* <Instructors /> */}
       <PartnersSection />
       {/* <NewsAndBlogsSection /> */}

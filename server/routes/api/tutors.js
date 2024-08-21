@@ -4,9 +4,7 @@ const tutorsController = require("../../controllers/tutorsController");
 const ROLES_LIST = require("../../config/roles_list");
 const verifyRoles = require("../../middleware/verifyRoles");
 
-router
-  .route("/")
-  .get(verifyRoles(ROLES_LIST.Admin), tutorsController.getApprovedTutors);
+router.route("/").get(tutorsController.getApprovedTutors);
 
 // router
 //   .route("/alltutors")
@@ -26,8 +24,10 @@ router
 // .delete(verifyRoles(ROLES_LIST.Admin), tutorsController.deleteUser)
 // .put(verifyRoles(ROLES_LIST.Admin), tutorsController.updateUser);
 
-// router
-//   .route("/:id")
-//   .get(verifyRoles(ROLES_LIST.Admin), tutorsController.getUser);
+router.route("/:tutorId").get(tutorsController.getTutor);
+
+router
+  .route("/tutors-by-category")
+  .get(verifyRoles(ROLES_LIST.Admin), tutorsController.getTutorsByCategory);
 
 module.exports = router;

@@ -73,10 +73,48 @@ const rejectTutor = async (req, res) => {
   }
 };
 
+// get a specific tutor
+const getTutor = async (req, res) => {
+  if (!req?.params?.tutorId) {
+    return res.status(400).json({ message: "Missing!! Tutor ID required" });
+  }
+  try {
+    const tutor = await User.findById(req.params.tutorId);
+    if (!tutor) {
+      return res.status(404).json({ message: "Tutor not found" });
+    }
+    res.json(tutor);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch tutor" });
+  }
+};
+
+// get tutors of a certain category
+const getTutorsByCategory = async (req, res) => {
+  const { categoryId } = req.body;
+  console.log("Getting tutors with category ID:", categoryId);
+  try {
+    const tutors = await User.find({
+      "roles.Tutor": { $exists: true },
+      specialization: categoryId,
+    });
+    if (!tutors || tutors.length === 0) {
+      return res.status(204).json({ message: "No tutors found" });
+    }
+    res.json(tutors);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch tutors" });
+  }
+};
+
 module.exports = {
   getAllTutors,
   getPendingTutors,
   approveTutor,
   rejectTutor,
   getApprovedTutors,
+  getTutor,
+  getTutorsByCategory,
 };

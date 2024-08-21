@@ -25,6 +25,7 @@ const userSchema = new Schema({
     Tutor: Number,
     Admin: Number,
   },
+  bio: String,
   password: {
     type: String,
     required: true,
@@ -46,13 +47,19 @@ const userSchema = new Schema({
       type: String,
     },
   ],
+  profilePhoto: {
+    type: String,
+    default: "uploads/default.jpg",
+  },
+  governmentId: {
+    type: String,
+  },
   documents: [
     {
-      type: String, // This will store file paths or URLs of submitted documents
+      type: String,
     },
   ],
   balance: { type: Number, default: 0 },
-  profilePicture: String,
 });
 
 module.exports = mongoose.model("User", userSchema);

@@ -19,6 +19,7 @@ import {
 import Spinner from "@/components/Spinner";
 import { toast } from "sonner";
 import useAuth from "@/hooks/useAuth";
+import Modal from "@/components/Modal"; // Use your custom modal
 
 const PENDING_TUTORS_URL = "http://localhost:3500/tutors/pending";
 const APPROVE_TUTOR_URL = "http://localhost:3500/tutors/approve";
@@ -26,6 +27,8 @@ const APPROVE_TUTOR_URL = "http://localhost:3500/tutors/approve";
 const ApproveTrainersSection = () => {
   const { auth } = useAuth();
   const [pendingTutors, setPendingTutors] = useState([]);
+  const [selectedTutor, setSelectedTutor] = useState(null); // To store the selected tutor for detailed view
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -53,6 +56,18 @@ const ApproveTrainersSection = () => {
     fetchPendingTutors();
   }, []);
 
+  console.log(pendingTutors);
+
+  const openReviewModal = (tutor) => {
+    setSelectedTutor(tutor);
+    setIsModalOpen(true);
+  };
+
+  const closeReviewModal = () => {
+    setSelectedTutor(null);
+    setIsModalOpen(false);
+  };
+
   const approveTutor = async (tutorId) => {
     try {
       const config = {
@@ -66,6 +81,7 @@ const ApproveTrainersSection = () => {
       await axios.put(APPROVE_TUTOR_URL, { tutorId }, config);
       toast.success("Tutor approved successfully");
       setPendingTutors(pendingTutors.filter((tutor) => tutor._id !== tutorId));
+      closeReviewModal();
     } catch (error) {
       console.error("Error approving tutor:", error);
       toast.error("Failed to approve tutor");
@@ -84,6 +100,7 @@ const ApproveTrainersSection = () => {
       // Implement tutor rejection logic here
       toast.success("Tutor rejected successfully");
       setPendingTutors(pendingTutors.filter((tutor) => tutor._id !== tutorId));
+      closeReviewModal();
     } catch (error) {
       console.error("Error rejecting tutor:", error);
       toast.error("Failed to reject tutor");
@@ -110,35 +127,19 @@ const ApproveTrainersSection = () => {
                 <TableCell>Name</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Specialization</TableCell>
-                <TableCell>Documents</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell>Review</TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
               {pendingTutors.map((tutor) => (
                 <TableRow key={tutor._id}>
-                  <TableCell>{`${tutor.firstName} ${tutor.lastName} (${tutor.username})`}</TableCell>
+                  <TableCell>{`${tutor.firstName} ${tutor.lastName}`}</TableCell>
                   <TableCell>{tutor.email}</TableCell>
                   <TableCell>{tutor.specialization.join(", ")}</TableCell>
-                  {/* <TableCell>
-                    <ul>
-                      {tutor.documents.map((document, index) => (
-                        <li key={index}>{document}</li>
-                      ))}
-                    </ul>
-                  </TableCell> */}
                   <TableCell>
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="outline"
-                        onClick={() => rejectTutor(tutor._id)}
-                      >
-                        Reject
-                      </Button>
-                      <Button onClick={() => approveTutor(tutor._id)}>
-                        Approve
-                      </Button>
-                    </div>
+                    <Button onClick={() => openReviewModal(tutor)}>
+                      Review
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -146,6 +147,79 @@ const ApproveTrainersSection = () => {
           </Table>
         )}
       </CardContent>
+
+      {isModalOpen && selectedTutor && (
+        <Modal isOpen={isModalOpen} onClose={closeReviewModal}>
+          <h2 className="text-xl font-bold mb-4">Review Tutor</h2>
+          <p>
+            <strong>Name:</strong>{" "}
+            {`${selectedTutor.firstName} ${selectedTutor.lastName}`}
+          </p>
+          <p>
+            <strong>Email:</strong> {selectedTutor.email}
+          </p>
+          <p>
+            <strong>Specialization:</strong>{" "}
+            {selectedTutor.specialization.join(", ")}
+          </p>
+          {/* <p>
+            <strong>Teaching Experience:</strong>{" "}
+            {selectedTutor.teachingExperience}
+          </p> */}
+
+          {/* Render Profile Photo */}
+          <div className="my-4">
+            <h3 className="font-semibold">Profile Photo:</h3>
+            <img
+              src={`http://localhost:3500/${selectedTutor.profilePhoto}`}
+              alt="Profile"
+              className="w-32 h-32 object-cover rounded"
+            />
+          </div>
+
+          {/* Render Government ID */}
+          <div className="my-4">
+            <h3 className="font-semibold">Government ID:</h3>
+            <a
+              href={`http://localhost:3500/${selectedTutor.governmentId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Government ID
+            </a>
+          </div>
+
+          {/* Render Other Documents */}
+          <div className="my-4">
+            <h3 className="font-semibold">Submitted Documents:</h3>
+            <ul>
+              {selectedTutor.documents.map((doc, index) => (
+                <li key={index}>
+                  <a
+                    href={`http://localhost:3500/${doc}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {doc.split("/").pop()}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => rejectTutor(selectedTutor._id)}
+            >
+              Reject
+            </Button>
+            <Button onClick={() => approveTutor(selectedTutor._id)}>
+              Approve
+            </Button>
+          </div>
+        </Modal>
+      )}
     </Card>
   );
 };
