@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { useParams, Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import ChatModal from "./ChatModal";
 
 export default function TutorProfile() {
   const { auth } = useAuth();
   const { id } = useParams();
   const [tutor, setTutor] = useState(null);
+  const [showChat, setShowChat] = useState(false);
 
   useEffect(() => {
     const fetchTutorDetails = async () => {
@@ -152,7 +154,15 @@ export default function TutorProfile() {
           >
             Submit Assignment
           </Link>
+          <button
+            onClick={() => setShowChat(true)}
+            className="ml-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full"
+          >
+            Chat with Tutor
+          </button>
         </div>
+
+        <ChatModal showChat={showChat} onClose={() => setShowChat(false)} />
       </div>
     </section>
   );

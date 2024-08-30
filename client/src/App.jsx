@@ -19,7 +19,7 @@ import SubmitAssignment from "./components/Student/SubmitAssignment";
 import { CreateCourse } from "./components/Admin/CreateCourse";
 import StudentProfilePage from "./components/Student/StudentProfilePage";
 import AdminDashboard from "./components/Admin/AdminDashboard";
-import AssignmentDetail from "./components/Admin/AssignmentDetail";
+import AssignmentDetail from "./components/Tutor/AssignmentDetail";
 import TutorAssignmentForm from "./components/Admin/TutorAssignmentForm";
 import Profile from "./components/Student/Profile";
 import AdminLayout from "./components/Admin/AdminLayout";
@@ -42,12 +42,18 @@ import ApproveTrainersSection from "./components/Admin/sections/ApproveTrainersS
 import AdminCategoryManagement from "./components/Admin/sections/AdminCategoryManagement";
 import WaitingLobby from "./components/WaitingLobby";
 import TutorProfile from "./components/TutorProfile";
+// import AssignmentDetails from "./components/Student/AssignmentDetails";
+import MyLessons from "./components/Tutor/sections/MyLessons";
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         {/* public routes */}
         {/* <Route path="payment" element={<PaymentMethod />} /> */}
+        <Route
+          path="/assignment/:assignmentId"
+          element={<AssignmentDetail />}
+        />
         <Route path="login" element={<LoginForm />} />
         <Route path="register" element={<RegisterForm />} />
         <Route path="linkpage" element={<LinkPage />} />
@@ -67,12 +73,14 @@ export default function App() {
             {/* <Route path="/payment/:courseId" element={<PaymentPage />} /> */}
             <Route path="/payment/:courseId" element={<PaymentMethod />} />
             <Route path="tutor/:id" element={<TutorProfile />} />
+            {/* <Route path="/assignment/:id" element={<AssignmentDetails />} /> */}
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Tutor]} />}>
             <Route path="tutor" element={<TutorLayout />}>
-              <Route path="assignments" element={<Assignments />} />
+              <Route path="opportunities" element={<Assignments />} />
               <Route path="payments" element={<Payments />} />
+              <Route path="mylessons" element={<MyLessons />} />
             </Route>
           </Route>
 
@@ -80,7 +88,7 @@ export default function App() {
             <Route path="admin" element={<AdminLayout />}>
               <Route path="create-course" element={<CreateCourse />} />
               <Route path="users" element={<UsersSection />} />
-              <Route path="assignments" element={<Assignments />} />
+              <Route path="opportunities" element={<Assignments />} />
               <Route path="courses" element={<Courses />} />
               <Route path="payments" element={<Payments />} />
               <Route path="dashboard" element={<AdminDashboard />} />
@@ -88,10 +96,10 @@ export default function App() {
                 path="approvetutors"
                 element={<ApproveTrainersSection />}
               />
-              <Route
+              {/* <Route
                 path="assignment/:assignmentId"
                 element={<AssignmentDetail />}
-              />
+              /> */}
               <Route
                 path="assign-tutor/:assignmentId"
                 element={<TutorAssignmentForm />}

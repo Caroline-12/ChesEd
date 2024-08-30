@@ -29,8 +29,16 @@ const createAssignment = async (req, res) => {
         .json({ message: "Unknown error occurred during file upload" });
     }
 
-    const { title, description, category, proposedBudget, dueDate, studentId } =
-      req.body;
+    const {
+      title,
+      description,
+      category,
+      proposedBudget,
+      dueDate,
+      studentId,
+      modeOfDelivery,
+      paymentStatus,
+    } = req.body;
     console.log(req.body);
     if (
       !title ||
@@ -38,7 +46,9 @@ const createAssignment = async (req, res) => {
       !category ||
       !proposedBudget ||
       !dueDate ||
-      !studentId
+      !studentId ||
+      !modeOfDelivery ||
+      !paymentStatus
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -52,6 +62,7 @@ const createAssignment = async (req, res) => {
         documents: req.file ? req.file.path : null,
         student: studentId,
         dueDate,
+        modeOfDelivery,
       });
 
       res.status(201).json(newAssignment);
@@ -103,6 +114,28 @@ const changeAssignmentPrice = async (req, res) => {
   }
 };
 
+// change the status of the assignment to completed
+const completeAssignment = async (req, res) => {
+  const { assignmentId } = req.body;
+  console.log(req.body);
+  console.log(assignmentId);
+
+  if (!assignmentId) {
+    return res.status(400).json({ message: "Assignment ID is required" });
+  }
+
+  try {
+    const assignment = await Assignment.findById(assignmentId);
+    if (!assignment) {
+      return res.status(404).json({ message: "Assignment not found" });
+    }
+
+    assignment.status = "completed";
+    const updatedAssignment = await assignment.save();
+    res.json(updatedAssignment);
+  } catch (err) {}
+};
+
 const assignTutor = async (req, res) => {
   const { assignmentId, tutorId, assignee } = req.body;
   console.log(req.body);
@@ -136,6 +169,20 @@ const assignTutor = async (req, res) => {
 const getAllAssignments = async (req, res) => {
   try {
     const assignments = await Assignment.find()
+      .populate("student", "username email")
+      .populate("tutor", "username")
+      .populate("admin", "username");
+    res.json(assignments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch assignments" });
+  }
+};
+
+// get all pending assignments
+const getPendingAssignments = async (req, res) => {
+  try {
+    const assignments = await Assignment.find({ status: "pending" })
       .populate("student", "username")
       .populate("tutor", "username")
       .populate("admin", "username");
@@ -143,6 +190,30 @@ const getAllAssignments = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to fetch assignments" });
+  }
+};
+
+// Fetch all assignments for a specific tutor
+const getAssignmentsForTutor = async (req, res) => {
+  const { tutorId } = req.params;
+
+  if (!tutorId) {
+    return res.status(400).json({ message: "Tutor ID is required" });
+  }
+
+  try {
+    const assignments = await Assignment.find({
+      tutor: tutorId,
+    })
+      .populate("student", "username email")
+      .populate("admin", "username")
+      .populate("tutor", "username")
+      .sort({ createdAt: -1 });
+
+    res.json(assignments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch completed assignments" });
   }
 };
 
@@ -222,8 +293,8 @@ const getAssignment = async (req, res) => {
 
   try {
     const assignment = await Assignment.findById(assignmentId)
-      .populate("student", "username")
-      .populate("tutor", "username")
+      .populate("student", "username email")
+      .populate("tutor", "username email")
       .populate("admin", "username");
     if (!assignment) {
       return res.status(404).json({ message: "Assignment not found" });
@@ -247,6 +318,52 @@ const deleteAllAssignments = async (req, res) => {
   }
 };
 
+const submitLesson = async (req, res) => {
+  const { meetingUrl } = req.body;
+  const { assignmentId } = req.params;
+  console.log(req.file);
+  console.log(assignmentId);
+  if (!assignmentId) {
+    return res.status(400).json({ message: "Assignment ID is required" });
+  }
+
+  try {
+    const assignment = await Assignment.findById(assignmentId);
+    if (!assignment) {
+      return res.status(404).json({ message: "Assignment not found" });
+    }
+
+    // Embed the uploadMiddleware function here
+    uploadMiddleware(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ message: "File upload error" });
+      } else if (err) {
+        return res
+          .status(500)
+          .json({ message: "Unknown error occurred during file upload" });
+      }
+
+      if (req.file) {
+        // If a file is uploaded, store the file path
+        assignment.lesson.push(req.file.path);
+      } else if (meetingUrl) {
+        // If a meeting URL is provided, store the URL
+        assignment.lesson.push(meetingUrl);
+      } else {
+        return res.status(400).json({ message: "No lesson content provided" });
+      }
+
+      assignment.status = "completed"; // Mark the assignment as completed
+      const updatedAssignment = await assignment.save();
+
+      res.json(updatedAssignment);
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to submit lesson" });
+  }
+};
+
 module.exports = {
   createAssignment,
   getAssignmentsByCategory,
@@ -258,4 +375,8 @@ module.exports = {
   getAssignment,
   getAssignmentsByStudentId,
   deleteAllAssignments,
+  submitLesson,
+  getPendingAssignments,
+  getAssignmentsForTutor,
+  completeAssignment,
 };

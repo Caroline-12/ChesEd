@@ -27,6 +27,10 @@ const AssignmentSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  studentEmail: {
+    type: String,
+    ref: "User",
+  },
   tutor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -44,6 +48,10 @@ const AssignmentSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  paymentStatus: {
+    type: Boolean,
+    default: false,
+  },
   dueDate: {
     type: Date,
     required: true,
@@ -51,6 +59,11 @@ const AssignmentSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  lesson: [{ type: String }],
+  modeOfDelivery: {
+    type: String,
+    enum: ["online", "offline"],
   },
 });
 

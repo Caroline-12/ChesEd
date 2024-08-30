@@ -15,7 +15,17 @@ router
   .delete(verifyRoles(ROLES_LIST.Admin), assignmentController.deleteAssignment);
 router
   .route("/assign")
-  .put(verifyRoles(ROLES_LIST.Admin), assignmentController.assignTutor);
+  .put(
+    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Tutor),
+    assignmentController.assignTutor
+  );
+
+router
+  .route("/pendingassignments")
+  .get(
+    verifyRoles(ROLES_LIST.Tutor),
+    assignmentController.getPendingAssignments
+  );
 
 router.route("/:assignmentId").get(assignmentController.getAssignment);
 // .put(
@@ -50,4 +60,20 @@ router
     verifyRoles(ROLES_LIST.Admin),
     assignmentController.deleteAllAssignments
   );
+
+router
+  .route("/submit-lesson/:assignmentId")
+  .post(verifyRoles(ROLES_LIST.Tutor), assignmentController.submitLesson);
+
+router
+  .route("/tutor/:tutorId")
+  .get(
+    verifyRoles(ROLES_LIST.Tutor),
+    assignmentController.getAssignmentsForTutor
+  );
+
+router
+  .route("/complete")
+  .put(verifyRoles(ROLES_LIST.Tutor), assignmentController.completeAssignment);
+
 module.exports = router;

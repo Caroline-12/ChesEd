@@ -22,6 +22,7 @@ const SubmitAssignment = () => {
     category: "",
     studentId: auth.ID,
     file: null,
+    modeOfDelivery: "",
   });
 
   useEffect(() => {
@@ -80,6 +81,8 @@ const SubmitAssignment = () => {
     formData.append("category", assignmentDetails.category);
     formData.append("studentId", assignmentDetails.studentId);
     formData.append("file", assignmentDetails.file);
+    formData.append("modeOfDelivery", assignmentDetails.modeOfDelivery);
+    formData.append("paymentStatus", false);
 
     console.log("Form data:", formData);
     try {
@@ -101,7 +104,7 @@ const SubmitAssignment = () => {
         studentId: "",
       });
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/dashboard/assignments");
       }, 2000);
     } catch (error) {
       toast.error(
@@ -191,6 +194,33 @@ const SubmitAssignment = () => {
         <div>
           <Label htmlFor="document">Upload Document</Label>
           <input type="file" name="file" onChange={handleInputChange} />
+        </div>
+        {/* mode of delivery radio button
+         */}
+        <div>
+          <Label htmlFor="modeOfDelivery">Mode of Delivery</Label>
+          <div>
+            <input
+              type="radio"
+              id="online"
+              name="modeOfDelivery"
+              value="online"
+              // set the state when the radio button is clicked
+              onChange={handleInputChange}
+            />
+            <label htmlFor="online">Virtual lesson</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="offline"
+              name="modeOfDelivery"
+              value="offline"
+              // set the state when the radio button is clicked
+              onChange={handleInputChange}
+            />
+            <label htmlFor="offline">written lesson</label>
+          </div>
         </div>
         <div className="flex justify-end">
           <Button type="submit">Submit Assignment</Button>

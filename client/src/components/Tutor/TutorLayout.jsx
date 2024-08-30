@@ -38,6 +38,7 @@ import ChatSection from "./sections/ChatSection";
 import UsersSection from "./sections/UsersSection";
 import DashboardLanding from "./TutorLanding";
 import TutorLanding from "./TutorLanding";
+import MyLessons from "./sections/MyLessons";
 
 export function TutorLayout() {
   const { auth } = useAuth();
@@ -72,10 +73,15 @@ export function TutorLayout() {
 
   const navItems = [
     { path: "/tutor", label: "Dashboard", icon: Home },
-    { path: "/tutor/assignments", label: "Assignments", icon: Package },
+    { path: "/tutor/opportunities", label: "Opportunities", icon: Package },
     { path: "/tutor/chat", label: "Chat", icon: MessageCircle },
     { path: "/tutor/revenue", label: "Revenue", icon: LineChart },
     { path: "/tutor/profile", label: "Profile", icon: CircleUser },
+    {
+      path: "/tutor/mylessons",
+      label: "My Lessons",
+      icon: Search,
+    },
   ];
 
   const renderNavItem = (item) => (
@@ -136,7 +142,7 @@ export function TutorLayout() {
           <Routes>
             <Route path="/" element={<TutorLanding />} />
             <Route
-              path="assignments"
+              path="opportunities"
               element={
                 <Assignments
                   assignments={assignments}
@@ -148,6 +154,7 @@ export function TutorLayout() {
             <Route path="chat" element={<ChatSection />} />
             <Route path="revenue" element={<RevenueSection />} />
             <Route path="profile" element={<UsersSection />} />
+            <Route path="mylessons" element={<MyLessons />} />
           </Routes>
         </main>
       </div>

@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
+import { Badge } from "@/components/ui/badge";
 
 function StudentAssignments({ assignments }) {
   const navigate = useNavigate();
@@ -26,14 +27,14 @@ function StudentAssignments({ assignments }) {
       <Card>
         <div className="text-center py-10 text-black rounded-lg mb-10">
           <h1 className="text-5xl font-bold mb-4">
-            Need Help with Your Assignment?
+            Need help with your Understanding?
           </h1>
           <p className="text-xl mb-8">Get expert assistance from our tutors!</p>
           <Button
             onClick={handleSubmitAssignment}
             className=" transition duration-300 ease-in-out transform hover:scale-105"
           >
-            Submit Your Assignment
+            Submit Your Lesson
           </Button>
         </div>
         <CardContent>
@@ -79,14 +80,27 @@ const AssignmentItem = ({ assignment }) => {
       <td className="py-2 px-4">
         {new Date(assignment.dueDate).toLocaleDateString()}
       </td>
-      <td className="py-2 px-4">${assignment.agreedPrice}</td>
-      <td className="py-2 px-4">{assignment.status}</td>
+      <td className="py-2 px-4">
+        {assignment?.agreedPrice ? `$${assignment.agreedPrice}` : "pending"}
+      </td>
+      <td className="py-2 px-4">
+        <Badge
+          color="primary"
+          className="capitalize"
+          style={{
+            backgroundColor:
+              assignment.status === "completed" ? "green" : "red",
+          }}
+        >
+          {assignment.status}
+        </Badge>
+      </td>
       <td className="py-2 px-4">{assignment.paid ? "Yes" : "No"}</td>
       <td className="py-2 px-4 flex gap-2">
         <Button
           variant="outline"
           className="text-orange-800 border-orange-800 hover:bg-orange-200"
-          onClick={() => navigate(`/admin/assignment/${assignment._id}`)}
+          onClick={() => navigate(`/assignment/${assignment._id}`)}
         >
           View Details
         </Button>
