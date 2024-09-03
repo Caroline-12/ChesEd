@@ -49,7 +49,7 @@ const TutorAssignmentForm = ({ assignmentId }) => {
     }
     try {
       await axios.put(
-        "/assignments/assign",
+        "/lessons/assign",
         { assignmentId, tutorId: selectedTutor, assignee: auth.ID },
         {
           headers: {

@@ -30,8 +30,8 @@ const CourseDetail = () => {
       setCourse(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching assignment:", err);
-      setError("Failed to load assignment. Please try again later.");
+      console.error("Error fetching lesson:", err);
+      setError("Failed to load lesson. Please try again later.");
       setLoading(false);
     }
   };

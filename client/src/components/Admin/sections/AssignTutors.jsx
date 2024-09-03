@@ -4,26 +4,26 @@ import axios from "@/api/axios";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 const AssignTutors = () => {
-  const [assignments, setAssignments] = useState([]);
+  const [lessons, setlessons] = useState([]);
   const [tutors, setTutors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const [selectedlesson, setSelectedlesson] = useState(null);
   const [selectedTutor, setSelectedTutor] = useState(null);
 
   useEffect(() => {
-    fetchAssignments();
+    fetchlessons();
     fetchTutors();
   }, []);
 
-  const fetchAssignments = async () => {
+  const fetchlessons = async () => {
     try {
-      const response = await axios.get("/assignments");
-      setAssignments(response.data);
+      const response = await axios.get("/lessons");
+      setlessons(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching assignments:", err);
-      setError("Failed to load assignments. Please try again later.");
+      console.error("Error fetching lessons:", err);
+      setError("Failed to load lessons. Please try again later.");
       setLoading(false);
     }
   };
@@ -42,7 +42,7 @@ const AssignTutors = () => {
 
   const handleAssign = async () => {
     try {
-      await axios.post(`/assignments/${selectedAssignment}/assign-tutor`, {
+      await axios.post(`/lessons/${selectedlesson}/assign-tutor`, {
         tutorId: selectedTutor,
       });
       alert("Tutor assigned successfully!");
@@ -60,9 +60,9 @@ const AssignTutors = () => {
       <h1 className="text-2xl font-bold mb-4">Assign Tutors</h1>
       <div className="mb-4">
         <Select
-          options={assignments.map((a) => ({ value: a._id, label: a.title }))}
-          onChange={(option) => setSelectedAssignment(option.value)}
-          placeholder="Select Assignment"
+          options={lessons.map((a) => ({ value: a._id, label: a.title }))}
+          onChange={(option) => setSelectedlesson(option.value)}
+          placeholder="Select lesson"
         />
       </div>
       <div className="mb-4">

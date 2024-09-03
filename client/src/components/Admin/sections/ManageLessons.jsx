@@ -5,23 +5,23 @@ import { format } from "date-fns";
 import Modal from "@/components/Modal";
 import TutorAssignmentForm from "../TutorAssignmentForm";
 
-const ManageAssignments = ({ assignments }) => {
+const ManageLessons = ({ lessons }) => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
+  const [selectedlessonId, setSelectedlessonId] = useState(null);
 
-  const handleAssignTutor = (assignmentId) => {
-    setSelectedAssignmentId(assignmentId);
+  const handleAssignTutor = (lessonId) => {
+    setSelectedlessonId(lessonId);
     setShowModal(true);
   };
 
   const closeModal = () => {
     setShowModal(false);
-    setSelectedAssignmentId(null);
+    setSelectedlessonId(null);
   };
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Manage Assignments</h1>
+      <h1 className="text-2xl font-bold mb-4">Manage lessons</h1>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border">
           <thead>
@@ -36,26 +36,24 @@ const ManageAssignments = ({ assignments }) => {
             </tr>
           </thead>
           <tbody>
-            {assignments.map((assignment) => (
-              <tr key={assignment._id} className="text-center">
+            {lessons.map((lesson) => (
+              <tr key={lesson._id} className="text-center">
+                <td className="text-left py-2 px-4 border-b">{lesson.title}</td>
                 <td className="text-left py-2 px-4 border-b">
-                  {assignment.title}
-                </td>
-                <td className="text-left py-2 px-4 border-b">
-                  {assignment.description}
+                  {lesson.description}
                 </td>
                 <td className="py-2 px-4 border-b">
-                  {assignment.student.username}
+                  {lesson.student.username}
                 </td>
                 <td className="py-2 px-4 border-b">
-                  {format(new Date(assignment.dueDate), "yyyy-MM-dd")}
+                  {format(new Date(lesson.dueDate), "yyyy-MM-dd")}
                 </td>
                 <td>
                   <h3 className="text-lg font-semibold mb-2">
                     Uploaded Files:
                   </h3>
                   <ul className="list-disc pl-5">
-                    {assignment.documents.map((doc, index) => (
+                    {lesson.documents.map((doc, index) => (
                       <li key={index}>
                         <a
                           href={doc}
@@ -70,14 +68,14 @@ const ManageAssignments = ({ assignments }) => {
                     ))}
                   </ul>
                 </td>
-                <td className="py-2 px-4 border-b">${assignment.price}</td>
+                <td className="py-2 px-4 border-b">${lesson.price}</td>
                 <td className="py-2 px-4 border-b">
-                  <Badge>{assignment.status}</Badge>
+                  <Badge>{lesson.status}</Badge>
                 </td>
                 <td className="py-2 px-4 border-b">
                   <Button
                     className="bg-green-500 text-white"
-                    onClick={() => handleAssignTutor(assignment._id)}
+                    onClick={() => handleAssignTutor(lesson._id)}
                   >
                     Assign Tutor
                   </Button>
@@ -88,10 +86,10 @@ const ManageAssignments = ({ assignments }) => {
         </table>
       </div>
       <Modal isOpen={showModal} onClose={closeModal}>
-        <TutorAssignmentForm assignmentId={selectedAssignmentId} />
+        <TutorAssignmentForm lessonId={selectedlessonId} />
       </Modal>
     </div>
   );
 };
 
-export default ManageAssignments;
+export default ManageLessons;

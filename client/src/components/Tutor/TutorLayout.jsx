@@ -32,7 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import Assignments from "./sections/Assignments";
+import Lessons from "./sections/Lessons";
 import RevenueSection from "./sections/Payments";
 import ChatSection from "./sections/ChatSection";
 import UsersSection from "./sections/UsersSection";
@@ -42,16 +42,16 @@ import MyLessons from "./sections/MyLessons";
 
 export function TutorLayout() {
   const { auth } = useAuth();
-  const [assignments, setAssignments] = useState([]);
+  const [lessons, setlessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
-    fetchAssignments();
+    fetchlessons();
   }, []);
 
-  const fetchAssignments = async () => {
+  const fetchlessons = async () => {
     try {
       const config = {
         headers: { "Content-Type": "application/json" },
@@ -61,12 +61,12 @@ export function TutorLayout() {
         config.headers.Authorization = `Bearer ${auth.accessToken}`;
       }
 
-      const response = await axios.get(`/assignments`, config);
-      setAssignments(response.data);
+      const response = await axios.get(`/lessons`, config);
+      setlessons(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching assignments:", err);
-      setError("Failed to load assignments. Please try again later.");
+      console.error("Error fetching lessons:", err);
+      setError("Failed to load lessons. Please try again later.");
       setLoading(false);
     }
   };
@@ -144,11 +144,7 @@ export function TutorLayout() {
             <Route
               path="opportunities"
               element={
-                <Assignments
-                  assignments={assignments}
-                  loading={loading}
-                  error={error}
-                />
+                <Lessons lessons={lessons} loading={loading} error={error} />
               }
             />
             <Route path="chat" element={<ChatSection />} />

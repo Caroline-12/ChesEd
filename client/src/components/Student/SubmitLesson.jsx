@@ -8,13 +8,13 @@ import axios from "@/api/axios";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
-const ASSIGNMENTS_URL = "/assignments";
+const lessons_URL = "/lessons";
 
-const SubmitAssignment = () => {
+const Submitlesson = () => {
   const { auth } = useAuth();
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
-  const [assignmentDetails, setAssignmentDetails] = useState({
+  const [lessonDetails, setlessonDetails] = useState({
     title: "",
     description: "",
     proposedBudget: 0,
@@ -27,9 +27,9 @@ const SubmitAssignment = () => {
 
   useEffect(() => {
     if (!auth?.accessToken) {
-      navigate("/login", { state: { from: "/submit-assignment" } });
+      navigate("/login", { state: { from: "/submit-lesson" } });
     } else {
-      setAssignmentDetails((prev) => ({ ...prev, studentId: auth.ID }));
+      setlessonDetails((prev) => ({ ...prev, studentId: auth.ID }));
     }
   }, [auth, navigate]);
 
@@ -56,37 +56,37 @@ const SubmitAssignment = () => {
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
-    setAssignmentDetails((prev) => ({
+    setlessonDetails((prev) => ({
       ...prev,
       [name]: name === "proposedBudget" ? parseFloat(value) : value,
     }));
-    setAssignmentDetails((prev) => ({
+    setlessonDetails((prev) => ({
       ...prev,
       [name]: files ? files[0] : value,
     }));
   };
 
   const handleCategoryChange = (e) => {
-    setAssignmentDetails({ ...assignmentDetails, category: e.target.value });
+    setlessonDetails({ ...lessonDetails, category: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
 
-    formData.append("title", assignmentDetails.title);
-    formData.append("description", assignmentDetails.description);
-    formData.append("proposedBudget", assignmentDetails.proposedBudget);
-    formData.append("dueDate", assignmentDetails.dueDate);
-    formData.append("category", assignmentDetails.category);
-    formData.append("studentId", assignmentDetails.studentId);
-    formData.append("file", assignmentDetails.file);
-    formData.append("modeOfDelivery", assignmentDetails.modeOfDelivery);
+    formData.append("title", lessonDetails.title);
+    formData.append("description", lessonDetails.description);
+    formData.append("proposedBudget", lessonDetails.proposedBudget);
+    formData.append("dueDate", lessonDetails.dueDate);
+    formData.append("category", lessonDetails.category);
+    formData.append("studentId", lessonDetails.studentId);
+    formData.append("file", lessonDetails.file);
+    formData.append("modeOfDelivery", lessonDetails.modeOfDelivery);
     formData.append("paymentStatus", false);
 
     console.log("Form data:", formData);
     try {
-      const response = await axios.post(ASSIGNMENTS_URL, formData, {
+      const response = await axios.post(lessons_URL, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${auth?.accessToken}`,
@@ -94,8 +94,8 @@ const SubmitAssignment = () => {
         withCredentials: true,
       });
       console.log(JSON.stringify(response?.data));
-      toast.success("Assignment submitted successfully!");
-      setAssignmentDetails({
+      toast.success("lesson submitted successfully!");
+      setlessonDetails({
         title: "",
         description: "",
         proposedBudget: 0,
@@ -104,7 +104,7 @@ const SubmitAssignment = () => {
         studentId: "",
       });
       setTimeout(() => {
-        navigate("/dashboard/assignments");
+        navigate("/dashboard/lessons");
       }, 2000);
     } catch (error) {
       toast.error(
@@ -120,7 +120,7 @@ const SubmitAssignment = () => {
       <button onClick={goback}>Go Back</button>
       <Toaster />
       <h2 className="text-3xl font-bold mb-6 text-center">
-        Submit Your Assignment
+        Submit Your lesson
       </h2>
       <form
         onSubmit={handleSubmit}
@@ -129,13 +129,13 @@ const SubmitAssignment = () => {
         method="POST"
       >
         <div>
-          <Label htmlFor="title">Assignment Title</Label>
+          <Label htmlFor="title">lesson Title</Label>
           <Input
             id="title"
             name="title"
-            value={assignmentDetails.title}
+            value={lessonDetails.title}
             onChange={handleInputChange}
-            placeholder="Enter the title of your assignment"
+            placeholder="Enter the title of your lesson"
             required
           />
         </div>
@@ -144,9 +144,9 @@ const SubmitAssignment = () => {
           <Textarea
             id="description"
             name="description"
-            value={assignmentDetails.description}
+            value={lessonDetails.description}
             onChange={handleInputChange}
-            placeholder="Describe your assignment in detail"
+            placeholder="Describe your lesson in detail"
             required
             rows={4}
           />
@@ -155,7 +155,7 @@ const SubmitAssignment = () => {
           <Label htmlFor="category">Category</Label>
           <select
             id="category"
-            value={assignmentDetails.category}
+            value={lessonDetails.category}
             onChange={handleCategoryChange}
           >
             <option value="">Select a category</option>
@@ -172,7 +172,7 @@ const SubmitAssignment = () => {
             id="proposedBudget"
             name="proposedBudget"
             type="number"
-            value={assignmentDetails.proposedBudget}
+            value={lessonDetails.proposedBudget}
             onChange={handleInputChange}
             placeholder="Enter your proposed budget"
             required
@@ -186,7 +186,7 @@ const SubmitAssignment = () => {
             id="dueDate"
             name="dueDate"
             type="date"
-            value={assignmentDetails.dueDate}
+            value={lessonDetails.dueDate}
             onChange={handleInputChange}
             required
           />
@@ -223,11 +223,11 @@ const SubmitAssignment = () => {
           </div>
         </div>
         <div className="flex justify-end">
-          <Button type="submit">Submit Assignment</Button>
+          <Button type="submit">Submit lesson</Button>
         </div>
       </form>
     </div>
   );
 };
 
-export default SubmitAssignment;
+export default Submitlesson;

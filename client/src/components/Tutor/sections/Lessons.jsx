@@ -48,43 +48,43 @@ import {
 } from "@supabase/auth-helpers-react";
 import { useNavigate } from "react-router-dom";
 
-const ASSIGNMENTS_URL = "/assignments/pendingassignments";
+const lessons_URL = "/lessons/pendinglessons";
 
-const Assignments = () => {
+const Lessons = () => {
   const session = useSession(); // User but a bunch of things gets stored here like current active tokens
   const supabase = useSupabaseClient(); // talk to supabase
   const { isLoading } = useSessionContext(); // loading state
 
   const navigate = useNavigate();
   const { auth } = useAuth();
-  const [assignments, setAssignments] = useState([]);
+  const [lessons, setlessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFile, setSelectedFile] = useState(null);
-  const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const [selectedlesson, setSelectedlesson] = useState(null);
   const [scheduleDate, setScheduleDate] = useState("");
   // start time and date time state varibles
   const [start, setStart] = useState(new Date());
   // const [end, setEnd] = useState(new Date());
 
   useEffect(() => {
-    const fetchAssignments = async () => {
+    const fetchlessons = async () => {
       try {
-        const response = await axios.get(ASSIGNMENTS_URL, {
+        const response = await axios.get(lessons_URL, {
           headers: { Authorization: `Bearer ${auth.accessToken}` },
         });
-        setAssignments(response.data);
+        setlessons(response.data);
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch assignments");
+        setError("Failed to fetch lessons");
         setLoading(false);
-        console.error("Error fetching assignments:", err);
-        toast.error("Failed to fetch assignments");
+        console.error("Error fetching lessons:", err);
+        toast.error("Failed to fetch lessons");
       }
     };
 
-    fetchAssignments();
+    fetchlessons();
   }, [auth.accessToken]);
 
   if (isLoading) return <></>;
@@ -130,29 +130,29 @@ const Assignments = () => {
     }
   };
 
-  const filteredAssignments = assignments.filter((assignment) =>
-    selectedCategory === "All" ? true : assignment.category === selectedCategory
+  const filteredlessons = lessons.filter((lesson) =>
+    selectedCategory === "All" ? true : lesson.category === selectedCategory
   );
 
-  const handleAccept = async (assignment) => {
+  const handleAccept = async (lesson) => {
     try {
       await axios.put(
-        "http://localhost:3500/assignments/assign",
+        "http://localhost:3500/lessons/assign",
         {
-          assignmentId: assignment._id,
+          lessonId: lesson._id,
           tutorId: auth.ID,
-          assignee: assignment.student._id,
+          assignee: lesson.student._id,
         },
         {
           headers: { Authorization: `Bearer ${auth.accessToken}` },
         }
       );
-      console.log(`Assignment ${assignment._id} accepted successfully`);
-      toast.success("Assignment accepted successfully!");
+      console.log(`lesson ${lesson._id} accepted successfully`);
+      toast.success("lesson accepted successfully!");
       navigate("/tutor/mylessons");
     } catch (error) {
-      console.error("Error accepting assignment:", error);
-      toast.error("Failed to accept assignment");
+      console.error("Error accepting lesson:", error);
+      toast.error("Failed to accept lesson");
     }
   };
 
@@ -166,35 +166,31 @@ const Assignments = () => {
     setSelectedFile(e.target.value);
   };
 
-  const handleSubmitWrittenLesson = async (e, assignment) => {
+  const handleSubmitWrittenLesson = async (e, lesson) => {
     e.preventDefault();
 
-    if (!selectedFile || !assignment) {
+    if (!selectedFile || !lesson) {
       toast.error("Please select a file to upload");
       return;
     }
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    formData.append("assignmentId", assignment._id);
+    formData.append("lessonId", lesson._id);
 
-    console.log(assignment);
-    console.log(formData.assignmentId);
+    console.log(lesson);
+    console.log(formData.lessonId);
     console.log(formData.file);
     console.log(selectedFile);
     try {
       console.log("Submitting written lesson...");
-      const response = await axios.post(
-        `/assignments/submit-lesson`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${auth?.accessToken}`,
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(`/lessons/submit-lesson`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
+        withCredentials: true,
+      });
       console.log(response);
       toast("Written lesson submitted successfully:", response.data);
       // console.log(JSON.stringify(response?.data));
@@ -214,19 +210,19 @@ const Assignments = () => {
     setStart(updatedDate);
   };
 
-  const createCalendarEvent = async (assignment) => {
-    console.log("Creating calendar event...", start, assignment);
-    if (!start || !assignment) {
+  const createCalendarEvent = async (lesson) => {
+    console.log("Creating calendar event...", start, lesson);
+    if (!start || !lesson) {
       toast.error(
-        "Please ensure youve selected a start date and an assignment for the event"
+        "Please ensure youve selected a start date and an lesson for the event"
       );
       return;
     }
 
     const event = {
-      summary: "Chesed Lesson: " + assignment.title,
+      summary: "Chesed Lesson: " + lesson.title,
       location: "Google Meet (link will be provided)",
-      description: assignment.description,
+      description: lesson.description,
       start: {
         dateTime: start.toISOString(),
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -235,7 +231,7 @@ const Assignments = () => {
         dateTime: new Date(start.getTime() + 30 * 60000).toISOString(),
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
-      attendees: [{ email: assignment.student.email }],
+      attendees: [{ email: lesson.student.email }],
       conferenceData: {
         createRequest: {
           requestId: "sample123",
@@ -259,9 +255,9 @@ const Assignments = () => {
       })
       .then((res) => {
         console.log(res);
-        setAssignments(
-          assignments.map((a) =>
-            a._id === assignment._id
+        setlessons(
+          lessons.map((a) =>
+            a._id === lesson._id
               ? {
                   ...a,
                   status: "completed",
@@ -270,14 +266,14 @@ const Assignments = () => {
               : a
           )
         );
-        // change the status of the assignment to in progress
+        // change the status of the lesson to in progress
         try {
           axios.put(
-            "/assignments/assign",
+            "/lessons/assign",
             {
-              assignmentId: assignment._id,
+              lessonId: lesson._id,
               tutorId: auth.ID,
-              assignee: assignment.student._id,
+              assignee: lesson.student._id,
             },
             {
               headers: {
@@ -307,7 +303,7 @@ const Assignments = () => {
 
   console.log(session);
   console.log(start);
-  console.log(assignments);
+  console.log(lessons);
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Opportunities</h1>
@@ -338,27 +334,27 @@ const Assignments = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredAssignments.map((assignment) => (
-            <TableRow key={assignment._id}>
-              <TableCell>{assignment.title}</TableCell>
-              <TableCell>{assignment.category}</TableCell>
-              <TableCell>{assignment.student.username}</TableCell>
+          {filteredlessons.map((lesson) => (
+            <TableRow key={lesson._id}>
+              <TableCell>{lesson.title}</TableCell>
+              <TableCell>{lesson.category}</TableCell>
+              <TableCell>{lesson.student.username}</TableCell>
               <TableCell>
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
-                }).format(assignment.proposedBudget)}
+                }).format(lesson.proposedBudget)}
 
                 {/* <Badge
                   variant={
-                    assignment.status === "pending"
+                    lesson.status === "pending"
                       ? "destructive"
-                      : assignment.status === "in-progress"
+                      : lesson.status === "in-progress"
                       ? "default"
                       : "success"
                   }
                 >
-                  {assignment.status}
+                  {lesson.status}
                 </Badge> */}
               </TableCell>
               <TableCell>
@@ -368,45 +364,41 @@ const Assignments = () => {
                   </DialogTrigger>
                   <DialogContent className="">
                     <DialogHeader>
-                      <DialogTitle>{assignment.title}</DialogTitle>
+                      <DialogTitle>{lesson.title}</DialogTitle>
                       <DialogDescription>
-                        Assignment details and actions
+                        lesson details and actions
                       </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label className="text-right">Category</Label>
-                        <span className="col-span-3">
-                          {assignment.category}
-                        </span>
+                        <span className="col-span-3">{lesson.category}</span>
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label className="text-right">Description</Label>
-                        <span className="col-span-3">
-                          {assignment.description}
-                        </span>
+                        <span className="col-span-3">{lesson.description}</span>
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label className="text-right">Budget</Label>
                         <span className="col-span-3">
-                          ${assignment.proposedBudget}
+                          ${lesson.proposedBudget}
                         </span>
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label className="text-right">Due Date</Label>
                         <span className="col-span-3">
-                          {new Date(assignment.dueDate).toLocaleDateString()}
+                          {new Date(lesson.dueDate).toLocaleDateString()}
                         </span>
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label className="text-right">Status</Label>
-                        <span className="col-span-3">{assignment.status}</span>
+                        <span className="col-span-3">{lesson.status}</span>
                       </div>
-                      {assignment.writtenLesson && (
+                      {lesson.writtenLesson && (
                         <div className="grid grid-cols-4 items-center gap-4">
                           <Label className="text-right">Written Lesson</Label>
                           <a
-                            href={assignment.writtenLesson}
+                            href={lesson.writtenLesson}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="col-span-3 flex items-center"
@@ -419,15 +411,13 @@ const Assignments = () => {
                     </div>
                     <DialogFooter>
                       <div className="flex space-x-2">
-                        {assignment.status === "pending" && (
-                          <Button onClick={() => handleAccept(assignment)}>
-                            Accept Assignment
+                        {lesson.status === "pending" && (
+                          <Button onClick={() => handleAccept(lesson)}>
+                            Accept lesson
                           </Button>
                         )}
                         <Button
-                          onClick={() =>
-                            handleStartChat(assignment.student._id)
-                          }
+                          onClick={() => handleStartChat(lesson.student._id)}
                           variant="outline"
                         >
                           <MessageSquare className="mr-2 h-4 w-4" />
@@ -445,7 +435,7 @@ const Assignments = () => {
                   </DialogTrigger>
                   <DialogContent className="w-full max-w-3xl">
                     <DialogHeader>
-                      <DialogTitle>Assignment Actions</DialogTitle>
+                      <DialogTitle>lesson Actions</DialogTitle>
                     </DialogHeader>
                     <Tabs defaultValue="lesson">
                       <TabsList className="grid w-full grid-cols-2">
@@ -456,7 +446,7 @@ const Assignments = () => {
                       </TabsList>
                       <TabsContent value="lesson">
                         <form
-                          onSubmit={handleSubmitWrittenLesson(assignment)}
+                          onSubmit={handleSubmitWrittenLesson(lesson)}
                           className="space-y-6"
                           encType="multipart/form-data"
                           method="POST"
@@ -481,7 +471,7 @@ const Assignments = () => {
                           <DialogFooter>
                             <Button
                               type="submit"
-                              disabled={assignment.status === "completed"}
+                              disabled={lesson.status === "completed"}
                             >
                               Submit Lesson
                             </Button>
@@ -533,7 +523,7 @@ const Assignments = () => {
                                 onChange={handleTimeChange} // Update this line
                               />
                               <Button
-                                onClick={() => createCalendarEvent(assignment)}
+                                onClick={() => createCalendarEvent(lesson)}
                               >
                                 Schedule Call
                               </Button>
@@ -565,4 +555,4 @@ const Assignments = () => {
   );
 };
 
-export default Assignments;
+export default Lessons;

@@ -13,9 +13,9 @@ import {
 import { Progress } from "@/components/ui/progress";
 import Navbar from "../Navbar";
 
-const assignment = {
+const lesson = {
   _id: "669f3abf19c8c5cd6402389d",
-  title: "Advanced JavaScript Assignment",
+  title: "Advanced JavaScript lesson",
   description:
     "Create a web application that demonstrates the use of async/await, promises, and error handling in JavaScript.",
   student: {
@@ -136,26 +136,25 @@ export default function Profile() {
         </section>
         <section className="bg-background rounded-lg shadow-md p-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Assignment Management</h2>
+            <h2 className="text-2xl font-bold">lesson Management</h2>
             <Link
               to="#"
               className="text-sm font-medium text-primary"
               prefetch={false}
             >
-              View All Assignments
+              View All lessons
             </Link>
           </div>
           <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <Card className="bg-card">
               <CardHeader>
-                <CardTitle>{assignment.title}</CardTitle>
-                <CardDescription>{assignment.status}</CardDescription>
+                <CardTitle>{lesson.title}</CardTitle>
+                <CardDescription>{lesson.status}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div className="text-sm font-medium">
-                    Due Date:{" "}
-                    {new Date(assignment.dueDate).toLocaleDateString()}
+                    Due Date: {new Date(lesson.dueDate).toLocaleDateString()}
                   </div>
                   <Button size="sm" variant="outline">
                     Upload Files
@@ -166,12 +165,10 @@ export default function Profile() {
                 <div className="flex items-center justify-between">
                   <div className="text-sm font-medium text-muted-foreground">
                     Assigned to:{" "}
-                    {assignment.tutor
-                      ? assignment.tutor.username
-                      : "Not Assigned"}
+                    {lesson.tutor ? lesson.tutor.username : "Not Assigned"}
                   </div>
                   <Button size="sm" variant="outline">
-                    {assignment.tutor ? "Contact Tutor" : "Assign Tutor"}
+                    {lesson.tutor ? "Contact Tutor" : "Assign Tutor"}
                   </Button>
                 </div>
               </CardFooter>

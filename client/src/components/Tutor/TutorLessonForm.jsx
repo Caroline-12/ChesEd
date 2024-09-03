@@ -14,9 +14,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
 import { toast } from "sonner";
 
-const TutorAssignmentForm = () => {
+const TutorlessonForm = () => {
   const { auth } = useAuth();
-  const { assignmentId } = useParams();
+  const { lessonId } = useParams();
   const [tutors, setTutors] = useState([]);
   const [selectedTutor, setSelectedTutor] = useState("");
   const [loading, setLoading] = useState(true);
@@ -50,8 +50,8 @@ const TutorAssignmentForm = () => {
     }
     try {
       await axios.put(
-        "/assignments/assign",
-        { assignmentId, tutorId: selectedTutor, assignee: auth.ID },
+        "/lessons/assign",
+        { lessonId, tutorId: selectedTutor, assignee: auth.ID },
         {
           headers: {
             Authorization: `Bearer ${auth.accessToken}`,
@@ -68,7 +68,7 @@ const TutorAssignmentForm = () => {
 
   console.log(selectedTutor);
   console.log(auth.ID);
-  console.log(assignmentId);
+  console.log(lessonId);
   if (loading) return <div className="text-center mt-8">Loading tutors...</div>;
   if (error)
     return <div className="text-center mt-8 text-red-500">{error}</div>;
@@ -113,4 +113,4 @@ const TutorAssignmentForm = () => {
   );
 };
 
-export default TutorAssignmentForm;
+export default TutorlessonForm;

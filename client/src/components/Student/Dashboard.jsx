@@ -31,8 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-
-import StudentAssignments from "./sections/StudentAssignments";
+import StudentLessons from "./sections/StudentLessons";
 import Courses from "./sections/AllCourses";
 import Payments from "./sections/StudentPayments";
 import DashboardLanding from "./sections/DashboardLanding";
@@ -40,31 +39,32 @@ import PopularCourses from "../PopularCourses";
 
 export default function Dashboard() {
   const { auth } = useAuth();
-  const [assignments, setAssignments] = useState([]);
+  const [lessons, setlessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
-    fetchAllAssignments();
+    fetchAlllessons();
   }, []);
 
-  const fetchAllAssignments = async () => {
+  const fetchAlllessons = async () => {
     try {
-      const response = await axios.get(`/assignments/student/${auth.ID}`, {
+      const response = await axios.get(`/lessons/student/${auth.ID}`, {
         headers: {
           Authorization: `Bearer ${auth.accessToken}`,
         },
       });
-      setAssignments(response.data);
+      setlessons(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching assignments:", err);
-      setError("Failed to load assignments. Please try again later.");
+      console.error("Error fetching lessons:", err);
+      setError("Failed to load lessons. Please try again later.");
       setLoading(false);
     }
   };
 
+  console.log(lessons);
   return (
     <div className="flex min-h-screen">
       <aside className="w-64 bg-gray-800 text-white flex flex-col">
@@ -85,15 +85,13 @@ export default function Dashboard() {
             Dashboard
           </Link>
           <Link
-            to="/dashboard/assignments"
+            to="/dashboard/lessons"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/dashboard/assignments"
-                ? "bg-gray-700"
-                : ""
+              location.pathname === "/dashboard/lessons" ? "bg-gray-700" : ""
             }`}
           >
             <Package className="h-5 w-5" />
-            My Assignments
+            My lessons
           </Link>
           <Link
             to="/dashboard/courses"
@@ -161,15 +159,15 @@ export default function Dashboard() {
                   Dashboard
                 </Link>
                 <Link
-                  to="/dashboard/assignments"
+                  to="/dashboard/lessons"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/dashboard/assignments"
+                    location.pathname === "/dashboard/lessons"
                       ? "bg-muted text-primary"
                       : ""
                   }`}
                 >
                   <Package className="h-5 w-5" />
-                  My Assignments
+                  My lessons
                 </Link>
                 <Link
                   to="/dashboard/courses"
@@ -242,8 +240,8 @@ export default function Dashboard() {
           <Routes>
             <Route path="/" element={<DashboardLanding />} />
             <Route
-              path="/assignments"
-              element={<StudentAssignments assignments={assignments} />}
+              path="/lessons"
+              element={<StudentLessons lessons={lessons} />}
             />
             <Route path="/courses" element={<PopularCourses />} />
             <Route path="/payments" element={<Payments />} />

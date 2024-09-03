@@ -94,15 +94,15 @@ const DashboardLanding = () => {
         <Card className="bg-white shadow-lg">
           <CardHeader className="flex items-center">
             <BiSolidNotepad className="h-6 w-6 text-green-500 mr-2" />
-            <CardTitle>Assignments</CardTitle>
+            <CardTitle>lessons</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">5</p>
-            <p className="text-sm text-muted-foreground">Pending assignments</p>
+            <p className="text-sm text-muted-foreground">Pending lessons</p>
           </CardContent>
           <CardFooter>
-            <Button variant="link" as="a" href="/dashboard/assignments">
-              View Assignments
+            <Button variant="link" as="a" href="/dashboard/lessons">
+              View lessons
             </Button>
           </CardFooter>
         </Card>

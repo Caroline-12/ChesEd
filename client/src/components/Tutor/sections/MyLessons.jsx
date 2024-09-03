@@ -15,32 +15,32 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 const MyLessons = () => {
-  const [assignments, setAssignments] = useState([]);
+  const [lessons, setlessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const { auth } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchAssignments = async () => {
+    const fetchlessons = async () => {
       try {
-        const response = await axios.get(`/assignments/tutor/${auth.ID}`, {
+        const response = await axios.get(`/lessons/tutor/${auth.ID}`, {
           headers: { Authorization: `Bearer ${auth.accessToken}` },
         });
         console.log(response);
-        setAssignments(response.data);
+        setlessons(response.data);
       } catch (error) {
-        console.error("Error fetching assignments", error);
+        console.error("Error fetching lessons", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAssignments();
+    fetchlessons();
   }, [auth.ID]);
 
-  console.log(assignments);
-  const handleViewMore = (assignmentId) => {
-    navigate(`/assignment/${assignmentId}`);
+  console.log(lessons);
+  const handleViewMore = (lessonId) => {
+    navigate(`/lesson/${lessonId}`);
   };
 
   return (
@@ -61,31 +61,31 @@ const MyLessons = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {assignments.map((assignment) => (
-              <TableRow key={assignment._id}>
-                <TableCell>{assignment.title}</TableCell>
-                <TableCell>{assignment.student?.username || "N/A"}</TableCell>
-                <TableCell>{assignment.category}</TableCell>
+            {lessons.map((lesson) => (
+              <TableRow key={lesson._id}>
+                <TableCell>{lesson.title}</TableCell>
+                <TableCell>{lesson.student?.username || "N/A"}</TableCell>
+                <TableCell>{lesson.category}</TableCell>
                 <TableCell>
                   <Badge
                     color="primary"
                     className="capitalize"
                     style={{
                       backgroundColor:
-                        assignment.status === "completed" ? "green" : "red",
+                        lesson.status === "completed" ? "green" : "red",
                     }}
                   >
-                    {assignment.status}
+                    {lesson.status}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  {new Date(assignment.createdAt).toLocaleDateString()}
+                  {new Date(lesson.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  {new Date(assignment.dueDate).toLocaleDateString()}
+                  {new Date(lesson.dueDate).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  <Button onClick={() => handleViewMore(assignment._id)}>
+                  <Button onClick={() => handleViewMore(lesson._id)}>
                     View More
                   </Button>
                 </TableCell>

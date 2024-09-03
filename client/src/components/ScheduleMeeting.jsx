@@ -20,7 +20,7 @@ const ScheduleMeeting = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          assignmentId: id,
+          lessonId: id,
           date: selectedDate,
           time: selectedTime,
         }),

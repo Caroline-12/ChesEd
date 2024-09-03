@@ -33,8 +33,8 @@ const Payments = () => {
       setPayments(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching assignments:", err);
-      console.log("Failed to load assignments. Please try again later.");
+      console.error("Error fetching lessons:", err);
+      console.log("Failed to load lessons. Please try again later.");
       setLoading(false);
     }
   };

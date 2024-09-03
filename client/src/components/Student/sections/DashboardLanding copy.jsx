@@ -22,14 +22,14 @@ import useAuth from "@/hooks/useAuth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 const DashboardLanding = () => {
   const [courses, setCourses] = useState([]);
-  const [numAssignments, setNumAssignments] = useState(0);
+  const [numlessons, setNumlessons] = useState(0);
 
   const { auth } = useAuth();
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3500/assignments/student/${auth.ID}`,
+          `http://localhost:3500/lessons/student/${auth.ID}`,
           {
             headers: {
               Authorization: `Bearer ${auth?.accessToken}`,
@@ -38,7 +38,7 @@ const DashboardLanding = () => {
           }
         );
         setCourses(response.data);
-        setNumAssignments(response.data.length);
+        setNumlessons(response.data.length);
       } catch (error) {
         console.error("Error fetching courses:", error);
       }
@@ -112,13 +112,11 @@ const DashboardLanding = () => {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Assignments
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Total lessons</CardTitle>
             <BiSolidNotepad />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{numAssignments}</div>
+            <div className="text-2xl font-bold">{numlessons}</div>
           </CardContent>
         </Card>
         <Card>

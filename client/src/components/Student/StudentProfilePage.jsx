@@ -12,26 +12,26 @@ import Navbar from "../Navbar";
 
 const StudentProfilePage = () => {
   const { auth } = useAuth();
-  const [assignments, setAssignments] = useState(null);
+  const [lessons, setlessons] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchStudentAssignments();
+    fetchStudentlessons();
   }, []);
 
-  const fetchStudentAssignments = async () => {
+  const fetchStudentlessons = async () => {
     try {
-      const response = await axios.get(`/assignments/student/${auth.ID}`, {
+      const response = await axios.get(`/lessons/student/${auth.ID}`, {
         headers: {
           Authorization: `Bearer ${auth.accessToken}`,
         },
       });
-      setAssignments(response.data);
+      setlessons(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching assignments:", err);
-      setError("Failed to load assignments. Please try again later.");
+      console.error("Error fetching lessons:", err);
+      setError("Failed to load lessons. Please try again later.");
       setLoading(false);
     }
   };
@@ -71,23 +71,20 @@ const StudentProfilePage = () => {
           </CardContent>
         </Card>
 
-        <Tabs defaultValue="assignments" className="space-y-4">
+        <Tabs defaultValue="lessons" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="assignments">Assignments</TabsTrigger>
+            <TabsTrigger value="lessons">lessons</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="assignments">
+          <TabsContent value="lessons">
             <Card>
               <CardHeader>
-                <CardTitle>My Assignments</CardTitle>
+                <CardTitle>My lessons</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {assignments.map((assignment) => (
-                    <AssignmentItem
-                      key={assignment._id}
-                      assignment={assignment}
-                    />
+                  {lessons.map((lesson) => (
+                    <lessonItem key={lesson._id} lesson={lesson} />
                   ))}
                 </div>
               </CardContent>
@@ -99,24 +96,24 @@ const StudentProfilePage = () => {
   );
 };
 
-const AssignmentItem = ({ assignment }) => (
+const lessonItem = ({ lesson }) => (
   <div className="flex items-center justify-between p-4 bg-orange-100 rounded-lg">
     <div className="flex items-center space-x-4">
       <FileText className="h-6 w-6 text-green-500" />
       <div>
-        <h4 className="font-semibold text-orange-800">{assignment.title}</h4>
+        <h4 className="font-semibold text-orange-800">{lesson.title}</h4>
         <p className="text-sm text-gray-500">
-          Due: {new Date(assignment.dueDate).toLocaleDateString()}
+          Due: {new Date(lesson.dueDate).toLocaleDateString()}
         </p>
       </div>
     </div>
-    <Badge variant={getAssignmentStatusVariant(assignment.status)}>
-      {assignment.status}
+    <Badge variant={getlessonstatusVariant(lesson.status)}>
+      {lesson.status}
     </Badge>
   </div>
 );
 
-const getAssignmentStatusVariant = (status) => {
+const getlessonstatusVariant = (status) => {
   switch (status) {
     case "completed":
       return "success";

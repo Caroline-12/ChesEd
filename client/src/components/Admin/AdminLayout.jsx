@@ -33,7 +33,7 @@ import {
 import { Input } from "@/components/ui/input";
 import AdminDashboard from "./AdminDashboard";
 import UsersSection from "./sections/UsersSection";
-import Assignments from "./sections/Assignments";
+import ManageLessons from "./sections/ManageLessons";
 import ManageCourses from "./sections/ManageCourses";
 import Payments from "./sections/Payments";
 import DashboardLanding from "./AdminDashboard";
@@ -43,16 +43,16 @@ import AdminCategoryManagement from "./sections/AdminCategoryManagement";
 
 export function AdminLayout() {
   const { auth } = useAuth();
-  const [assignments, setAssignments] = useState([]);
+  const [lessons, setlessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
-    fetchAllAssignments();
+    fetchAlllessons();
   }, []);
 
-  const fetchAllAssignments = async () => {
+  const fetchAlllessons = async () => {
     try {
       const config = {
         headers: { "Content-Type": "application/json" },
@@ -62,12 +62,12 @@ export function AdminLayout() {
         config.headers.Authorization = `Bearer ${auth.accessToken}`;
       }
 
-      const response = await axios.get(`/assignments`, config);
-      setAssignments(response.data);
+      const response = await axios.get(`/lessons`, config);
+      setlessons(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching assignments:", err);
-      setError("Failed to load assignments. Please try again later.");
+      console.error("Error fetching lessons:", err);
+      setError("Failed to load lessons. Please try again later.");
       setLoading(false);
     }
   };
@@ -92,13 +92,13 @@ export function AdminLayout() {
             Dashboard
           </Link>
           <Link
-            to="/admin/assignments"
+            to="/admin/lessons"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin/assignments" ? "bg-gray-700" : ""
+              location.pathname === "/admin/lessons" ? "bg-gray-700" : ""
             }`}
           >
             <Package className="h-5 w-5" />
-            Assignments
+            lessons
           </Link>
           <Link
             to="/admin/approvetutors"
@@ -193,15 +193,15 @@ export function AdminLayout() {
                   Dashboard
                 </Link>
                 <Link
-                  to="/admin/assignments"
+                  to="/admin/lessons"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/admin/assignments"
+                    location.pathname === "/admin/lessons"
                       ? "bg-muted text-primary"
                       : ""
                   }`}
                 >
                   <Package className="h-5 w-5" />
-                  Assignments
+                  lessons
                 </Link>
                 <Link
                   to="/admin/approvetutors"
@@ -267,8 +267,8 @@ export function AdminLayout() {
           <Routes>
             <Route path="/" element={<DashboardLanding />} />
             <Route
-              path="assignments"
-              element={<Assignments assignments={assignments} />}
+              path="lessons"
+              element={<ManageLessons lessons={lessons} />}
             />
             <Route path="courses" element={<ManageCourses />} />
             <Route path="payments" element={<Payments />} />

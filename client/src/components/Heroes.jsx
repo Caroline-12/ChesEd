@@ -18,16 +18,16 @@ const Heroes = () => {
   const { auth } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmitAssignment = () => {
+  const handleSubmitlesson = () => {
     if (auth?.accessToken) {
-      navigate("/submit-assignment");
+      navigate("/submit-lesson");
     } else {
       if (
         window.confirm(
-          "You need to be logged in to submit an assignment. Would you like to log in now?"
+          "You need to be logged in to submit an lesson. Would you like to log in now?"
         )
       ) {
-        navigate("/login", { state: { from: "submit-assignment" } });
+        navigate("/login", { state: { from: "submit-lesson" } });
       }
     }
   };
@@ -78,7 +78,7 @@ const Heroes = () => {
               )}
             </div>
             <Button
-              onClick={handleSubmitAssignment}
+              onClick={handleSubmitlesson}
               variant="outline"
               className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:text-orange-500 border-2 transition"
             >

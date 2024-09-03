@@ -4,24 +4,25 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { Badge } from "@/components/ui/badge";
 
-function StudentAssignments({ assignments }) {
+function StudentLessons({ lessons }) {
   const navigate = useNavigate();
   const { auth } = useAuth();
 
-  const handleSubmitAssignment = () => {
+  const handleSubmitlesson = () => {
     if (auth?.accessToken) {
-      navigate("/submit-assignment");
+      navigate("/submit-lesson");
     } else {
       if (
         window.confirm(
-          "You need to be logged in to submit an assignment. Would you like to log in now?"
+          "You need to be logged in to submit an lesson. Would you like to log in now?"
         )
       ) {
-        navigate("/login", { state: { from: "submit-assignment" } });
+        navigate("/login", { state: { from: "submit-lesson" } });
       }
     }
   };
 
+  console.log(lessons);
   return (
     <div className="container mx-auto p-4">
       <Card>
@@ -31,7 +32,7 @@ function StudentAssignments({ assignments }) {
           </h1>
           <p className="text-xl mb-8">Get expert assistance from our tutors!</p>
           <Button
-            onClick={handleSubmitAssignment}
+            onClick={handleSubmitlesson}
             className=" transition duration-300 ease-in-out transform hover:scale-105"
           >
             Submit Your Lesson
@@ -51,11 +52,8 @@ function StudentAssignments({ assignments }) {
                 </tr>
               </thead>
               <tbody>
-                {assignments.map((assignment) => (
-                  <AssignmentItem
-                    key={assignment._id}
-                    assignment={assignment}
-                  />
+                {lessons.map((lesson) => (
+                  <LessonItem key={lesson._id} lesson={lesson} />
                 ))}
               </tbody>
             </table>
@@ -66,45 +64,44 @@ function StudentAssignments({ assignments }) {
   );
 }
 
-const AssignmentItem = ({ assignment }) => {
+const LessonItem = ({ lesson }) => {
   const navigate = useNavigate();
 
   const handlePayNow = () => {
     // Replace with your payment route or logic
-    navigate(`/payment/${assignment._id}`);
+    navigate(`/payment/${lesson._id}`);
   };
 
   return (
     <tr className="border-b">
-      <td className="py-2 px-4  font-medium">{assignment.title}</td>
+      <td className="py-2 px-4  font-medium">{lesson.title}</td>
       <td className="py-2 px-4">
-        {new Date(assignment.dueDate).toLocaleDateString()}
+        {new Date(lesson.dueDate).toLocaleDateString()}
       </td>
       <td className="py-2 px-4">
-        {assignment?.agreedPrice ? `$${assignment.agreedPrice}` : "pending"}
+        {lesson?.agreedPrice ? `$${lesson.agreedPrice}` : "pending"}
       </td>
       <td className="py-2 px-4">
         <Badge
           color="primary"
           className="capitalize"
           style={{
-            backgroundColor:
-              assignment.status === "completed" ? "green" : "red",
+            backgroundColor: lesson.status === "completed" ? "green" : "red",
           }}
         >
-          {assignment.status}
+          {lesson.status}
         </Badge>
       </td>
-      <td className="py-2 px-4">{assignment.paid ? "Yes" : "No"}</td>
+      <td className="py-2 px-4">{lesson.paid ? "Yes" : "No"}</td>
       <td className="py-2 px-4 flex gap-2">
         <Button
           variant="outline"
           className="text-orange-800 border-orange-800 hover:bg-orange-200"
-          onClick={() => navigate(`/assignment/${assignment._id}`)}
+          onClick={() => navigate(`/lesson/${lesson._id}`)}
         >
           View Details
         </Button>
-        {!assignment.paid && (
+        {!lesson.paid && (
           <Button
             variant="outline"
             className="text-red-800 border-red-800 hover:bg-red-200"
@@ -118,4 +115,4 @@ const AssignmentItem = ({ assignment }) => {
   );
 };
 
-export default StudentAssignments;
+export default StudentLessons;

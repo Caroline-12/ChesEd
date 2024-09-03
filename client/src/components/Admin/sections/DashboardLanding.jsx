@@ -57,9 +57,7 @@ export default function DashboardLanding() {
                   <AvatarFallback>JS</AvatarFallback>
                 </Avatar>
                 <div>
-                  <div className="text-sm font-medium">
-                    New Assignment Feedback
-                  </div>
+                  <div className="text-sm font-medium">New lesson Feedback</div>
                   <div className="text-xs text-muted-foreground">
                     2 hours ago
                   </div>
@@ -68,7 +66,7 @@ export default function DashboardLanding() {
             </CardHeader>
             <CardContent>
               <div className="text-sm text-muted-foreground">
-                Your SQL Optimization assignment has been graded. Check your
+                Your SQL Optimization lesson has been graded. Check your
                 transcript for the feedback.
               </div>
             </CardContent>
@@ -82,7 +80,7 @@ export default function DashboardLanding() {
                 </Avatar>
                 <div>
                   <div className="text-sm font-medium">
-                    Assignment Status Update
+                    lesson Status Update
                   </div>
                   <div className="text-xs text-muted-foreground">1 day ago</div>
                 </div>
@@ -90,8 +88,8 @@ export default function DashboardLanding() {
             </CardHeader>
             <CardContent>
               <div className="text-sm text-muted-foreground">
-                Your CSS Styling assignment has been marked as "In Progress" by
-                your tutor.
+                Your CSS Styling lesson has been marked as "In Progress" by your
+                tutor.
               </div>
             </CardContent>
           </Card>
@@ -115,7 +113,7 @@ export default function DashboardLanding() {
             <CardContent>
               <div className="text-sm text-muted-foreground">
                 Your tutor, John Smith, has sent you a message regarding your
-                JavaScript Project. Please check your assignments.
+                JavaScript Project. Please check your lessons.
               </div>
             </CardContent>
           </Card>

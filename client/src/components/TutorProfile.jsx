@@ -149,10 +149,10 @@ export default function TutorProfile() {
 
         <div className="mt-8 flex justify-center">
           <Link
-            to={"/submit-assignment"}
+            to={"/submit-lesson"}
             className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-full"
           >
-            Submit Assignment
+            Submit lesson
           </Link>
           <button
             onClick={() => setShowChat(true)}

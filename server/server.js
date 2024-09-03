@@ -12,6 +12,26 @@ const credentials = require("./middleware/credentials");
 const mongoose = require("mongoose");
 const connectDB = require("./config/dbConn");
 const PORT = process.env.PORT || 3500;
+const stripe = require("stripe")(
+  "sk_test_51PuoPCP4U5T2onS0yNn9d6wNnKwrK9uGMNlKhLrNLD3wPglr5FapCTjLZKWQfN9Gyr6pgjTf7iInpdufn9RZXSQD00CtLQVqrn"
+);
+
+// app.post("/create-checkout-session", async (req, res) => {
+//   const session = await stripe.checkout.sessions.create({
+//     line_items: [
+//       {
+//         // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+//         price: "{{PRICE_ID}}",
+//         quantity: 1,
+//       },
+//     ],
+//     mode: "payment",
+//     success_url: `${YOUR_DOMAIN}?success=true`,
+//     cancel_url: `${YOUR_DOMAIN}?canceled=true`,
+//   });
+
+//   res.redirect(303, session.url);
+// });
 
 // Connect to MongoDB
 connectDB();
@@ -45,6 +65,8 @@ app.use("/register", require("./routes/register"));
 app.use("/auth", require("./routes/auth"));
 app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/logout"));
+app.use("/payments", require("./routes/api/payments"));
+
 // app.use("/forgot", require("./routes/forgot"));
 // app.use("/reset", require("./routes/reset"));
 app.use("/categories", require("./routes/api/category"));
@@ -52,9 +74,8 @@ app.use("/popular-courses", require("./routes/api/public"));
 app.use(verifyJWT);
 app.use("/users", require("./routes/api/users"));
 app.use("/courses", require("./routes/api/courses"));
-app.use("/assignments", require("./routes/api/assignments"));
+app.use("/lessons", require("./routes/api/lessons"));
 app.use("/tutors", require("./routes/api/tutors"));
-app.use("/payments", require("./routes/api/payments"));
 
 app.all("*", (req, res) => {
   res.status(404);

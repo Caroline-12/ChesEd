@@ -15,7 +15,7 @@ import {
 const TutorDashboard = () => {
   const { auth } = useAuth();
   const [dashboardData, setDashboardData] = useState({
-    recentAssignments: [],
+    recentlessons: [],
     totalEarnings: 0,
     monthlyEarnings: [],
     completionRate: 0,
@@ -46,12 +46,12 @@ const TutorDashboard = () => {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <Card>
         <CardHeader>
-          <CardTitle>Recent Assignments</CardTitle>
+          <CardTitle>Recent lessons</CardTitle>
         </CardHeader>
         <CardContent>
           <ul>
-            {dashboardData.recentAssignments.map((assignment) => (
-              <li key={assignment.id}>{assignment.title}</li>
+            {dashboardData.recentlessons.map((lesson) => (
+              <li key={lesson.id}>{lesson.title}</li>
             ))}
           </ul>
         </CardContent>

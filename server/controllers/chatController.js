@@ -2,12 +2,12 @@ const Chat = require("../model/Chat");
 const User = require("../model/User");
 
 const createChat = async (req, res) => {
-  const { participantIds, assignmentId } = req.body;
+  const { participantIds, lessonId } = req.body;
 
   try {
     const newChat = await Chat.create({
       participants: participantIds,
-      assignment: assignmentId,
+      lesson: lessonId,
     });
 
     res.status(201).json(newChat);
@@ -23,7 +23,7 @@ const getChats = async (req, res) => {
   try {
     const chats = await Chat.find({ participants: userId })
       .populate("participants", "username")
-      .populate("assignment", "title");
+      .populate("lesson", "title");
 
     res.json(chats);
   } catch (err) {
