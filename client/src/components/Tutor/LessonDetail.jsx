@@ -310,6 +310,34 @@ const LessonDetails = () => {
           )}
         </section>
 
+        <section className="mb-8 p-6 bg-gray-100 rounded-lg shadow-sm">
+          <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
+            Participant Information
+          </h3>
+          <div className="flex justify-between">
+            <div className="w-full md:w-1/2 mb-4 md:mb-0">
+              <h4 className="font-semibold text-lg mb-2">Student</h4>
+              <p>
+                <strong>Username:</strong> {lesson.student?.username}
+              </p>
+              <p>
+                <strong>Email:</strong> {lesson.student?.email}
+              </p>
+            </div>
+            {["in_progress", "completed"].includes(lesson.status) && (
+              <div className="w-full md:w-1/2">
+                <h4 className="font-semibold text-lg mb-2">Tutor</h4>
+                <p>
+                  <strong>Username:</strong> {lesson.tutor?.username || "N/A"}
+                </p>
+                <p>
+                  <strong>Email:</strong> {lesson.tutor?.email || "N/A"}
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* File Upload */}
         <section className="md:col-span-2 p-6 bg-gray-100 rounded-lg shadow-sm">
           <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">

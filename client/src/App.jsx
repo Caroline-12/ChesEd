@@ -67,7 +67,10 @@ export default function App() {
             <Route path="submit-lesson" element={<Submitlesson />} />
             <Route path="profile" element={<Profile />} />
             <Route path="courses/:courseId" element={<CourseDetail />} />
-            <Route path="/payment/:courseId" element={<PaymentPage />} />
+            <Route
+              path="/payment/:courseId/:agreedPrice"
+              element={<PaymentPage />}
+            />
             {/* <Route path="/payment/:courseId" element={<PaymentMethod />} /> */}
             <Route path="tutor/:id" element={<TutorProfile />} />
             {/* <Route path="/lesson/:id" element={<LessonDetails />} /> */}

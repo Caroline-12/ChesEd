@@ -3,8 +3,12 @@ import { useEffect, useState } from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "@/components/CheckoutForm";
 import { loadStripe } from "@stripe/stripe-js";
+import { useParams } from "react-router-dom";
 
 function PaymentPage() {
+  const lessonId = useParams();
+  const { agreedPrice } = useParams();
+  console.log(lessonId, agreedPrice);
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState("");
 
@@ -18,7 +22,10 @@ function PaymentPage() {
   useEffect(() => {
     fetch("http://localhost:3500/payments/create-payment-intent", {
       method: "POST",
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        lessonId,
+        agreedPrice,
+      }),
     }).then(async (result) => {
       var { clientSecret } = await result.json();
       setClientSecret(clientSecret);

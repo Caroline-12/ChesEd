@@ -47,6 +47,7 @@ function StudentLessons({ lessons }) {
                   <th className="py-2 text-start">Due Date</th>
                   <th className="py-2 text-start">Price</th>
                   <th className="py-2 text-start">Status</th>
+                  <th className="py-2 text-start">Tutor</th>
                   <th className="py-2 text-start">Paid</th>
                   <th className="py-2 text-center">Actions</th>
                 </tr>
@@ -74,14 +75,12 @@ const LessonItem = ({ lesson }) => {
 
   return (
     <tr className="border-b">
-      <td className="py-2 px-4  font-medium">{lesson.title}</td>
-      <td className="py-2 px-4">
-        {new Date(lesson.dueDate).toLocaleDateString()}
-      </td>
-      <td className="py-2 px-4">
+      <td className="py-2   font-medium">{lesson.title}</td>
+      <td className="py-2 ">{new Date(lesson.dueDate).toLocaleDateString()}</td>
+      <td className="py-2 ">
         {lesson?.agreedPrice ? `$${lesson.agreedPrice}` : "pending"}
       </td>
-      <td className="py-2 px-4">
+      <td className="py-2 ">
         <Badge
           color="primary"
           className="capitalize"
@@ -92,8 +91,10 @@ const LessonItem = ({ lesson }) => {
           {lesson.status}
         </Badge>
       </td>
-      <td className="py-2 px-4">{lesson.paid ? "Yes" : "No"}</td>
-      <td className="py-2 px-4 flex gap-2">
+      <td className="py-2 ">{lesson.tutor?.username || "N/A"}</td>
+
+      <td className="py-2 ">{lesson.paid ? "Yes" : "No"}</td>
+      <td className="py-2  flex gap-2 justify-center">
         <Button
           variant="outline"
           className="text-orange-800 border-orange-800 hover:bg-orange-200"

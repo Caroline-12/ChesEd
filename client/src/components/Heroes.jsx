@@ -62,6 +62,7 @@ const Heroes = () => {
               {dropdownVisible && (
                 <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-lg shadow-lg z-10">
                   <Button
+                    onClick={() => navigate("/register")}
                     variant="outline"
                     className="block w-full text-left px-6 py-3 text-gray-700  hover:bg-gray-100 transition"
                   >
@@ -82,7 +83,7 @@ const Heroes = () => {
               variant="outline"
               className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:text-orange-500 border-2 transition"
             >
-              Submit a Task
+              Request a lesson
             </Button>
           </div>
         </div>

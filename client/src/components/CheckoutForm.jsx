@@ -36,7 +36,6 @@ export default function CheckoutForm() {
     }
 
     setIsProcessing(false);
-    navigate(-1);
   };
 
   return (
