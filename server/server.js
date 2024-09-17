@@ -16,6 +16,22 @@ const stripe = require("stripe")(
   "sk_test_51PuoPCP4U5T2onS0yNn9d6wNnKwrK9uGMNlKhLrNLD3wPglr5FapCTjLZKWQfN9Gyr6pgjTf7iInpdufn9RZXSQD00CtLQVqrn"
 );
 
+// Include the http and socket.io modules
+const http = require("http");
+const { Server } = require("socket.io");
+
+// Create an HTTP server
+const server = http.createServer(app);
+
+// Initialize Socket.IO
+const io = new Server(server, {
+  cors: {
+    origin: corsOptions.origin,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
 // app.post("/create-checkout-session", async (req, res) => {
 //   const session = await stripe.checkout.sessions.create({
 //     line_items: [
@@ -90,7 +106,29 @@ app.all("*", (req, res) => {
 
 app.use(errorHandler);
 
+// Handle socket connections
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+
+  // Join the room
+  socket.on("joinRoom", ({ roomId, userType }) => {
+    socket.join(roomId);
+    console.log(`${userType} joined room: ${roomId}`);
+  });
+
+  // Listen for messages and broadcast them to the room
+  socket.on("sendMessage", ({ roomId, message }) => {
+    io.to(roomId).emit("receiveMessage", message);
+    console.log(`Message from ${message.sender}: ${message.content}`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+});
+
+// Start the server and Socket.IO
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });

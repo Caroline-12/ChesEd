@@ -1,66 +1,106 @@
-import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
-import useAuth from "@/hooks/useAuth";
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { X } from "lucide-react";
+import { io } from "socket.io-client";
 
-export default function ChatModal({ showChat, onClose }) {
+// Initialize the Socket.IO client
+const socket = io("http://localhost:3500"); // Use your backend URL
+
+export default function ChatModal({ showChat, onClose, roomId, userType }) {
   const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
-
-  const auth = useAuth();
-
-  const config = {
-    headers: { "Content-Type": "application/json" },
-    withCredentials: true,
-  };
-  if (auth?.accessToken) {
-    config.headers.Authorization = `Bearer ${auth.accessToken}`;
-  }
-  const socket = io("http://localhost:3500", config);
+  const [inputMessage, setInputMessage] = useState("");
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    socket.on("chat message", (msg) => {
-      setMessages((prevMessages) => [...prevMessages, msg]);
+    // Join the chat room when the component mounts
+    socket.emit("joinRoom", { roomId, userType });
+
+    // Listen for incoming messages
+    socket.on("receiveMessage", (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
     });
 
+    // Clean up on unmount
     return () => {
-      socket.off("chat message");
+      socket.off("receiveMessage");
     };
-  }, []);
+  }, [roomId, userType]);
 
-  const sendMessage = () => {
-    socket.emit("chat message", message);
-    setMessage("");
+  const sendMessage = (e) => {
+    e.preventDefault();
+    if (inputMessage.trim()) {
+      const newMessage = {
+        id: Date.now(),
+        sender: userType, // 'student', 'tutor', or 'admin'
+        content: inputMessage,
+        timestamp: new Date(),
+      };
+
+      // Send the message via socket
+      socket.emit("sendMessage", { roomId, message: newMessage });
+
+      // Add the message locally
+      // setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setInputMessage("");
+    }
   };
+
+  useEffect(() => {
+    // Scroll to the bottom of the messages list when a new message is added
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   if (!showChat) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-      <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-4">
-        <button className="text-gray-600 hover:text-gray-900" onClick={onClose}>
-          Close
-        </button>
-        <div className="flex flex-col mt-4 space-y-2">
-          {messages.map((msg, index) => (
-            <div key={index} className="bg-gray-100 p-2 rounded">
-              {msg}
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 flex">
-          <input
-            type="text"
-            className="w-full border rounded px-2 py-1"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <button
-            onClick={sendMessage}
-            className="ml-2 bg-blue-500 text-white px-4 rounded"
+    <div className="fixed bottom-4 right-4 w-80 h-96 bg-white rounded-lg shadow-lg flex flex-col overflow-hidden">
+      <div className="bg-blue-600 text-white p-3 flex justify-between items-center">
+        <h3 className="font-semibold">
+          Chat with {userType === "admin" ? "Conversation (Admin)" : "Tutor"}
+        </h3>
+        <Button variant="ghost" size="icon" onClick={onClose}>
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </Button>
+      </div>
+      <div className="flex-grow overflow-y-auto p-4">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`mb-2 ${
+              message.sender === userType ? "text-right" : "text-left"
+            }`}
           >
-            Send
-          </button>
-        </div>
+            <div
+              className={`inline-block p-2 rounded-lg ${
+                message.sender === userType
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-800"
+              }`}
+            >
+              {message.content}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              {new Date(message.timestamp).toLocaleTimeString()}
+            </div>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+      <div className="p-4 border-t">
+        <form onSubmit={sendMessage} className="flex gap-2">
+          <Input
+            type="text"
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            placeholder="Type your message..."
+            className="flex-grow"
+          />
+          <Button type="submit">Send</Button>
+        </form>
       </div>
     </div>
   );

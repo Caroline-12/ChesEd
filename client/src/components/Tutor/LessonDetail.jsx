@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "@/api/axios";
 import { useParams, useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
@@ -19,7 +19,7 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { toast, Toaster } from "sonner";
-import { PaystackButton } from "react-paystack";
+import ChatModal from "../ChatModal";
 
 const LessonDetails = () => {
   const { lessonId } = useParams();
@@ -32,6 +32,7 @@ const LessonDetails = () => {
   const session = useSession();
   const supabase = useSupabaseClient();
 
+  const [showChat, setShowChat] = useState(false);
   useEffect(() => {
     const fetchLessonDetails = async () => {
       try {
@@ -54,7 +55,7 @@ const LessonDetails = () => {
     fetchLessonDetails();
   }, [lessonId, auth?.accessToken]);
 
-  console.log(lesson);
+  // console.log(lesson);
 
   const handleGoBack = () => {
     navigate(-1);
@@ -84,7 +85,7 @@ const LessonDetails = () => {
           withCredentials: true,
         }
       );
-      toast.success("Written lesson submitted successfully!");
+      toast.success("Written lesson submitted successfully!", response.data);
     } catch (error) {
       console.error("Error submitting written lesson:", error);
       toast.error("Failed to submit written lesson");
@@ -205,33 +206,34 @@ const LessonDetails = () => {
   if (loading) return <Spinner />;
   if (!lesson) return <p>No lesson found</p>;
 
-  const config = {
-    reference: new Date().getTime().toString(),
-    email: lesson.student?.email,
-    // change this to the agreed amount
-    amount: lesson.proposedBudget * 100,
-    currency: "KES", // Change the currency to USD
-    publicKey: "pk_test_890d8a5a9d26cb4123a86f1b4679655493fbb60b",
-  };
+  // const config = {
+  //   reference: new Date().getTime().toString(),
+  //   email: lesson.student?.email,
+  //   // change this to the agreed amount
+  //   amount: lesson.proposedBudget * 100,
+  //   currency: "KES", // Change the currency to USD
+  //   publicKey: "pk_test_890d8a5a9d26cb4123a86f1b4679655493fbb60b",
+  // };
 
-  const handlePaystackSuccessAction = (reference) => {
-    // Implementation for whatever you want to do with reference and after success call.
-    toast.success("Payment successful");
-    navigate(`/lesson/${lessonId}`);
-  };
+  // // const handlePaystackSuccessAction = (reference) => {
+  // //   // Implementation for whatever you want to do with reference and after success call.
+  // //   toast.success("Payment successful");
+  // //   navigate(`/lesson/${lessonId}`);
+  // // };
 
-  // you can call this function anything
-  const handlePaystackCloseAction = () => {
-    // implementation for  whatever you want to do when the Paystack dialog closed.
-    toast.info("closed");
-  };
+  // // // you can call this function anything
+  // // const handlePaystackCloseAction = () => {
+  // //   // implementation for  whatever you want to do when the Paystack dialog closed.
+  // //   toast.info("closed");
+  // // };
 
-  const componentProps = {
-    ...config,
-    text: "Pay now",
-    onSuccess: (reference) => handlePaystackSuccessAction(reference),
-    onClose: handlePaystackCloseAction,
-  };
+  // // const componentProps = {
+  // //   ...config,
+  // //   text: "Pay now",
+  // //   onSuccess: (reference) => handlePaystackSuccessAction(reference),
+  // //   onClose: handlePaystackCloseAction,
+  // // };
+
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md font-sans">
       <Toaster />
@@ -243,10 +245,10 @@ const LessonDetails = () => {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* lesson Overview */}
+        {/* Lesson Overview */}
         <section className="p-6 bg-gray-100 rounded-lg shadow-sm">
           <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
-            lesson Overview
+            Lesson Overview
           </h3>
           <p>
             <strong>Description:</strong> {lesson.description}
@@ -275,7 +277,7 @@ const LessonDetails = () => {
             Status & Payment Information
           </h3>
           <p>
-            <strong>lesson Status:</strong>
+            <strong>Lesson Status:</strong>
             <Badge
               variant={
                 lesson.status === "pending"
@@ -338,87 +340,119 @@ const LessonDetails = () => {
           </div>
         </section>
 
-        {/* File Upload */}
-        <section className="md:col-span-2 p-6 bg-gray-100 rounded-lg shadow-sm">
+        {/* Section to trigger chat modal */}
+        <section className="p-6 bg-gray-100 rounded-lg shadow-sm">
           <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
-            Upload Written Lesson
+            Chat with Student
           </h3>
-          <form onSubmit={handleSubmitWrittenLesson}>
-            <Label
-              htmlFor="file-upload"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Upload File
-            </Label>
-            <Input
-              type="file"
-              id="file-upload"
-              onChange={handleFileChange}
-              className="mb-4"
-            />
-            <Button type="submit">Submit Lesson</Button>
-          </form>
+          <Button
+            onClick={() => {
+              setShowChat(true);
+            }}
+          >
+            Start Chat
+          </Button>
         </section>
+        {
+          <ChatModal
+            roomId={`lesson_${lessonId}`}
+            userType={
+              auth.roles.includes(1984)
+                ? "tutor"
+                : auth.roles.includes(2001)
+                ? "student"
+                : "admin"
+            }
+            showChat={showChat}
+            onClose={() => setShowChat(false)}
+          />
+        }
 
-        {/* Calendar Integration */}
-        <section className="md:col-span-2 p-6 bg-gray-100 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
-            Schedule a Virtual Lesson
-          </h3>
-          <Tabs defaultValue="calendar" className="mb-4">
-            <TabsList>
-              <TabsTrigger value="calendar">Pick a Date</TabsTrigger>
-              <TabsTrigger value="time">Pick a Time</TabsTrigger>
-            </TabsList>
-            <TabsContent value="calendar">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !start && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {start ? format(start, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={start}
-                    onSelect={setStart}
-                    disabled={(date) => date < new Date()}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </TabsContent>
-            <TabsContent value="time">
+        {/* File Upload - Only for Tutor */}
+        {auth.roles.includes(1984) && (
+          <section className="md:col-span-2 p-6 bg-gray-100 rounded-lg shadow-sm">
+            <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
+              Upload Written Lesson
+            </h3>
+            <form onSubmit={handleSubmitWrittenLesson}>
+              <Label
+                htmlFor="file-upload"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Upload File
+              </Label>
               <Input
-                type="time"
-                value={format(start, "HH:mm")}
-                onChange={handleTimeChange}
+                type="file"
+                id="file-upload"
+                onChange={handleFileChange}
+                className="mb-4"
               />
-            </TabsContent>
-          </Tabs>
-          <Button onClick={createCalendarEvent}>Create Calendar Event</Button>
+              <Button type="submit">Submit Lesson</Button>
+            </form>
+          </section>
+        )}
 
-          {session?.provider_token ? (
-            <Button
-              onClick={googleSignOut}
-              variant="destructive"
-              className="mt-2"
-            >
-              Disconnect Google Calendar
-            </Button>
-          ) : (
-            <Button onClick={googleSignIn} variant="outline" className="mt-2">
-              Connect Google Calendar
-            </Button>
-          )}
-        </section>
+        {/* Calendar Integration - Only for Tutor */}
+        {auth.roles.includes(1984) && (
+          <section className="md:col-span-2 p-6 bg-gray-100 rounded-lg shadow-sm">
+            <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
+              Schedule a Virtual Lesson
+            </h3>
+            <Tabs defaultValue="calendar" className="mb-4">
+              <TabsList>
+                <TabsTrigger value="calendar">Pick a Date</TabsTrigger>
+                <TabsTrigger value="time">Pick a Time</TabsTrigger>
+              </TabsList>
+              <TabsContent value="calendar">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !start && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {start ? format(start, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={start}
+                      onSelect={setStart}
+                      disabled={(date) => date < new Date()}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </TabsContent>
+              <TabsContent value="time">
+                <Input
+                  type="time"
+                  value={format(start, "HH:mm")}
+                  onChange={handleTimeChange}
+                />
+              </TabsContent>
+            </Tabs>
+            <Button onClick={createCalendarEvent}>Create Calendar Event</Button>
+
+            {session?.provider_token ? (
+              <Button
+                onClick={googleSignOut}
+                variant="destructive"
+                className="mt-2"
+              >
+                Disconnect Google Calendar
+              </Button>
+            ) : (
+              <Button onClick={googleSignIn} variant="outline" className="mt-2">
+                Connect Google Calendar
+              </Button>
+            )}
+          </section>
+        )}
       </div>
     </div>
   );
