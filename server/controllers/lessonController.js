@@ -283,6 +283,29 @@ const deleteLesson = async (req, res) => {
   }
 };
 
+// change the payment status of a lesson
+const changePaymentStatus = async (req, res) => {
+  const { lessonId } = req.body;
+
+  if (!lessonId) {
+    return res.status(400).json({ message: "Lesson ID is required" });
+  }
+
+  try {
+    const lesson = await Lesson.findById(lessonId);
+    if (!lesson) {
+      return res.status(404).json({ message: "Lesson not found" });
+    }
+
+    lesson.paymentStatus = true;
+    const updatedLesson = await lesson.save();
+    res.json(updatedLesson);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update payment status" });
+  }
+};
+
 // get Lesson by ID
 const getLesson = async (req, res) => {
   const { lessonId } = req.params;
@@ -301,6 +324,26 @@ const getLesson = async (req, res) => {
     }
 
     res.json(lesson);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch Lesson" });
+  }
+};
+// get agreed price of a lesson
+const getAgreedPrice = async (req, res) => {
+  const { lessonId } = req.params;
+
+  if (!lessonId) {
+    return res.status(400).json({ message: "Lesson ID is required" });
+  }
+
+  try {
+    const lesson = await Lesson.findById(lessonId);
+    if (!lesson) {
+      return res.status(404).json({ message: "Lesson not found" });
+    }
+
+    res.json({ agreedPrice: lesson.agreedPrice });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to fetch Lesson" });
@@ -379,4 +422,6 @@ module.exports = {
   getPendingLessons,
   getLessonsForTutor,
   completeLesson,
+  getAgreedPrice,
+  changePaymentStatus,
 };

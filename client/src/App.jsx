@@ -44,6 +44,8 @@ import WaitingLobby from "./components/WaitingLobby";
 import TutorProfile from "./components/TutorProfile";
 // import LessonDetails from "./components/Student/LessonDetails";
 import MyLessons from "./components/Tutor/sections/MyLessons";
+import PaymentSuccess from "./components/PaymentSuccess";
+import PaymentFailed from "./components/Tutor/PaymentFailed";
 export default function App() {
   return (
     <Routes>
@@ -74,6 +76,11 @@ export default function App() {
             {/* <Route path="/payment/:courseId" element={<PaymentMethod />} /> */}
             <Route path="tutor/:id" element={<TutorProfile />} />
             {/* <Route path="/lesson/:id" element={<LessonDetails />} /> */}
+            <Route
+              path="/payment-success/:lessonId"
+              element={<PaymentSuccess />}
+            />
+            <Route path="/payment-failed" element={<PaymentFailed />} />
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Tutor]} />}>

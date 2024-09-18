@@ -27,6 +27,13 @@ export default function ChatModal({ showChat, onClose, roomId, userType }) {
     };
   }, [roomId, userType]);
 
+  // Scroll to the bottom when messages are updated
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   const sendMessage = (e) => {
     e.preventDefault();
     if (inputMessage.trim()) {
@@ -41,17 +48,10 @@ export default function ChatModal({ showChat, onClose, roomId, userType }) {
       socket.emit("sendMessage", { roomId, message: newMessage });
 
       // Add the message locally
-      // setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInputMessage("");
     }
   };
-
-  useEffect(() => {
-    // Scroll to the bottom of the messages list when a new message is added
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
 
   if (!showChat) return null;
 

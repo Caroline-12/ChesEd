@@ -1,79 +1,70 @@
-const Chat = require("../model/Chat");
-const User = require("../model/User");
+const Message = require("../model/Chat");
+const Notification = require("../model/Notification");
+const UserStatus = require("../model/UserStatus");
 
-const createChat = async (req, res) => {
-  const { participantIds, lessonId } = req.body;
-
-  try {
-    const newChat = await Chat.create({
-      participants: participantIds,
-      lesson: lessonId,
-    });
-
-    res.status(201).json(newChat);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to create chat" });
-  }
-};
-
-const getChats = async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-    const chats = await Chat.find({ participants: userId })
-      .populate("participants", "username")
-      .populate("lesson", "title");
-
-    res.json(chats);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to fetch chats" });
-  }
-};
-
+// Function to send a message
 const sendMessage = async (req, res) => {
-  const { chatId, senderId, content } = req.body;
+  const { senderId, recipientId, content } = req.body;
 
   try {
-    const chat = await Chat.findById(chatId);
-    if (!chat) {
-      return res.status(404).json({ message: "Chat not found" });
+    const newMessage = new Message({ senderId, recipientId, content });
+    await newMessage.save();
+
+    // Check if the recipient is online
+    const recipientStatus = await UserStatus.findOne({ userId: recipientId });
+
+    if (!recipientStatus || !recipientStatus.isOnline) {
+      // Create a notification if the user is offline
+      const newNotification = new Notification({
+        userId: recipientId,
+        messageId: newMessage._id,
+      });
+      await newNotification.save();
     }
 
-    chat.messages.push({ sender: senderId, content });
-    await chat.save();
-
-    res.status(201).json(chat.messages[chat.messages.length - 1]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to send message" });
+    return res.status(200).json({ message: "Message sent successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to send message" });
   }
 };
 
-const getMessages = async (req, res) => {
-  const { chatId } = req.params;
+// Function to fetch chat history
+const fetchChatHistory = async (req, res) => {
+  const { senderId, recipientId } = req.params;
 
   try {
-    const chat = await Chat.findById(chatId).populate(
-      "messages.sender",
-      "username"
+    const messages = await Message.find({
+      $or: [
+        { senderId, recipientId },
+        { senderId: recipientId, recipientId: senderId },
+      ],
+    }).sort({ timestamp: 1 });
+
+    return res.status(200).json(messages);
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to fetch chat history" });
+  }
+};
+
+// Function to update user status (online/offline)
+const updateUserStatus = async (req, res) => {
+  const { userId, isOnline } = req.body;
+
+  try {
+    const userStatus = await UserStatus.findOneAndUpdate(
+      { userId },
+      { isOnline, lastSeen: isOnline ? null : Date.now() },
+      { new: true, upsert: true }
     );
 
-    if (!chat) {
-      return res.status(404).json({ message: "Chat not found" });
-    }
-
-    res.json(chat.messages);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to fetch messages" });
+    return res.status(200).json({ userStatus });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to update user status" });
   }
 };
 
 module.exports = {
-  createChat,
-  getChats,
   sendMessage,
-  getMessages,
+  fetchChatHistory,
+  updateUserStatus,
 };

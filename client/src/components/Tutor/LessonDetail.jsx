@@ -33,6 +33,7 @@ const LessonDetails = () => {
   const supabase = useSupabaseClient();
 
   const [showChat, setShowChat] = useState(false);
+
   useEffect(() => {
     const fetchLessonDetails = async () => {
       try {
@@ -203,36 +204,31 @@ const LessonDetails = () => {
     }
   };
 
+  const handlePayment = async () => {
+    try {
+      const response = await axios.post(
+        `/create-checkout-session`,
+        { lessonId },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response);
+      const { url } = response.data;
+      window.location.href = url;
+      // console.log(url);
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      toast.error("Failed to create checkout session");
+    }
+  };
+
   if (loading) return <Spinner />;
   if (!lesson) return <p>No lesson found</p>;
-
-  // const config = {
-  //   reference: new Date().getTime().toString(),
-  //   email: lesson.student?.email,
-  //   // change this to the agreed amount
-  //   amount: lesson.proposedBudget * 100,
-  //   currency: "KES", // Change the currency to USD
-  //   publicKey: "pk_test_890d8a5a9d26cb4123a86f1b4679655493fbb60b",
-  // };
-
-  // // const handlePaystackSuccessAction = (reference) => {
-  // //   // Implementation for whatever you want to do with reference and after success call.
-  // //   toast.success("Payment successful");
-  // //   navigate(`/lesson/${lessonId}`);
-  // // };
-
-  // // // you can call this function anything
-  // // const handlePaystackCloseAction = () => {
-  // //   // implementation for  whatever you want to do when the Paystack dialog closed.
-  // //   toast.info("closed");
-  // // };
-
-  // // const componentProps = {
-  // //   ...config,
-  // //   text: "Pay now",
-  // //   onSuccess: (reference) => handlePaystackSuccessAction(reference),
-  // //   onClose: handlePaystackCloseAction,
-  // // };
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md font-sans">
@@ -301,9 +297,7 @@ const LessonDetails = () => {
                 Make Payment
               </h4>
               <Button
-                onClick={() => {
-                  navigate(`/payment/${lessonId}`);
-                }}
+                onClick={handlePayment}
                 className="bg-blue-600 text-white"
               >
                 Pay Now
@@ -362,6 +356,10 @@ const LessonDetails = () => {
                 : auth.roles.includes(2001)
                 ? "student"
                 : "admin"
+            }
+            userId={auth.ID}
+            recipientId={
+              auth.roles.includes(1984) ? lesson.student._id : lesson.tutor._id
             }
             showChat={showChat}
             onClose={() => setShowChat(false)}

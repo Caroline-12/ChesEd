@@ -1,4 +1,5 @@
 require("dotenv").config();
+const Lesson = require("./model/Lesson");
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -12,10 +13,10 @@ const credentials = require("./middleware/credentials");
 const mongoose = require("mongoose");
 const connectDB = require("./config/dbConn");
 const PORT = process.env.PORT || 3500;
-const stripe = require("stripe")(
-  "sk_test_51PuoPCP4U5T2onS0yNn9d6wNnKwrK9uGMNlKhLrNLD3wPglr5FapCTjLZKWQfN9Gyr6pgjTf7iInpdufn9RZXSQD00CtLQVqrn"
-);
-
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const UserStatus = require("./model/UserStatus");
+const chatController = require("./controllers/chatController");
+const chatRoutes = require("./routes/api/chatRoutes");
 // Include the http and socket.io modules
 const http = require("http");
 const { Server } = require("socket.io");
@@ -92,6 +93,61 @@ app.use("/users", require("./routes/api/users"));
 app.use("/courses", require("./routes/api/courses"));
 app.use("/lessons", require("./routes/api/lessons"));
 app.use("/tutors", require("./routes/api/tutors"));
+app.use("/chat", chatRoutes);
+
+app.post("/create-checkout-session", async (req, res) => {
+  const { lessonId } = req.body;
+  console.log(lessonId);
+  if (!lessonId) {
+    return res.status(400).send({
+      error: {
+        message: "Lesson ID is required",
+      },
+    });
+  }
+
+  try {
+    // Assuming you have a function to get the agreed price of a lesson
+    const lesson = await Lesson.findById(lessonId);
+    if (!lesson) {
+      return res.status(404).send({
+        error: {
+          message: "Lesson not found",
+        },
+      });
+    }
+
+    const amount = lesson.agreedPrice; // Get the agreed price of the lesson
+    console.log(amount);
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "Lesson",
+            },
+            unit_amount: amount * 100,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${process.env.CLIENT_URL}/payment-success/${lessonId}`,
+      cancel_url: `${process.env.CLIENT_URL}/payment-failure`,
+    });
+    res.json({
+      url: session.url,
+    });
+  } catch (e) {
+    return res.status(500).send({
+      error: {
+        message: e.message,
+      },
+    });
+  }
+});
 
 app.all("*", (req, res) => {
   res.status(404);
@@ -106,7 +162,6 @@ app.all("*", (req, res) => {
 
 app.use(errorHandler);
 
-// Handle socket connections
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 

@@ -61,4 +61,11 @@ router
   .route("/complete")
   .put(verifyRoles(ROLES_LIST.Tutor), lessonController.completeLesson);
 
+router
+  .route("/:lessonId/payment-status")
+  .patch(
+    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Tutor),
+    lessonController.changePaymentStatus
+  );
+
 module.exports = router;

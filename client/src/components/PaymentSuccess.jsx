@@ -1,26 +1,6 @@
-import { useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import axios from "@/api/axios";
-import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 const PaymentSuccess = () => {
-  const { lessonId } = useParams();
-
-  useEffect(() => {
-    const updatePaymentStatus = async () => {
-      try {
-        await axios.patch(`/lessons/${lessonId}/payment-status`, {
-          status: "paid",
-        });
-        toast.success("Payment status updated successfully.");
-      } catch (error) {
-        toast.error("Failed to update payment status.");
-      }
-    };
-
-    updatePaymentStatus();
-  }, [lessonId]);
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-green-50">
       <div className="bg-white p-8 rounded-lg shadow-lg text-center">
