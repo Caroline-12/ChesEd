@@ -357,7 +357,7 @@ const LessonDetails = () => {
                 ? "student"
                 : "admin"
             }
-            userId={auth.ID}
+            senderId={auth.ID}
             recipientId={
               auth.roles.includes(1984) ? lesson.student._id : lesson.tutor._id
             }

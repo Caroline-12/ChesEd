@@ -17,6 +17,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const UserStatus = require("./model/UserStatus");
 const chatController = require("./controllers/chatController");
 const chatRoutes = require("./routes/api/chatRoutes");
+const Message = require("./model/Chat");
 // Include the http and socket.io modules
 const http = require("http");
 const { Server } = require("socket.io");
@@ -162,19 +163,41 @@ app.all("*", (req, res) => {
 
 app.use(errorHandler);
 
+// Socket.IO connection
 io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
+  console.log("User connected:", socket.id);
 
-  // Join the room
-  socket.on("joinRoom", ({ roomId, userType }) => {
+  // Join a room
+  socket.on("joinRoom", async ({ roomId }) => {
     socket.join(roomId);
-    console.log(`${userType} joined room: ${roomId}`);
+    // Retrieve and send previous conversation from DB
+    const messages = await Message.find({ roomId }).sort({ timestamp: 1 });
+    socket.emit("previousMessages", messages);
   });
 
-  // Listen for messages and broadcast them to the room
-  socket.on("sendMessage", ({ roomId, message }) => {
-    io.to(roomId).emit("receiveMessage", message);
-    console.log(`Message from ${message.sender}: ${message.content}`);
+  // Listen for a new message
+  socket.on(
+    "sendMessage",
+    async ({ roomId, senderId, recipientId, message }) => {
+      const newMessage = new Message({
+        roomId,
+        senderId,
+        recipientId,
+        message,
+      });
+      await newMessage.save(); // Save to DB
+
+      // Broadcast message to room
+      io.to(roomId).emit("receiveMessage", newMessage);
+
+      // Send a notification if the user isn't in the room
+      // (Implement your notification logic here)
+    }
+  );
+
+  // Mark message as received
+  socket.on("messageReceived", async (messageId) => {
+    await Message.findByIdAndUpdate(messageId, { isReceived: true });
   });
 
   socket.on("disconnect", () => {

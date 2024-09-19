@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const messageSchema = new Schema({
+  roomId: { type: String, required: true },
   senderId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -12,7 +13,7 @@ const messageSchema = new Schema({
     ref: "User",
     required: true,
   },
-  content: { type: String, required: true },
+  message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
   isRead: { type: Boolean, default: false }, // Tracks if the message has been read
   notificationSent: { type: Boolean, default: false }, // Tracks if a notification has been sent

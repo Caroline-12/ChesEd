@@ -7,25 +7,37 @@ import { io } from "socket.io-client";
 // Initialize the Socket.IO client
 const socket = io("http://localhost:3500"); // Use your backend URL
 
-export default function ChatModal({ showChat, onClose, roomId, userType }) {
+export default function ChatModal({
+  showChat,
+  onClose,
+  roomId,
+  senderId,
+  recipientId,
+}) {
   const [messages, setMessages] = useState([]);
-  const [inputMessage, setInputMessage] = useState("");
+  const [newMessage, setNewMessage] = useState("");
+
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    // Join the chat room when the component mounts
-    socket.emit("joinRoom", { roomId, userType });
+    // Join the room
+    socket.emit("joinRoom", { roomId, senderId, recipientId });
 
-    // Listen for incoming messages
-    socket.on("receiveMessage", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+    // Listen for previous messages
+    socket.on("previousMessages", (msgs) => {
+      setMessages(msgs);
     });
 
-    // Clean up on unmount
+    // Listen for new messages
+    socket.on("receiveMessage", (msg) => {
+      setMessages((prev) => [...prev, msg]);
+    });
+
     return () => {
+      socket.off("previousMessages");
       socket.off("receiveMessage");
     };
-  }, [roomId, userType]);
+  }, [roomId, senderId, recipientId]);
 
   // Scroll to the bottom when messages are updated
   useEffect(() => {
@@ -36,20 +48,18 @@ export default function ChatModal({ showChat, onClose, roomId, userType }) {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    if (inputMessage.trim()) {
-      const newMessage = {
-        id: Date.now(),
-        sender: userType, // 'student', 'tutor', or 'admin'
-        content: inputMessage,
-        timestamp: new Date(),
-      };
-
+    if (newMessage.trim()) {
       // Send the message via socket
-      socket.emit("sendMessage", { roomId, message: newMessage });
+      socket.emit("sendMessage", {
+        roomId,
+        senderId,
+        recipientId,
+        message: newMessage,
+      });
 
       // Add the message locally
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setInputMessage("");
+      setNewMessage("");
     }
   };
 
@@ -58,9 +68,7 @@ export default function ChatModal({ showChat, onClose, roomId, userType }) {
   return (
     <div className="fixed bottom-4 right-4 w-80 h-96 bg-white rounded-lg shadow-lg flex flex-col overflow-hidden">
       <div className="bg-blue-600 text-white p-3 flex justify-between items-center">
-        <h3 className="font-semibold">
-          Chat with {userType === "admin" ? "Conversation (Admin)" : "Tutor"}
-        </h3>
+        <h3 className="font-semibold">Chat</h3>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
@@ -71,17 +79,17 @@ export default function ChatModal({ showChat, onClose, roomId, userType }) {
           <div
             key={message.id}
             className={`mb-2 ${
-              message.sender === userType ? "text-right" : "text-left"
+              message.senderId === senderId ? "text-right" : "text-left"
             }`}
           >
             <div
               className={`inline-block p-2 rounded-lg ${
-                message.sender === userType
+                message.senderId === senderId
                   ? "bg-blue-500 text-white"
                   : "bg-gray-200 text-gray-800"
               }`}
             >
-              {message.content}
+              {message.message}
             </div>
             <div className="text-xs text-gray-500 mt-1">
               {new Date(message.timestamp).toLocaleTimeString()}
@@ -94,8 +102,8 @@ export default function ChatModal({ showChat, onClose, roomId, userType }) {
         <form onSubmit={sendMessage} className="flex gap-2">
           <Input
             type="text"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type your message..."
             className="flex-grow"
           />
