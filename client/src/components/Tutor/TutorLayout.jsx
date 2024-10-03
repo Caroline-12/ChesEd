@@ -39,6 +39,8 @@ import UsersSection from "./sections/UsersSection";
 import DashboardLanding from "./TutorLanding";
 import TutorLanding from "./TutorLanding";
 import MyLessons from "./sections/MyLessons";
+import Chatpage from "../Student/Chatpage";
+import SideDrawer from "../miscellaneous/SideDrawer";
 
 export function TutorLayout() {
   const { auth } = useAuth();
@@ -108,6 +110,7 @@ export function TutorLayout() {
         <nav className="flex-1 px-2 py-4">{navItems.map(renderNavItem)}</nav>
         <div className="p-4">
           <Link
+            // Implement logic to log out
             to="/login"
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 mt-2"
           >
@@ -136,6 +139,9 @@ export function TutorLayout() {
               </nav>
             </SheetContent>
           </Sheet>
+          <div className="flex flex-col w-full">
+            <SideDrawer />
+          </div>
         </header>
 
         <main className="flex-1 p-6">
@@ -147,7 +153,7 @@ export function TutorLayout() {
                 <Lessons lessons={lessons} loading={loading} error={error} />
               }
             />
-            <Route path="chat" element={<ChatSection />} />
+            <Route path="chat" element={<Chatpage />} />
             <Route path="revenue" element={<RevenueSection />} />
             <Route path="profile" element={<UsersSection />} />
             <Route path="mylessons" element={<MyLessons />} />

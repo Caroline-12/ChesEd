@@ -14,10 +14,10 @@ const mongoose = require("mongoose");
 const connectDB = require("./config/dbConn");
 const PORT = process.env.PORT || 3500;
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const UserStatus = require("./model/UserStatus");
-const chatController = require("./controllers/chatController");
-const chatRoutes = require("./routes/api/chatRoutes");
-const Message = require("./model/Chat");
+const chatRoutes = require("./routes/api/chats");
+const messageRoutes = require("./routes/api/messages");
+const notificationRoutes = require("./routes/api/notifications");
+
 // Include the http and socket.io modules
 const http = require("http");
 const { Server } = require("socket.io");
@@ -26,11 +26,11 @@ const { Server } = require("socket.io");
 const server = http.createServer(app);
 
 // Initialize Socket.IO
-const io = new Server(server, {
+const io = require("socket.io")(server, {
+  pingTimeout: 60000,
   cors: {
-    origin: corsOptions.origin,
-    methods: ["GET", "POST"],
-    credentials: true,
+    origin: "http://localhost:5173",
+    // credentials: true,
   },
 });
 
@@ -95,6 +95,8 @@ app.use("/courses", require("./routes/api/courses"));
 app.use("/lessons", require("./routes/api/lessons"));
 app.use("/tutors", require("./routes/api/tutors"));
 app.use("/chat", chatRoutes);
+app.use("/message", messageRoutes);
+app.use("/notifications", notificationRoutes);
 
 app.post("/create-checkout-session", async (req, res) => {
   const { lessonId } = req.body;
@@ -121,7 +123,6 @@ app.post("/create-checkout-session", async (req, res) => {
     const amount = lesson.agreedPrice; // Get the agreed price of the lesson
     console.log(amount);
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
@@ -163,48 +164,40 @@ app.all("*", (req, res) => {
 
 app.use(errorHandler);
 
-// Socket.IO connection
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-
-  // Join a room
-  socket.on("joinRoom", async ({ roomId }) => {
-    socket.join(roomId);
-    // Retrieve and send previous conversation from DB
-    const messages = await Message.find({ roomId }).sort({ timestamp: 1 });
-    socket.emit("previousMessages", messages);
+  console.log("Connected to socket.io");
+  socket.on("setup", (userData) => {
+    console.log(userData);
+    console.log(`User ${userData.ID} connected to socket.io`);
+    socket.join(userData.ID);
+    socket.emit("connected");
   });
 
-  // Listen for a new message
-  socket.on(
-    "sendMessage",
-    async ({ roomId, senderId, recipientId, message }) => {
-      const newMessage = new Message({
-        roomId,
-        senderId,
-        recipientId,
-        message,
-      });
-      await newMessage.save(); // Save to DB
+  socket.on("join chat", (room) => {
+    socket.join(room);
+    console.log("User Joined Room: " + room);
+  });
+  socket.on("typing", (room) => socket.in(room).emit("typing"));
+  socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
-      // Broadcast message to room
-      io.to(roomId).emit("receiveMessage", newMessage);
+  socket.on("new message", (newMessageReceived) => {
+    console.log("new message received");
+    var chat = newMessageReceived.chat;
 
-      // Send a notification if the user isn't in the room
-      // (Implement your notification logic here)
-    }
-  );
+    if (!chat.users) return console.log("chat.users not defined");
 
-  // Mark message as received
-  socket.on("messageReceived", async (messageId) => {
-    await Message.findByIdAndUpdate(messageId, { isReceived: true });
+    chat.users.forEach((user) => {
+      if (user._id == newMessageReceived.sender._id) return;
+
+      socket.in(user._id).emit("message received", newMessageReceived);
+    });
   });
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+  socket.on("disconnect", (userData) => {
+    console.log("USER DISCONNECTED");
+    socket.leave(userData._id);
   });
 });
-
 // Start the server and Socket.IO
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");

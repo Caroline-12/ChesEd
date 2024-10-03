@@ -6,6 +6,8 @@ import { AuthProvider } from "./context/AuthProvider.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
+import ChatProvider from "./context/ChatProvider.jsx";
+import { ChakraProvider } from "@chakra-ui/react";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
@@ -16,9 +18,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <SessionContextProvider supabaseClient={supabase}>
         <AuthProvider>
-          <Routes>
-            <Route path="/*" element={<App />} />
-          </Routes>
+          <ChakraProvider>
+            <ChatProvider>
+              <Routes>
+                <Route path="/*" element={<App />} />
+              </Routes>
+            </ChatProvider>
+          </ChakraProvider>
         </AuthProvider>
       </SessionContextProvider>
     </BrowserRouter>

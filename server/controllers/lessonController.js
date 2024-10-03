@@ -308,6 +308,7 @@ const changePaymentStatus = async (req, res) => {
 
 // get Lesson by ID
 const getLesson = async (req, res) => {
+  console.log(req);
   const { lessonId } = req.params;
 
   if (!lessonId) {

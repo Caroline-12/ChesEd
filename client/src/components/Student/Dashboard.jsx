@@ -15,27 +15,14 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import StudentLessons from "./sections/StudentLessons";
-import Courses from "./sections/AllCourses";
 import Payments from "./sections/StudentPayments";
 import DashboardLanding from "./sections/DashboardLanding";
 import PopularCourses from "../PopularCourses";
+
+import Chatpage from "./Chatpage";
+import SideDrawer from "../miscellaneous/SideDrawer";
 
 export default function Dashboard() {
   const { auth } = useAuth();
@@ -92,6 +79,15 @@ export default function Dashboard() {
           >
             <Package className="h-5 w-5" />
             My lessons
+          </Link>
+          <Link
+            to="/dashboard/chats"
+            className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
+              location.pathname === "/dashboard/chats" ? "bg-gray-700" : ""
+            }`}
+          >
+            <Package className="h-5 w-5" />
+            My Chats
           </Link>
           <Link
             to="/dashboard/courses"
@@ -195,44 +191,8 @@ export default function Dashboard() {
             </SheetContent>
           </Sheet>
 
-          <div className="flex items-center space-x-4">
-            <Input placeholder="Search..." className="hidden md:block" />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Search className="h-5 w-5" />
-                  <span className="sr-only">Search</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <Input placeholder="Search..." />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button variant="outline" size="icon">
-              <Bell className="h-5 w-5" />
-              <Badge variant="dot" className="absolute right-1 top-1" />
-              <span className="sr-only">Notifications</span>
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <CircleUser className="h-5 w-5" />
-                  <span className="sr-only">Profile</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link to="/dashboard/profile">Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link to="/logout">Logout</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex flex-col w-full">
+            <SideDrawer />
           </div>
         </header>
 
@@ -243,6 +203,8 @@ export default function Dashboard() {
               path="/lessons"
               element={<StudentLessons lessons={lessons} />}
             />
+            <Route path="chats" element={<Chatpage />} />
+
             <Route path="/courses" element={<PopularCourses />} />
             <Route path="/payments" element={<Payments />} />
           </Routes>

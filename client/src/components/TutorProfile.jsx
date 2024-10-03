@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { useParams, Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import ChatModal from "./ChatModal";
+// import ChatModal from "./ChatModal";
 
 export default function TutorProfile() {
   const { auth } = useAuth();
@@ -162,7 +162,7 @@ export default function TutorProfile() {
           </button>
         </div>
 
-        <ChatModal showChat={showChat} onClose={() => setShowChat(false)} />
+        {/* <ChatModal showChat={showChat} onClose={() => setShowChat(false)} /> */}
       </div>
     </section>
   );

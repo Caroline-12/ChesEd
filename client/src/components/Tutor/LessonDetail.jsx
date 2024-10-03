@@ -19,7 +19,7 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { toast, Toaster } from "sonner";
-import ChatModal from "../ChatModal";
+import { ChatState } from "@/context/ChatProvider";
 
 const LessonDetails = () => {
   const { lessonId } = useParams();
@@ -31,8 +31,9 @@ const LessonDetails = () => {
   const [start, setStart] = useState(new Date());
   const session = useSession();
   const supabase = useSupabaseClient();
+  const [loadingChat, setLoadingChat] = useState(false);
 
-  const [showChat, setShowChat] = useState(false);
+  const { setSelectedChat, chats, setChats } = ChatState();
 
   useEffect(() => {
     const fetchLessonDetails = async () => {
@@ -46,6 +47,7 @@ const LessonDetails = () => {
         }
         const response = await axios.get(`/lessons/${lessonId}`, config);
         setLesson(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching lesson details", error);
       } finally {
@@ -56,7 +58,7 @@ const LessonDetails = () => {
     fetchLessonDetails();
   }, [lessonId, auth?.accessToken]);
 
-  // console.log(lesson);
+  console.log(lesson);
 
   const handleGoBack = () => {
     navigate(-1);
@@ -230,6 +232,39 @@ const LessonDetails = () => {
   if (loading) return <Spinner />;
   if (!lesson) return <p>No lesson found</p>;
 
+  const accessChat = async (userId) => {
+    console.log(userId);
+
+    try {
+      setLoadingChat(true);
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${auth.accessToken}`,
+        },
+      };
+      const { data } = await axios.post(
+        `/chat`,
+        { chatWith: userId, myUserId: auth.ID },
+        config
+      );
+
+      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      setSelectedChat(data);
+      setLoadingChat(false);
+      navigate(auth.roles.includes(1984) ? "/tutor/chat/" : "/dashboard/chats");
+    } catch (error) {
+      toast({
+        title: "Error fetching the chat",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md font-sans">
       <Toaster />
@@ -337,17 +372,20 @@ const LessonDetails = () => {
         {/* Section to trigger chat modal */}
         <section className="p-6 bg-gray-100 rounded-lg shadow-sm">
           <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
-            Chat with Student
+            Chat with Participant
           </h3>
           <Button
             onClick={() => {
-              setShowChat(true);
+              const participantId = auth.roles.includes(1984)
+                ? lesson.student._id
+                : lesson.tutor._id;
+              accessChat(participantId);
             }}
           >
             Start Chat
           </Button>
         </section>
-        {
+        {/* {
           <ChatModal
             roomId={`lesson_${lessonId}`}
             userType={
@@ -364,7 +402,7 @@ const LessonDetails = () => {
             showChat={showChat}
             onClose={() => setShowChat(false)}
           />
-        }
+        } */}
 
         {/* File Upload - Only for Tutor */}
         {auth.roles.includes(1984) && (

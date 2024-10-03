@@ -46,6 +46,8 @@ import TutorProfile from "./components/TutorProfile";
 import MyLessons from "./components/Tutor/sections/MyLessons";
 import PaymentSuccess from "./components/PaymentSuccess";
 import PaymentFailed from "./components/Tutor/PaymentFailed";
+import MyChats from "./components/MyChats";
+import Chatpage from "./components/Student/Chatpage";
 export default function App() {
   return (
     <Routes>
@@ -61,6 +63,7 @@ export default function App() {
         <Route path="waiting-lobby" element={<WaitingLobby />} />
         <Route path="tutor-registration" element={<TutorRegistrationForm />} />
         <Route path="/" element={<Landing />} />
+        <Route path="chats" element={<MyChats />} />
 
         {/* we want to protect these routes */}
         <Route element={<PersistLogin />}>
@@ -88,6 +91,7 @@ export default function App() {
               <Route path="opportunities" element={<ManageLessons />} />
               <Route path="payments" element={<Payments />} />
               <Route path="mylessons" element={<MyLessons />} />
+              <Route path="chat" element={<Chatpage />} />
             </Route>
           </Route>
 
