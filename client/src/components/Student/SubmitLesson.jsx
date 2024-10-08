@@ -24,6 +24,7 @@ import axios from "@/api/axios";
 import useAuth from "../../hooks/useAuth";
 import { ArrowLeft, Upload } from "lucide-react";
 import emailjs from "@emailjs/browser";
+import Spinner from "../Spinner";
 const LESSONS_URL = "/lessons";
 
 export default function SubmitLesson() {
@@ -40,6 +41,7 @@ export default function SubmitLesson() {
     file: null,
     modeOfDelivery: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!auth?.accessToken) {
@@ -82,6 +84,7 @@ export default function SubmitLesson() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     const formData = new FormData();
     Object.entries(lessonDetails).forEach(([key, value]) => {
       formData.append(key, value);
@@ -96,6 +99,7 @@ export default function SubmitLesson() {
         },
         withCredentials: true,
       });
+      console.log(response);
       toast.success("Lesson submitted successfully!");
 
       // Send an email using EmailJS
@@ -122,10 +126,8 @@ export default function SubmitLesson() {
             toast.error("Failed to send email: " + error.text);
           }
         );
-
-      setTimeout(() => {
-        navigate("/dashboard/lessons");
-      }, 2000);
+      setIsSubmitting(false);
+      navigate("/dashboard/lessons");
     } catch (error) {
       toast.error(
         "Submission failed: " + error.response?.data?.message || error.message
@@ -134,134 +136,140 @@ export default function SubmitLesson() {
   };
 
   return (
-    <Card className="max-w-2xl mx-auto my-10">
-      <CardHeader>
-        <Button
-          variant="ghost"
-          className="w-fit p-0 mb-4"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Go Back
-        </Button>
-        <CardTitle className="text-3xl font-bold text-center">
-          Request a lesson
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6"
-          encType="multipart/form-data"
-        >
-          <div className="space-y-2">
-            <Label htmlFor="title">Lesson Title</Label>
-            <Input
-              id="title"
-              name="title"
-              value={lessonDetails.title}
-              onChange={handleInputChange}
-              placeholder="Enter the title of your lesson"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={lessonDetails.description}
-              onChange={handleInputChange}
-              placeholder="Describe your lesson in detail"
-              required
-              rows={4}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
-            <Select
-              name="category"
-              onValueChange={(value) =>
-                setLessonDetails((prev) => ({ ...prev, category: value }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category._id} value={category.name}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="proposedBudget">Proposed Budget (in $)</Label>
-            <Input
-              id="proposedBudget"
-              name="proposedBudget"
-              type="number"
-              value={lessonDetails.proposedBudget}
-              onChange={handleInputChange}
-              placeholder="Enter your proposed budget"
-              required
-              min="0"
-              step="0.01"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="dueDate">Due Date</Label>
-            <Input
-              id="dueDate"
-              name="dueDate"
-              type="date"
-              value={lessonDetails.dueDate}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="file">Upload Document</Label>
-            <div className="flex items-center space-x-2">
+    <>
+      {isSubmitting && <Spinner />}
+      <Card className="max-w-2xl mx-auto my-10">
+        <CardHeader>
+          <Button
+            variant="ghost"
+            className="w-fit p-0 mb-4"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Go Back
+          </Button>
+          <CardTitle className="text-3xl font-bold text-center">
+            Request a lesson
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6"
+            encType="multipart/form-data"
+          >
+            <div className="space-y-2">
+              <Label htmlFor="title">Lesson Title</Label>
               <Input
-                id="file"
-                name="file"
-                type="file"
+                id="title"
+                name="title"
+                value={lessonDetails.title}
                 onChange={handleInputChange}
-                className="flex-grow"
+                placeholder="Enter the title of your lesson"
+                required
               />
-              <Button type="button" size="icon">
-                <Upload className="h-4 w-4" />
-              </Button>
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label>Mode of Delivery</Label>
-            <RadioGroup
-              name="modeOfDelivery"
-              onValueChange={(value) =>
-                setLessonDetails((prev) => ({ ...prev, modeOfDelivery: value }))
-              }
-            >
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                name="description"
+                value={lessonDetails.description}
+                onChange={handleInputChange}
+                placeholder="Describe your lesson in detail"
+                required
+                rows={4}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+              <Select
+                name="category"
+                onValueChange={(value) =>
+                  setLessonDetails((prev) => ({ ...prev, category: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category._id} value={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="proposedBudget">Proposed Budget (in $)</Label>
+              <Input
+                id="proposedBudget"
+                name="proposedBudget"
+                type="number"
+                value={lessonDetails.proposedBudget}
+                onChange={handleInputChange}
+                placeholder="Enter your proposed budget"
+                required
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="dueDate">Due Date</Label>
+              <Input
+                id="dueDate"
+                name="dueDate"
+                type="date"
+                value={lessonDetails.dueDate}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="file">Upload Document</Label>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="online" id="online" />
-                <Label htmlFor="online">Virtual Lesson</Label>
+                <Input
+                  id="file"
+                  name="file"
+                  type="file"
+                  onChange={handleInputChange}
+                  className="flex-grow"
+                />
+                <Button type="button" size="icon">
+                  <Upload className="h-4 w-4" />
+                </Button>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="offline" id="offline" />
-                <Label htmlFor="offline">Written Lesson</Label>
-              </div>
-            </RadioGroup>
-          </div>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <Button type="submit" className="w-full" onClick={handleSubmit}>
-          Submit Lesson
-        </Button>
-      </CardFooter>
-    </Card>
+            </div>
+            <div className="space-y-2">
+              <Label>Mode of Delivery</Label>
+              <RadioGroup
+                name="modeOfDelivery"
+                onValueChange={(value) =>
+                  setLessonDetails((prev) => ({
+                    ...prev,
+                    modeOfDelivery: value,
+                  }))
+                }
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="online" id="online" />
+                  <Label htmlFor="online">Virtual Lesson</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="offline" id="offline" />
+                  <Label htmlFor="offline">Written Lesson</Label>
+                </div>
+              </RadioGroup>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter>
+          <Button type="submit" className="w-full" onClick={handleSubmit}>
+            Submit Lesson
+          </Button>
+        </CardFooter>
+      </Card>
+    </>
   );
 }
