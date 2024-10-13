@@ -207,25 +207,18 @@ const LessonDetails = () => {
   };
 
   const handlePayment = async () => {
+    console.log("Initiate payment for lesson ID:", lessonId);
     try {
-      const response = await axios.post(
-        `/create-checkout-session`,
-        { lessonId },
-        {
-          headers: {
-            Authorization: `Bearer ${auth.accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post(`/payments/create-checkout-session`, {
+        lessonId,
+      });
 
-      console.log(response);
-      const { url } = response.data;
-      window.location.href = url;
-      // console.log(url);
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      }
     } catch (error) {
-      console.error("Error creating checkout session:", error);
-      toast.error("Failed to create checkout session");
+      const err = error.response.data.error.message;
+      toast.error(err);
     }
   };
 
