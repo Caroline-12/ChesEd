@@ -7,19 +7,10 @@ import Spinner from "../Spinner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useCalendlyEventListener } from "react-calendly";
 import { toast, Toaster } from "sonner";
 import { ChatState } from "@/context/ChatProvider";
+import { PopupButton } from "react-calendly";
 
 const LessonDetails = () => {
   const { lessonId } = useParams();
@@ -28,10 +19,6 @@ const LessonDetails = () => {
   const { auth } = useAuth();
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
-  const [start, setStart] = useState(new Date());
-  const session = useSession();
-  const supabase = useSupabaseClient();
-  const [loadingChat, setLoadingChat] = useState(false);
 
   const { setSelectedChat, chats, setChats } = ChatState();
 
@@ -95,114 +82,19 @@ const LessonDetails = () => {
     }
   };
 
-  const handleTimeChange = (e) => {
-    const [hours, minutes] = e.target.value.split(":");
-    const updatedDate = new Date(start);
-    updatedDate.setHours(hours, minutes);
-    setStart(updatedDate);
-  };
+  useCalendlyEventListener({
+    onEventScheduled: (event) => {
+      console.log("Event scheduled", event);
+      createCalendarEvent();
+    },
+  });
 
   const createCalendarEvent = async () => {
-    if (!start || !lesson) {
-      toast.error(
-        "Please ensure you've selected a start date and time for the event"
-      );
-      return;
-    }
-
-    const event = {
-      summary: `Chesed Lesson: ${lesson.title}`,
-      location: "Google Meet (link will be provided)",
-      description: lesson.description,
-      start: {
-        dateTime: start.toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-      end: {
-        dateTime: new Date(start.getTime() + 30 * 60000).toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-      attendees: [{ email: lesson.student.email }],
-      conferenceData: {
-        createRequest: {
-          requestId: "sample123",
-          conferenceSolutionKey: { type: "hangoutsMeet" },
-        },
-      },
-    };
-
     try {
-      const response = await fetch(
-        "https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${session?.provider_token}`,
-          },
-          body: JSON.stringify(event),
-        }
-      );
-
-      const data = await response.json();
-
-      await axios.post(
-        "/lessons/submit-lesson",
-        {
-          lessonId: lesson._id,
-          meetingUrl: data.hangoutLink,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${auth?.accessToken}`,
-          },
-        }
-      );
-
-      setLesson((prevLesson) => ({
-        ...prevLesson,
-        status: "completed",
-        lesson: [...prevLesson.lesson, data.hangoutLink],
-      }));
-
       toast.success("Virtual lesson scheduled successfully!");
     } catch (error) {
       console.error("Error scheduling virtual lesson:", error);
       toast.error("Failed to schedule virtual lesson");
-    }
-  };
-
-  const googleSignIn = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          scopes: "https://www.googleapis.com/auth/calendar.events",
-        },
-      });
-      if (error) {
-        console.error("Error signing in with Google:", error);
-        toast.error("Failed to sign in with Google");
-      } else {
-        toast.success("Successfully connected to Google Calendar!");
-      }
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-      toast.error("Failed to sign in with Google");
-    }
-  };
-
-  const googleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Error signing out with Google provider:", error);
-        toast.error("Failed to sign out with Google");
-      } else {
-        toast.info("Disconnected from Google Calendar");
-      }
-    } catch (error) {
-      console.error("Error signing out with Google:", error);
-      toast.error("Failed to sign out with Google");
     }
   };
 
@@ -229,7 +121,6 @@ const LessonDetails = () => {
     console.log(userId);
 
     try {
-      setLoadingChat(true);
       const config = {
         headers: {
           "Content-type": "application/json",
@@ -244,7 +135,6 @@ const LessonDetails = () => {
 
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
-      setLoadingChat(false);
       navigate(auth.roles.includes(1984) ? "/tutor/chat/" : "/dashboard/chats");
     } catch (error) {
       toast({
@@ -257,6 +147,8 @@ const LessonDetails = () => {
       });
     }
   };
+
+  console.log(lesson);
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md font-sans">
@@ -421,65 +313,63 @@ const LessonDetails = () => {
           </section>
         )}
 
+        {/* New section for offline lesson status and document access */}
+        {auth.roles.includes(2001) &&
+          lesson.modeOfDelivery === "offline" &&
+          (lesson.status === "in_progress" ||
+            lesson.status === "completed") && (
+            <section className="md:col-span-2 p-6 bg-gray-100 rounded-lg shadow-sm mt-8">
+              <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
+                Offline Lesson Status
+              </h3>
+              <p>
+                <strong>Status:</strong> {lesson.status}
+              </p>
+              {lesson.submittedDocuments &&
+              lesson.submittedDocuments.length > 0 ? (
+                <div>
+                  <h4 className="font-semibold mt-4 mb-2">
+                    Submitted Documents:
+                  </h4>
+                  <ul>
+                    {lesson.submittedDocuments.map((doc, index) => (
+                      <li key={index} className="mb-2">
+                        <span>{doc.name}</span>
+                        <Button
+                          // onClick={() => handleDownloadDocument(doc.id)}
+                          className="ml-4 bg-blue-500 text-white px-2 py-1 rounded"
+                        >
+                          Download
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="mt-4">No documents have been submitted yet.</p>
+              )}
+            </section>
+          )}
+
         {/* Calendar Integration - Only for Tutor */}
-        {auth.roles.includes(1984) && (
+        {lesson.modeOfDelivery == "online" && auth.roles.includes(2001) && (
           <section className="md:col-span-2 p-6 bg-gray-100 rounded-lg shadow-sm">
             <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
               Schedule a Virtual Lesson
             </h3>
-            <Tabs defaultValue="calendar" className="mb-4">
-              <TabsList>
-                <TabsTrigger value="calendar">Pick a Date</TabsTrigger>
-                <TabsTrigger value="time">Pick a Time</TabsTrigger>
-              </TabsList>
-              <TabsContent value="calendar">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !start && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {start ? format(start, "PPP") : "Pick a date"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={start}
-                      onSelect={setStart}
-                      disabled={(date) => date < new Date()}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </TabsContent>
-              <TabsContent value="time">
-                <Input
-                  type="time"
-                  value={format(start, "HH:mm")}
-                  onChange={handleTimeChange}
-                />
-              </TabsContent>
-            </Tabs>
-            <Button onClick={createCalendarEvent}>Create Calendar Event</Button>
-
-            {session?.provider_token ? (
-              <Button
-                onClick={googleSignOut}
-                variant="destructive"
-                className="mt-2"
-              >
-                Disconnect Google Calendar
+            <PopupButton
+              url="https://calendly.com/fidelotieno11"
+              className="bg-blue-600 text-white py-2 px-4 rounded"
+              rootElement={document.getElementById("root")}
+              text="Click here to schedule!"
+            />
+            {/* {auth.calenlyProfile ? (
+              <Button variant="destructive" className="mt-2">
+                Edit Calendly link
               </Button>
             ) : (
-              <Button onClick={googleSignIn} variant="outline" className="mt-2">
-                Connect Google Calendar
-              </Button>
-            )}
+              <Button variant="outline" className="mt-2"></Button>
+            )} */}
           </section>
         )}
       </div>

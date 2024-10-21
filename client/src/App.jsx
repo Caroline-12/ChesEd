@@ -45,7 +45,7 @@ import TutorProfile from "./components/TutorProfile";
 // import LessonDetails from "./components/Student/LessonDetails";
 import MyLessons from "./components/Tutor/sections/MyLessons";
 import PaymentSuccess from "./components/PaymentSuccess";
-import PaymentFailed from "./components/Tutor/PaymentFailed";
+import PaymentFailed from "./components/PaymentFailed";
 import MyChats from "./components/MyChats";
 import Chatpage from "./components/Student/Chatpage";
 export default function App() {
@@ -79,10 +79,7 @@ export default function App() {
             {/* <Route path="/payment/:courseId" element={<PaymentMethod />} /> */}
             <Route path="tutor/:id" element={<TutorProfile />} />
             {/* <Route path="/lesson/:id" element={<LessonDetails />} /> */}
-            <Route
-              path="/payment-success/:lessonId"
-              element={<PaymentSuccess />}
-            />
+            <Route path="/checkout-success" element={<PaymentSuccess />} />
             <Route path="/payment-failed" element={<PaymentFailed />} />
           </Route>
 

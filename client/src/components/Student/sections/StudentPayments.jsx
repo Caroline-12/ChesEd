@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "@/api/axios";
-import useAuth from "@/hooks/useAuth";
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -10,45 +8,43 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { FaCheckCircle } from "react-icons/fa";
+import moment from "moment"; // For formatting date and time
+import axios from "@/api/axios";
+import useAuth from "@/hooks/useAuth";
 
 const StudentPayments = () => {
-  const { auth } = useAuth();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const { auth } = useAuth();
+  console.log("Student ID:", auth.ID);
 
   useEffect(() => {
-    fetchPayments();
+    // Function to fetch paid lessons from the backend API
+    const fetchPaidLessons = async () => {
+      try {
+        const response = await axios.get(`/payments/lessons/${auth.ID}/paid`);
+        setPayments(response.data); // Set the fetched data to the state
+        setLoading(false);
+      } catch (err) {
+        setError("Error fetching paid lessons.");
+        setLoading(false);
+      }
+    };
+
+    fetchPaidLessons();
   }, []);
 
-  const fetchPayments = async () => {
-    try {
-      const response = await axios.get(`/payments/student/${auth.ID}`, {
-        headers: {
-          Authorization: `Bearer ${auth.accessToken}`,
-        },
-      });
-      setPayments(response.data);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching payments:", err);
-      setError("Failed to load payments. Please try again later.");
-      setLoading(false);
-    }
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  const handlePayNow = (paymentId) => {
-    // Replace with your payment route or logic
-    navigate(`/payment/${paymentId}`);
-  };
+  if (error) {
+    return <div>{error}</div>;
+  }
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-
+  console.log(payments);
   return (
     <div className="space-y-4">
       <Card className="bg-white shadow-lg">
@@ -56,44 +52,38 @@ const StudentPayments = () => {
           <CardTitle>Payment History</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Item</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {payments.map((payment) => (
-                <TableRow key={payment.id}>
-                  <TableCell>{payment.itemName}</TableCell>
-                  <TableCell>{payment.itemType}</TableCell>
-                  <TableCell>
-                    {payment.status === "Paid" ? (
-                      <FaCheckCircle className="text-green-500" />
-                    ) : (
-                      <FaTimesCircle className="text-red-500" />
-                    )}
-                  </TableCell>
-                  <TableCell>${payment.amount}</TableCell>
-                  <TableCell>
-                    {payment.status !== "Paid" && (
-                      <Button
-                        variant="outline"
-                        className="text-red-800 border-red-800 hover:bg-green-200"
-                        onClick={() => handlePayNow(payment.id)}
-                      >
-                        Pay Now
-                      </Button>
-                    )}
-                  </TableCell>
+          {payments.length === 0 ? (
+            <div>No payments found</div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Lesson</TableHead>
+                  <TableHead>Amount Paid</TableHead>
+                  <TableHead>Date & Time</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Payment Method</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {payments.map((payment) => (
+                  <TableRow key={payment._id}>
+                    <TableCell>{payment.title}</TableCell>
+                    <TableCell>${payment.agreedPrice.toFixed(2)}</TableCell>
+                    <TableCell>
+                      {moment(payment.timeOfPayment).format(
+                        "MMMM Do YYYY, h:mm:ss a"
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <FaCheckCircle className="text-green-500" />
+                    </TableCell>
+                    <TableCell>Stripe</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -82,6 +82,25 @@ const ApproveTrainersSection = () => {
       toast.success("Tutor approved successfully");
       setPendingTutors(pendingTutors.filter((tutor) => tutor._id !== tutorId));
       closeReviewModal();
+
+      // Create mailto link
+      const subject = encodeURIComponent(
+        "Congratulations! You have been approved as a tutor"
+      );
+      const body = encodeURIComponent(`
+           <div style="font-family: Arial, sans-serif; color: #333;">
+             <h1 style="color: #4CAF50;">Congratulations!</h1>
+             <p>Dear Tutor,</p>
+             <p>We are pleased to inform you that you have been approved as a tutor on our platform.</p>
+             <p>We look forward to your valuable contributions.</p>
+             <p>Best regards,</p>
+             <p>The ChesEd Team</p>
+           </div>
+         `);
+      const mailtoLink = `mailto:${"1040533@cuea.edu"}?subject=${subject}&body=${body}`;
+
+      // Open mailto link
+      window.location.href = mailtoLink;
     } catch (error) {
       console.error("Error approving tutor:", error);
       toast.error("Failed to approve tutor");

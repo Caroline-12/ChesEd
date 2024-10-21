@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,6 +102,8 @@ export default function SubmitLesson() {
       console.log(response);
       toast.success("Lesson submitted successfully!");
 
+      // Shift this logic to the backend upon receiving the response
+
       // Send an email using EmailJS
       const emailParams = {
         to_name: auth?.name, // Student's name
@@ -112,10 +114,10 @@ export default function SubmitLesson() {
 
       emailjs
         .send(
-          "service_qtdaau5", // Replace with your EmailJS service ID
-          "template_0si157p", // Replace with your EmailJS template ID
+          "service_qtdaau5", // Replace with actual EmailJS service ID
+          "template_0si157p", // Replace with actual EmailJS template ID
           emailParams,
-          "Hq22flwsxrgCxCVdF" // Replace with your EmailJS user ID
+          "Hq22flwsxrgCxCVdF" // Replace with actual EmailJS user ID
         )
         .then(
           (result) => {
@@ -227,7 +229,7 @@ export default function SubmitLesson() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="file">Upload Document</Label>
+              <Label htmlFor="file">Upload Document (If any)</Label>
               <div className="flex items-center space-x-2">
                 <Input
                   id="file"
