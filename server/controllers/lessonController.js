@@ -2,6 +2,9 @@ const Lesson = require("../model/Lesson");
 const User = require("../model/User");
 const multer = require("multer");
 const path = require("path");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Configure multer for file upload
 const storage = multer.diskStorage({
@@ -64,6 +67,29 @@ const createLesson = async (req, res) => {
         dueDate,
         modeOfDelivery,
       });
+
+      (async function () {
+        const { data, error } = await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: ["fidelotieno11@gmail.com"],
+          subject: "Lesson Request Submitted Successfully",
+          html: `
+            <h1>Lesson Request Submitted</h1>
+            <p>Dear Student,</p>
+            <p>We are pleased to inform you that your lesson request titled "<strong>${title}</strong>" has been successfully submitted.</p>
+            <p>Our team will review your request and get back to you shortly.</p>
+            <p>Thank you for choosing our service!</p>
+            <p>Best regards,</p>
+            <p>The ChesEd Team</p>
+          `,
+        });
+
+        if (error) {
+          return console.error({ error });
+        }
+
+        console.log({ data });
+      })();
 
       res.status(201).json(newLesson);
     } catch (err) {
@@ -155,8 +181,8 @@ const assignTutor = async (req, res) => {
 
     lesson.tutor = tutorId;
     lesson.admin = assignee;
-    console.log(lesson.status);
     lesson.status = "in_progress";
+    lesson.agreement.status = "pending";
 
     const updatedLesson = await lesson.save();
     res.json(updatedLesson);
@@ -176,6 +202,71 @@ const getAllLessons = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to fetch Lessons" });
+  }
+};
+
+// New function to handle tutor's proposal
+const submitTutorProposal = async (req, res) => {
+  const { lessonId } = req.params;
+  const { price, description } = req.body;
+  const tutorId = req.userId; // Assuming you have middleware that sets userId
+
+  try {
+    const lesson = await Lesson.findById(lessonId);
+    if (!lesson) {
+      return res.status(404).json({ message: "Lesson not found" });
+    }
+
+    lesson.agreement = {
+      status: "pending",
+      tutorProposal: {
+        price,
+        description,
+        proposedAt: new Date(),
+      },
+    };
+    lesson.tutor = tutorId;
+
+    const updatedLesson = await lesson.save();
+    res.json(updatedLesson);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to submit tutor proposal" });
+  }
+};
+
+// New function to handle student's response to proposal
+const respondToProposal = async (req, res) => {
+  const { lessonId } = req.params;
+  const { accepted } = req.body;
+  const studentId = req.userId; // Assuming you have middleware that sets userId
+
+  try {
+    const lesson = await Lesson.findById(lessonId);
+    if (!lesson) {
+      return res.status(404).json({ message: "Lesson not found" });
+    }
+
+    if (lesson.student.toString() !== studentId) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    lesson.agreement.status = accepted ? "accepted" : "rejected";
+    lesson.agreement.studentResponse = {
+      accepted,
+      respondedAt: new Date(),
+    };
+
+    if (accepted) {
+      lesson.status = "in_progress";
+      lesson.agreedPrice = lesson.agreement.tutorProposal.price;
+    }
+
+    const updatedLesson = await lesson.save();
+    res.json(updatedLesson);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to respond to proposal" });
   }
 };
 
@@ -308,7 +399,6 @@ const changePaymentStatus = async (req, res) => {
 
 // get Lesson by ID
 const getLesson = async (req, res) => {
-  console.log(req);
   const { lessonId } = req.params;
 
   if (!lessonId) {
