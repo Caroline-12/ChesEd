@@ -14,6 +14,8 @@ import useAuth from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
 import axios from "../api/axios";
 const LOGIN_URL = "/auth";
+import emailjs from "@emailjs/browser";
+
 export function LoginForm() {
   const { auth, setAuth, persist, setPersist, setIsLoggedIn } = useAuth();
   const [email, setEmail] = useState("");
@@ -92,6 +94,29 @@ export function LoginForm() {
       toast.success("Login successful");
       setEmail("");
       setPassword("");
+
+      emailjs
+        .sendForm(
+          "service_n321785",
+          "template_0niexsd",
+          {
+            user_email: "fidelotieno11@gmail.com",
+            user_name: "Fideltodayy",
+            message: "You have successfully logged in",
+          },
+          "dxYmFVX6N945DEO9m"
+        )
+        .then(
+          (result) => {
+            console.log(result.text);
+          },
+          (error) => {
+            console.log(error.text);
+          }
+        )
+        .finally(() => {
+          console.log("Email sent");
+        });
 
       // include logic to check if tutor is approved if not redirect to waiting lobby
       if (roles.includes(1984)) {

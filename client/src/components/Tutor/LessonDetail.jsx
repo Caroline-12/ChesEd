@@ -11,6 +11,7 @@ import { useCalendlyEventListener } from "react-calendly";
 import { toast, Toaster } from "sonner";
 import { ChatState } from "@/context/ChatProvider";
 import { PopupButton } from "react-calendly";
+import AgreementSection from "./AgreementSection";
 
 const LessonDetails = () => {
   const { lessonId } = useParams();
@@ -225,6 +226,23 @@ const LessonDetails = () => {
             </div>
           )}
         </section>
+
+        {(auth.roles.includes(1984) || auth.roles.includes(2001)) &&
+          lesson.status !== "completed" && (
+            <AgreementSection
+              lesson={lesson}
+              auth={auth}
+              onAgreementComplete={(updatedLesson) => {
+                setLesson(updatedLesson);
+                // If agreement is accepted, you might want to trigger a refresh
+                if (updatedLesson.agreement?.status === "accepted") {
+                  toast.success(
+                    "Agreement completed! You can now proceed with the lesson."
+                  );
+                }
+              }}
+            />
+          )}
 
         <section className="mb-8 p-6 bg-gray-100 rounded-lg shadow-sm">
           <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">

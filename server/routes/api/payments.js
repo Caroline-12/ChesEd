@@ -129,8 +129,10 @@ router.post(
           const lesson = await Lesson.findById(lessonId);
           if (lesson) {
             lesson.paymentStatus = true;
+            lesson.timeOfPayment = new Date(session.created * 1000); // Record the payment date
             await lesson.save();
             console.log(`Lesson ${lessonId} payment status updated to paid`);
+            console.log(`Payment date recorded: ${lesson.timeOfPayment}`);
           } else {
             console.error(`Lesson ${lessonId} not found`);
           }
@@ -147,5 +149,20 @@ router.post(
     res.send().end();
   }
 );
+
+// New endpoint to fetch paid lessons for a specific student
+router.get("/lessons/:studentId/paid", async (req, res) => {
+  const { studentId } = req.params;
+
+  try {
+    const lessons = await Lesson.find({
+      student: studentId,
+      paymentStatus: true,
+    });
+    res.json(lessons);
+  } catch (err) {
+    res.status(500).send("Error fetching paid lessons for the student");
+  }
+});
 
 module.exports = router;

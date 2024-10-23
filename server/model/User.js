@@ -61,6 +61,9 @@ const userSchema = new Schema({
     },
   ],
   balance: { type: Number, default: 0 },
+  calendlyProfile: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);

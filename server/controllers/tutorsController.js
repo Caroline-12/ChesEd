@@ -1,4 +1,7 @@
 const User = require("../model/User");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const getAllTutors = async (req, res) => {
   console.log("Getting all tutors");
@@ -46,6 +49,77 @@ const approveTutor = async (req, res) => {
 
     tutor.tutorStatus = "approved";
     await tutor.save();
+
+    (async function () {
+      const { data, error } = await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: ["fidelotieno11@gmail.com"],
+        subject: "Tutor Approval",
+        html: `<!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Welcome to Chesed</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+          }
+          .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+          }
+          .header {
+            text-align: center;
+            padding-bottom: 20px;
+          }
+          .header h1 {
+            margin: 0;
+            color: #4CAF50;
+          }
+          .content {
+            margin-top: 20px;
+          }
+          .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #777;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Welcome to Chesed!</h1>
+          </div>
+          <div class="content">
+            <p>Dear Tutor,</p>
+            <p>We are thrilled to inform you that you have been successfully onboarded as a tutor in Chesed. Congratulations and welcome to our community!</p>
+            <p>As a tutor, you will have the opportunity to share your knowledge and expertise with students who are eager to learn. We believe that your contribution will make a significant impact on their educational journey.</p>
+            <p>If you have any questions or need assistance, please do not hesitate to reach out to our support team at support@chesed.com.</p>
+            <p>Thank you for joining us, and we look forward to seeing the positive influence you will have on our students.</p>
+            <p>Best regards,</p>
+            <p>The Chesed Team</p>
+          </div>
+          <div class="footer">
+            <p>&copy; 2023 Chesed. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html> `,
+      });
+
+      if (error) {
+        return console.error({ error });
+      }
+
+      console.log({ data });
+    })();
 
     res.json({ message: "Tutor approved successfully" });
   } catch (err) {

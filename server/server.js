@@ -98,59 +98,6 @@ app.use("/chat", chatRoutes);
 app.use("/message", messageRoutes);
 app.use("/notifications", notificationRoutes);
 
-app.post("/create-checkout-session", async (req, res) => {
-  const { lessonId } = req.body;
-  console.log(lessonId);
-  if (!lessonId) {
-    return res.status(400).send({
-      error: {
-        message: "Lesson ID is required",
-      },
-    });
-  }
-
-  try {
-    // Assuming you have a function to get the agreed price of a lesson
-    const lesson = await Lesson.findById(lessonId);
-    if (!lesson) {
-      return res.status(404).send({
-        error: {
-          message: "Lesson not found",
-        },
-      });
-    }
-
-    const amount = lesson.agreedPrice; // Get the agreed price of the lesson
-    console.log(amount);
-    const session = await stripe.checkout.sessions.create({
-      line_items: [
-        {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: "Lesson",
-            },
-            unit_amount: amount * 100,
-          },
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `${process.env.CLIENT_URL}/payment-success/${lessonId}`,
-      cancel_url: `${process.env.CLIENT_URL}/payment-failure`,
-    });
-    res.json({
-      url: session.url,
-    });
-  } catch (e) {
-    return res.status(500).send({
-      error: {
-        message: e.message,
-      },
-    });
-  }
-});
-
 app.all("*", (req, res) => {
   res.status(404);
   if (req.accepts("html")) {
@@ -167,7 +114,7 @@ app.use(errorHandler);
 io.on("connection", (socket) => {
   console.log("Connected to socket.io");
   socket.on("setup", (userData) => {
-    console.log(userData);
+    // console.log(userData);
     console.log(`User ${userData.ID} connected to socket.io`);
     socket.join(userData.ID);
     socket.emit("connected");
@@ -191,6 +138,17 @@ io.on("connection", (socket) => {
 
       socket.in(user._id).emit("message received", newMessageReceived);
     });
+  });
+
+  // Handle agreement proposal from the tutor
+  socket.on("agreement proposal", ({ chatId, price, studentId }) => {
+    // Notify the student with the proposal
+    io.to(studentId).emit("receive proposal", { chatId, price });
+  });
+
+  // Handle student's response to the agreement
+  socket.on("agreement response", ({ chatId, studentId, accepted }) => {
+    io.to(chatId).emit("response received", { accepted });
   });
 
   socket.on("disconnect", (userData) => {

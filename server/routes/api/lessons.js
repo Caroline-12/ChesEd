@@ -67,5 +67,12 @@ router
     verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Tutor),
     lessonController.changePaymentStatus
   );
+router
+  .route("/:lessonId/tutor-proposal")
+  .post(verifyRoles(ROLES_LIST.Tutor), lessonController.submitTutorProposal);
+
+router
+  .route("/:lessonId/student-response")
+  .post(verifyRoles(ROLES_LIST.User), lessonController.respondToProposal);
 
 module.exports = router;

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
 const MyLessons = () => {
   const [lessons, setlessons] = useState([]);
@@ -55,6 +56,7 @@ const MyLessons = () => {
               <TableHead>Student</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Paid</TableHead>
               <TableHead>Submitted Date</TableHead>
               <TableHead>Due date</TableHead>
               <TableHead>Actions</TableHead>
@@ -77,6 +79,25 @@ const MyLessons = () => {
                   >
                     {lesson.status}
                   </Badge>
+                </TableCell>
+                <TableCell>
+                  {lesson.paymentStatus ? (
+                    <span
+                      aria-label="Payment made successfully"
+                      title="Payment made successfully"
+                      className="text-green-500"
+                    >
+                      <CheckIcon />
+                    </span>
+                  ) : (
+                    <span
+                      aria-label="Payment pending"
+                      title="Payment pending"
+                      className="text-red-500"
+                    >
+                      <CloseIcon />
+                    </span>
+                  )}
                 </TableCell>
                 <TableCell>
                   {new Date(lesson.createdAt).toLocaleDateString()}

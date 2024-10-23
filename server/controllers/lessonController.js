@@ -208,7 +208,7 @@ const getAllLessons = async (req, res) => {
 // New function to handle tutor's proposal
 const submitTutorProposal = async (req, res) => {
   const { lessonId } = req.params;
-  const { price, description } = req.body;
+  const { price } = req.body;
   const tutorId = req.userId; // Assuming you have middleware that sets userId
 
   try {
@@ -221,7 +221,6 @@ const submitTutorProposal = async (req, res) => {
       status: "pending",
       tutorProposal: {
         price,
-        description,
         proposedAt: new Date(),
       },
     };
@@ -247,9 +246,9 @@ const respondToProposal = async (req, res) => {
       return res.status(404).json({ message: "Lesson not found" });
     }
 
-    if (lesson.student.toString() !== studentId) {
-      return res.status(403).json({ message: "Unauthorized" });
-    }
+    // if (lesson.student.toString() !== studentId) {
+    //   return res.status(403).json({ message: "Unauthorized" });
+    // }
 
     lesson.agreement.status = accepted ? "accepted" : "rejected";
     lesson.agreement.studentResponse = {
@@ -515,4 +514,6 @@ module.exports = {
   completeLesson,
   getAgreedPrice,
   changePaymentStatus,
+  submitTutorProposal,
+  respondToProposal,
 };

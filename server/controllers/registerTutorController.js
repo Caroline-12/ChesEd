@@ -2,6 +2,9 @@ const User = require("../model/User");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const path = require("path");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Configure multer for file upload
 const storage = multer.diskStorage({
@@ -101,6 +104,36 @@ const handleNewUser = async (req, res) => {
       });
 
       console.log(result);
+
+      (async function () {
+        const { data, error } = await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: ["fidelotieno11@gmail.com"],
+          subject: "Welcome to Chesed",
+          html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Welcome to Chesed</title>
+        </head>
+        <body>
+          <h1>Welcome to Chesed!</h1>
+          <p>We are thrilled to have you join our community of passionate tutors and learners. Your journey towards making a difference in education starts here.</p>
+          <p>Feel free to explore the platform, connect with other tutors, and start sharing your knowledge. If you have any questions or need assistance, our support team is here to help.</p>
+          <p>Thank you for being a part of Chesed. Together, we can make learning more accessible and enjoyable for everyone.</p>
+          <p>Best regards,</p>
+          <p>The Chesed Team</p>
+        </body>
+        </html>`,
+        });
+
+        if (error) {
+          return console.error({ error });
+        }
+
+        console.log({ data });
+      })();
 
       res.status(201).json({ success: `New user ${firstName} created!` });
     } catch (err) {
