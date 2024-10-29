@@ -50,6 +50,11 @@ function SideDrawer() {
     navigate("/login");
   };
 
+  const goToProfile = () => {
+    console.log("Go to Profile");
+    navigate("/tutor/tutor-profile");
+  };
+
   const handleSearch = async () => {
     if (!search) {
       toast({
@@ -175,9 +180,7 @@ function SideDrawer() {
               />
             </MenuButton>
             <MenuList>
-              {/* <ProfileModal user={user}> */}
-              <MenuItem>My Profile</MenuItem> {/* </ProfileModal> */}
-              <MenuDivider />
+              <MenuItem onClick={goToProfile}>My Profile</MenuItem>
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>

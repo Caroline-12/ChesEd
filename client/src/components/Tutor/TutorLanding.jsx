@@ -22,7 +22,7 @@ const TutorLanding = () => {
   });
 
   useEffect(() => {
-    fetchDashboardData();
+    // fetchDashboardData();
   }, []);
 
   const fetchDashboardData = async () => {

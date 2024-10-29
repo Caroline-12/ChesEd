@@ -41,13 +41,14 @@ import TutorRegistrationForm from "./components/Tutor/TutorRegistrationForm";
 import ApproveTrainersSection from "./components/Admin/sections/ApproveTrainersSection";
 import AdminCategoryManagement from "./components/Admin/sections/AdminCategoryManagement";
 import WaitingLobby from "./components/WaitingLobby";
-import TutorProfile from "./components/TutorProfile";
+import TutorProfileUpdate from "./components/Tutor/TutorProfileUpdate";
 // import LessonDetails from "./components/Student/LessonDetails";
 import MyLessons from "./components/Tutor/sections/MyLessons";
 import PaymentSuccess from "./components/PaymentSuccess";
 import PaymentFailed from "./components/PaymentFailed";
 import MyChats from "./components/MyChats";
 import Chatpage from "./components/Student/Chatpage";
+import TutorProfile from "./components/TutorProfile";
 export default function App() {
   return (
     <Routes>
@@ -89,6 +90,7 @@ export default function App() {
               <Route path="payments" element={<Payments />} />
               <Route path="mylessons" element={<MyLessons />} />
               <Route path="chat" element={<Chatpage />} />
+              <Route path="tutor-profile" element={<TutorProfileUpdate />} />
             </Route>
           </Route>
 

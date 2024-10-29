@@ -79,6 +79,8 @@ export function LoginForm() {
       const ID = response?.data?.ID;
       const specialization = response?.data?.specialization;
       const tutorStatus = response?.data?.tutorStatus;
+      const firstName = response?.data?.firstName;
+      const lastName = response?.data?.lastName;
       setAuth({
         ID,
         username,
@@ -88,6 +90,8 @@ export function LoginForm() {
         accessToken,
         specialization,
         tutorStatus,
+        firstName,
+        lastName,
       });
       setIsLoggedIn(true);
       // console.log("Login successful", response?.data);

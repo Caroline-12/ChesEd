@@ -41,6 +41,8 @@ const handleLogin = async (req, res) => {
     const specialization = foundUser.specialization;
     const tutorStatus = foundUser.tutorStatus;
     const calendlyProfile = foundUser.calendlyProfile;
+    const firstName = foundUser.firstName;
+    const lastName = foundUser.lastName;
 
     // Creates Secure Cookie with refresh token
     res.cookie("jwt", refreshToken, {
@@ -59,6 +61,8 @@ const handleLogin = async (req, res) => {
       specialization,
       tutorStatus,
       calendlyProfile,
+      firstName,
+      lastName,
     });
   } else {
     console.log("Password does not match");

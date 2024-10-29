@@ -41,7 +41,7 @@ import TutorLanding from "./TutorLanding";
 import MyLessons from "./sections/MyLessons";
 import Chatpage from "../Student/Chatpage";
 import SideDrawer from "../miscellaneous/SideDrawer";
-
+import TutorProfileUpdate from "./TutorProfileUpdate";
 export function TutorLayout() {
   const { auth } = useAuth();
   const [lessons, setlessons] = useState([]);
@@ -73,12 +73,13 @@ export function TutorLayout() {
     }
   };
 
+  console.log("lessons", lessons);
   const navItems = [
     { path: "/tutor", label: "Dashboard", icon: Home },
     { path: "/tutor/opportunities", label: "Opportunities", icon: Package },
     { path: "/tutor/chat", label: "Chat", icon: MessageCircle },
     { path: "/tutor/revenue", label: "Revenue", icon: LineChart },
-    { path: "/tutor/profile", label: "Profile", icon: CircleUser },
+    { path: "/tutor/tutor-profile", label: "Profile", icon: CircleUser },
     {
       path: "/tutor/mylessons",
       label: "My Lessons",
@@ -108,15 +109,6 @@ export function TutorLayout() {
           </Link>
         </div>
         <nav className="flex-1 px-2 py-4">{navItems.map(renderNavItem)}</nav>
-        <div className="p-4">
-          <Link
-            // Implement logic to log out
-            to="/login"
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 mt-2"
-          >
-            <Button className="w-full">Logout</Button>
-          </Link>
-        </div>
       </aside>
       <div className="flex-1 flex flex-col">
         <header className="flex items-center justify-between p-4 bg-white shadow-md">
@@ -155,7 +147,7 @@ export function TutorLayout() {
             />
             <Route path="chat" element={<Chatpage />} />
             <Route path="revenue" element={<RevenueSection />} />
-            <Route path="profile" element={<UsersSection />} />
+            <Route path="tutor-profile" element={<TutorProfileUpdate />} />
             <Route path="mylessons" element={<MyLessons />} />
           </Routes>
         </main>

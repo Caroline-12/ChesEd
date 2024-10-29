@@ -50,21 +50,42 @@ const getUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  if (!req?.body?.id)
-    return res.status(400).json({ message: "User ID required" });
+  console.log(req);
+  const {
+    id,
+    name,
+    email,
+    bio,
+    specialization,
+    calendlyProfile,
+    profilePhoto,
+  } = req.body;
 
-  const { id, name, email } = req.body;
+  console.log("geeeeeeeeeeeee");
+
+  if (!id) return res.status(400).json({ message: "User ID required" });
 
   const user = await User.findOne({ _id: id }).exec();
   if (!user) {
     return res.status(204).json({ message: `User ID ${id} not found` });
   }
 
+  // Update each field if provided, else retain the existing values
   user.name = name || user.name;
   user.email = email || user.email;
+  user.bio = bio || user.bio;
+  user.specialization = specialization || user.specialization;
+  user.calendlyProfile = calendlyProfile || user.calendlyProfile;
+  user.profilePhoto = profilePhoto || user.profilePhoto;
 
-  const updatedUser = await user.save();
-  res.json(updatedUser);
+  try {
+    const updatedUser = await user.save();
+    res.json(updatedUser);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to update user profile", error: err });
+  }
 };
 
 // delete all users
