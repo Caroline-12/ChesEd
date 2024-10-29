@@ -41,24 +41,14 @@ import { MessageSquare, FileText, Upload, Link } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import useAuth from "@/hooks/useAuth";
 import axios from "@/api/axios";
-import {
-  useSession,
-  useSupabaseClient,
-  useSessionContext,
-} from "@supabase/auth-helpers-react";
 import { useNavigate } from "react-router-dom";
 
 const lessons_URL = "/lessons/pendinglessons";
 
-const Lessons = () => {
-  const session = useSession(); // User but a bunch of things gets stored here like current active tokens
-  const supabase = useSupabaseClient(); // talk to supabase
-  const { isLoading } = useSessionContext(); // loading state
-
+const Lessons = ({ lessons }) => {
   const navigate = useNavigate();
   const { auth } = useAuth();
-  const [lessons, setlessons] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [lessons, setlessons] = useState([]);
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFile, setSelectedFile] = useState(null);
@@ -68,67 +58,24 @@ const Lessons = () => {
   const [start, setStart] = useState(new Date());
   // const [end, setEnd] = useState(new Date());
 
-  useEffect(() => {
-    const fetchlessons = async () => {
-      try {
-        const response = await axios.get(lessons_URL, {
-          headers: { Authorization: `Bearer ${auth.accessToken}` },
-        });
-        setlessons(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch lessons");
-        setLoading(false);
-        console.error("Error fetching lessons:", err);
-        toast.error("Failed to fetch lessons");
-      }
-    };
+  // useEffect(() => {
+  //   const fetchlessons = async () => {
+  //     try {
+  //       const response = await axios.get(lessons_URL, {
+  //         headers: { Authorization: `Bearer ${auth.accessToken}` },
+  //       });
+  //       setlessons(response.data);
+  //       setLoading(false);
+  //     } catch (err) {
+  //       setError("Failed to fetch lessons");
+  //       setLoading(false);
+  //       console.error("Error fetching lessons:", err);
+  //       toast.error("Failed to fetch lessons");
+  //     }
+  //   };
 
-    fetchlessons();
-  }, [auth.accessToken]);
-
-  if (isLoading) return <></>;
-
-  const googleSignIn = async () => {
-    try {
-      const { user, session, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          scopes:
-            "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.events",
-        },
-      });
-      if (error) {
-        console.error(
-          "Error signing in with Google provider with supabase:",
-          error
-        );
-        toast.error("Failed to sign in with Google");
-      } else {
-        console.log("Google sign in successful:", user, session);
-        toast.success("Successfully connected to Google Calendar!");
-      }
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-      toast.error("Failed to sign in with Google");
-    }
-  };
-
-  const googleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Error signing out with Google provider:", error);
-        toast.error("Failed to sign out with Google");
-      } else {
-        console.log("Google sign out successful");
-        toast.info("Disconnected from Google Calendar");
-      }
-    } catch (error) {
-      console.error("Error signing out with Google:", error);
-      toast.error("Failed to sign out with Google");
-    }
-  };
+  //   fetchlessons();
+  // }, [auth.accessToken]);
 
   const filteredlessons = lessons.filter((lesson) =>
     selectedCategory === "All" ? true : lesson.category === selectedCategory
@@ -210,99 +157,8 @@ const Lessons = () => {
     setStart(updatedDate);
   };
 
-  const createCalendarEvent = async (lesson) => {
-    console.log("Creating calendar event...", start, lesson);
-    if (!start || !lesson) {
-      toast.error(
-        "Please ensure youve selected a start date and an lesson for the event"
-      );
-      return;
-    }
-
-    const event = {
-      summary: "Chesed Lesson: " + lesson.title,
-      location: "Google Meet (link will be provided)",
-      description: lesson.description,
-      start: {
-        dateTime: start.toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-      end: {
-        dateTime: new Date(start.getTime() + 30 * 60000).toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-      attendees: [{ email: lesson.student.email }],
-      conferenceData: {
-        createRequest: {
-          requestId: "sample123",
-          conferenceSolutionKey: { type: "hangoutsMeet" },
-        },
-      },
-    };
-
-    await fetch(
-      "https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${session?.provider_token}`,
-        },
-        body: JSON.stringify(event),
-      }
-    )
-      .then((data) => {
-        return data.json();
-      })
-      .then((res) => {
-        console.log(res);
-        setlessons(
-          lessons.map((a) =>
-            a._id === lesson._id
-              ? {
-                  ...a,
-                  status: "completed",
-                  lesson: res.lesson,
-                }
-              : a
-          )
-        );
-        // change the status of the lesson to in progress
-        try {
-          axios.put(
-            "/lessons/assign",
-            {
-              lessonId: lesson._id,
-              tutorId: auth.ID,
-              assignee: lesson.student._id,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${auth.accessToken}`,
-              },
-            }
-          );
-          toast.success("Tutor assigned successfully");
-          // navigate("/admin");
-        } catch (err) {
-          console.error("Error assigning tutor:", err);
-          setError("Failed to assign tutor. Please try again later.");
-        }
-
-        toast.success("Virtual lesson scheduled successfully!");
-        setStart(new Date());
-      })
-      .catch((error) => {
-        console.error("Error scheduling virtual lesson:", error);
-        googleSignOut();
-        toast.error("Failed to schedule virtual lesson");
-      });
-  };
-
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
-  console.log(session);
-  console.log(start);
   console.log(lessons);
   return (
     <div className="container mx-auto p-4">
@@ -479,7 +335,7 @@ const Lessons = () => {
                         </form>
                       </TabsContent>
                       <TabsContent value="schedule">
-                        {session ? (
+                        {/* {session ? (
                           <div className="space-y-4">
                             <h3 className="text-lg font-semibold">
                               Hey {session.user.email}, schedule a call with the
@@ -541,7 +397,7 @@ const Lessons = () => {
                               Connect to Google
                             </Button>
                           </div>
-                        )}
+                        )} */}
                       </TabsContent>
                     </Tabs>
                   </DialogContent>
