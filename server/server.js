@@ -84,6 +84,7 @@ app.use("/auth", require("./routes/auth"));
 app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/logout"));
 app.use("/payments", require("./routes/api/payments"));
+app.use("/recover", require("./routes/api/recoveryemail"));
 
 // app.use("/forgot", require("./routes/forgot"));
 // app.use("/reset", require("./routes/reset"));
