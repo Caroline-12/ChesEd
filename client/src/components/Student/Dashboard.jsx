@@ -23,6 +23,7 @@ import PopularCourses from "../PopularCourses";
 
 import Chatpage from "./Chatpage";
 import SideDrawer from "../miscellaneous/SideDrawer";
+import Profile from "./Profile";
 
 export default function Dashboard() {
   const { auth } = useAuth();
@@ -207,6 +208,7 @@ export default function Dashboard() {
 
             <Route path="/courses" element={<PopularCourses />} />
             <Route path="/payments" element={<Payments />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>
       </div>
