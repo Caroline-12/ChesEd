@@ -43,6 +43,8 @@ const handleLogin = async (req, res) => {
     const calendlyProfile = foundUser.calendlyProfile;
     const firstName = foundUser.firstName;
     const lastName = foundUser.lastName;
+    const bio = foundUser.bio;
+    const profilePhoto = foundUser.profilePhoto;
 
     // Creates Secure Cookie with refresh token
     res.cookie("jwt", refreshToken, {
@@ -63,6 +65,8 @@ const handleLogin = async (req, res) => {
       calendlyProfile,
       firstName,
       lastName,
+      bio,
+      profilePhoto,
     });
   } else {
     console.log("Password does not match");

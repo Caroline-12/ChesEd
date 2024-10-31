@@ -70,7 +70,7 @@ export function LoginForm() {
           withCredentials: true,
         }
       );
-      // console.log(JSON.stringify(response?.data));
+      console.log(response?.data);
       //console.log(JSON.stringify(response));
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
@@ -81,6 +81,9 @@ export function LoginForm() {
       const tutorStatus = response?.data?.tutorStatus;
       const firstName = response?.data?.firstName;
       const lastName = response?.data?.lastName;
+      const bio = response?.data?.bio;
+      const profilePhoto = response?.data?.profilePhoto;
+      const calendlyProfile = response?.data?.calendlyProfile;
       setAuth({
         ID,
         username,
@@ -92,6 +95,9 @@ export function LoginForm() {
         tutorStatus,
         firstName,
         lastName,
+        bio,
+        profilePhoto,
+        calendlyProfile,
       });
       setIsLoggedIn(true);
       // console.log("Login successful", response?.data);

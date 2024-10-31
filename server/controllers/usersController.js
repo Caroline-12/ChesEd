@@ -50,7 +50,6 @@ const getUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  console.log(req);
   const {
     id,
     name,
@@ -60,8 +59,7 @@ const updateUser = async (req, res) => {
     calendlyProfile,
     profilePhoto,
   } = req.body;
-
-  console.log("geeeeeeeeeeeee");
+  console.log(profilePhoto);
 
   if (!id) return res.status(400).json({ message: "User ID required" });
 
