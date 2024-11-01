@@ -6,26 +6,23 @@ import Reset from "@/components/Reset";
 
 const RecoveryContext = createContext({});
 
-export const RecoveryProvider = () => {
-  const [page, setPage] = useState("login");
+export const RecoveryProvider = ({ children }) => {
   const [email, setEmail] = useState();
   const [otp, setOTP] = useState();
 
-  function NavigateComponents() {
-    if (page === "login") return <LoginForm />;
-    if (page === "otp") return <OTPInput />;
-    if (page === "reset") return <Reset />;
+  // function NavigateComponents() {
+  //   if (page === "login") return <LoginForm />;
+  //   if (page === "otp") return <OTPInput />;
+  //   if (page === "reset") return <Reset />;
 
-    return <Recovered />;
-  }
+  //   return <Recovered />;
+  // }
 
   return (
     <RecoveryContext.Provider
       value={{ page, setPage, otp, setOTP, setEmail, email }}
     >
-      <div className="flex justify-center items-center">
-        <NavigateComponents />
-      </div>{" "}
+      {children}
     </RecoveryContext.Provider>
   );
 };
