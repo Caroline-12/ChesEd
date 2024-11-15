@@ -85,6 +85,7 @@ app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/logout"));
 app.use("/payments", require("./routes/api/payments"));
 app.use("/recover", require("./routes/api/recoveryemail"));
+app.use("/tutors", require("./routes/api/tutors"));
 
 // app.use("/forgot", require("./routes/forgot"));
 // app.use("/reset", require("./routes/reset"));
@@ -94,7 +95,6 @@ app.use(verifyJWT);
 app.use("/users", require("./routes/api/users"));
 app.use("/courses", require("./routes/api/courses"));
 app.use("/lessons", require("./routes/api/lessons"));
-app.use("/tutors", require("./routes/api/tutors"));
 app.use("/chat", chatRoutes);
 app.use("/message", messageRoutes);
 app.use("/notifications", notificationRoutes);

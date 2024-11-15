@@ -22,7 +22,6 @@ const upload = multer({ storage: storage });
 const uploadMiddleware = upload.single("file");
 
 const createLesson = async (req, res) => {
-  console.log(req.body);
   uploadMiddleware(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       return res.status(400).json({ message: "File upload error" });
