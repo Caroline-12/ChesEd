@@ -35,7 +35,6 @@ const LessonDetails = () => {
         }
         const response = await axios.get(`/lessons/${lessonId}`, config);
         setLesson(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching lesson details", error);
       } finally {
@@ -45,8 +44,6 @@ const LessonDetails = () => {
 
     fetchLessonDetails();
   }, [lessonId, auth?.accessToken]);
-
-  console.log(lesson);
 
   const handleGoBack = () => {
     navigate(-1);
@@ -277,16 +274,22 @@ const LessonDetails = () => {
           <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
             Chat with Participant
           </h3>
+          {["in_progress", "completed"].includes(lesson.status)? (
           <Button
             onClick={() => {
               const participantId = auth.roles.includes(1984)
                 ? lesson.student._id
                 : lesson.tutor._id;
+                console.log(participantId);
               accessChat(participantId);
+              navigate("/dashboard/chats")
             }}
           >
             Start Chat
           </Button>
+          ):
+          <p>You can start a chat after your lesson has been claimed</p>
+          }
         </section>
         {/* {
           <ChatModal
