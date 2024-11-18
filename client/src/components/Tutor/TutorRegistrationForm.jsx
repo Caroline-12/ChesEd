@@ -25,8 +25,8 @@ const TutorRegistrationForm = () => {
     firstName: "",
     lastName: "",
     email: "",
-    pwd: "",
-    confirmPassword: "",
+    password: "",
+    confirmpassword: "",
     specialization: [],
     teachingExperience: "",
     interests: "",
@@ -57,6 +57,7 @@ const TutorRegistrationForm = () => {
 
   const onSubmit = async () => {
     try {
+
       const formDataToSend = new FormData();
 
       // Append all text fields
@@ -87,6 +88,7 @@ const TutorRegistrationForm = () => {
         }
       });
 
+      console.log(formDataToSend)
       // Append file fields
       if (formData.profilePhoto) {
         formDataToSend.append("profilePhoto", formData.profilePhoto);
