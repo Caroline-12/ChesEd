@@ -96,8 +96,6 @@ function SideDrawer() {
     }
   };
 
-  console.log(chats)
-
   const accessChat = async (userId) => {
     console.log(userId);
 

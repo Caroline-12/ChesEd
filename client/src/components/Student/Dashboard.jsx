@@ -58,8 +58,7 @@ export default function Dashboard() {
       <aside className="w-64 bg-gray-800 text-white flex flex-col">
         <div className="p-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
-            <img src="/chesed-logo.png" alt="Logo" className="h-8 w-8" />
-            <span>Chesed</span>
+            <img src="/chesed-logo.png" alt="Logo" className="h-12 w-full" />
           </Link>
         </div>
         <nav className="flex-1 px-2 py-4">
@@ -89,15 +88,6 @@ export default function Dashboard() {
           >
             <Package className="h-5 w-5" />
             My Chats
-          </Link>
-          <Link
-            to="/dashboard/courses"
-            className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/dashboard/courses" ? "bg-gray-700" : ""
-            }`}
-          >
-            <Users className="h-5 w-5" />
-            Courses
           </Link>
           <Link
             to="/dashboard/payments"
@@ -199,13 +189,12 @@ export default function Dashboard() {
 
         <main className="flex-1 p-6">
           <Routes>
-            <Route path="/" element={<DashboardLanding />} />
+            <Route path="/" element={<DashboardLanding lessons={lessons}/>} />
             <Route
               path="/lessons"
               element={<StudentLessons lessons={lessons} />}
             />
-            <Route path="chats" element={<Chatpage />} />
-
+            <Route path="/chats" element={<Chatpage />} />
             <Route path="/courses" element={<PopularCourses />} />
             <Route path="/payments" element={<Payments />} />
             <Route path="/profile" element={<Profile />} />
