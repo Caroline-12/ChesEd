@@ -11,10 +11,9 @@ import useAuth from "@/hooks/useAuth";
 
 const ScrollableChat = ({ messages }) => {
   const { auth } = useAuth();
-  console.log(messages);
 
   return (
-    <ScrollableFeed>
+    <ScrollableFeed forceScroll>
       {messages &&
         messages.map((m, i) => (
           <div style={{ display: "flex" }} key={m._id}>
@@ -25,14 +24,19 @@ const ScrollableChat = ({ messages }) => {
                 placement="bottom-start"
                 hasArrow
               >
-                <Avatar mt="7px" mr={1} size="sm" cursor="pointer" />
+                <Avatar
+                  mt="7px"
+                  mr={1}
+                  size="sm"
+                  cursor="pointer"
+                  name={m.sender?.username}
+                  src={m.sender?.avatar}
+                />
               </Tooltip>
             )}
             <span
               style={{
-                backgroundColor: `${
-                  m.sender?._id === auth.ID ? "#BEE3F8" : "#B9F5D0"
-                }`,
+                backgroundColor: m.sender?._id === auth.ID ? "#BEE3F8" : "#B9F5D0",
                 marginLeft: isSameSenderMargin(messages, m, i, auth.ID),
                 marginTop: isSameUser(messages, m, i, auth.ID) ? 3 : 10,
                 borderRadius: "20px",

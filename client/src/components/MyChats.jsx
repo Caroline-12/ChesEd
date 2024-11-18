@@ -50,8 +50,7 @@ const MyChats = () => {
       p={3}
       bg="white"
       w={{ base: "100%", md: "100%" }}
-      borderRadius="lg"
-      borderWidth="1px"
+
     >
       <Box
         pb={3}
@@ -62,6 +61,7 @@ const MyChats = () => {
         w="100%"
         justifyContent="space-between"
         alignItems="center"
+        
       >
         My Chats
       </Box>

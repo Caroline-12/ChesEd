@@ -49,6 +49,7 @@ import PaymentFailed from "./components/PaymentFailed";
 import MyChats from "./components/MyChats";
 import Chatpage from "./components/Student/Chatpage";
 import TutorProfile from "./components/TutorProfile";
+import RevenueSection from "./components/Tutor/sections/RevenueSection";
 export default function App() {
   return (
     <Routes>
@@ -87,7 +88,7 @@ export default function App() {
           <Route element={<RequireAuth allowedRoles={[ROLES.Tutor]} />}>
             <Route path="tutor" element={<TutorLayout />}>
               <Route path="opportunities" element={<ManageLessons />} />
-              <Route path="payments" element={<Payments />} />
+              <Route path="revenue" element={<RevenueSection />} />
               <Route path="mylessons" element={<MyLessons />} />
               <Route path="chat" element={<Chatpage />} />
               <Route path="tutor-profile" element={<TutorProfileUpdate />} />
