@@ -88,7 +88,6 @@ const TutorRegistrationForm = () => {
         }
       });
 
-      console.log(formDataToSend)
       // Append file fields
       if (formData.profilePhoto) {
         formDataToSend.append("profilePhoto", formData.profilePhoto);

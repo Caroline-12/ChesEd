@@ -33,11 +33,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import Lessons from "./sections/Lessons";
-import RevenueSection from "./sections/Payments";
 import ChatSection from "./sections/ChatSection";
 import UsersSection from "./sections/UsersSection";
 import DashboardLanding from "./TutorLanding";
 import TutorLanding from "./TutorLanding";
+import RevenueSection from "./sections/RevenueSection";
 import MyLessons from "./sections/MyLessons";
 import Chatpage from "../Student/Chatpage";
 import SideDrawer from "../miscellaneous/SideDrawer";
