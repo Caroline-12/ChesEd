@@ -97,7 +97,7 @@ export default function App() {
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
             <Route path="admin" element={<AdminLayout />}>
-              <Route path="create-course" element={<CreateCourse />} />
+              {/* <Route path="create-course" element={<CreateCourse />} /> */}
               <Route path="users" element={<UsersSection />} />
               <Route path="opportunities" element={<ManageLessons />} />
               <Route path="courses" element={<Courses />} />
