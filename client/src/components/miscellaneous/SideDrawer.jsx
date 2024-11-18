@@ -31,6 +31,7 @@ import { Effect } from "react-notification-badge";
 import UserListItem from "../userAvatar/UserListItem";
 import { ChatState } from "@/context/ChatProvider";
 import useAuth from "@/hooks/useAuth";
+import { useEffect } from "react";
 
 function SideDrawer() {
   const [search, setSearch] = useState("");
@@ -55,17 +56,20 @@ function SideDrawer() {
     navigate("/tutor/tutor-profile");
   };
 
+  useEffect(() => {
+    handleSearch();
+  }, []);
   const handleSearch = async () => {
-    if (!search) {
-      toast({
-        title: "Please Enter something in search",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top-left",
-      });
-      return;
-    }
+    // if (!search) {
+    //   toast({
+    //     title: "Please Enter something in search",
+    //     status: "warning",
+    //     duration: 5000,
+    //     isClosable: true,
+    //     position: "top-left",
+    //   });
+    //   return;
+    // }
 
     try {
       setLoading(true);
@@ -92,6 +96,8 @@ function SideDrawer() {
     }
   };
 
+  console.log(chats)
+
   const accessChat = async (userId) => {
     console.log(userId);
 
@@ -109,20 +115,26 @@ function SideDrawer() {
         config
       );
 
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      if (!chats.find((c) => c._id === data._id)) {
+        setChats([data, ...chats]);
+      }
+      
       setSelectedChat(data);
       setLoadingChat(false);
       onClose();
     } catch (error) {
+      console.error("Error accessing chat:", error); // Log for debugging
       toast({
         title: "Error fetching the chat",
-        description: error.message,
+        description:
+          error.response?.data?.message || "Unable to access the chat",
         status: "error",
         duration: 5000,
         isClosable: true,
         position: "bottom-left",
       });
     }
+    
   };
 
   return (
