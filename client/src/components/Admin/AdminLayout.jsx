@@ -83,72 +83,64 @@ export function AdminLayout() {
         </div>
         <nav className="flex-1 px-2 py-4">
           <Link
-            to="/admin"
+            to="/admin-dashboard"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin" ? "bg-gray-700" : ""
+              location.pathname === "/admin-dashboard" ? "bg-gray-700" : ""
             }`}
           >
             <Home className="h-5 w-5" />
             Dashboard
           </Link>
           <Link
-            to="/admin/lessons"
+            to="/admin-dashboard/opportunities"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin/lessons" ? "bg-gray-700" : ""
+              location.pathname === "/admin-dashboard/opportunities" ? "bg-gray-700" : ""
             }`}
           >
             <Package className="h-5 w-5" />
             lessons
           </Link>
           <Link
-            to="/admin/approvetutors"
+            to="/admin-dashboard/approvetutors"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin/approvetutors" ? "bg-gray-700" : ""
+              location.pathname === "/admin-dashboard/approvetutors" ? "bg-gray-700" : ""
             }`}
           >
             <Package className="h-5 w-5" />
             Approve Tutors
           </Link>
           <Link
-            to="/admin/categories"
+            to="/admin-dashboard/categories"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin/categories" ? "bg-gray-700" : ""
+              location.pathname === "/admin-dashboard/categories" ? "bg-gray-700" : ""
             }`}
           >
             <Package className="h-5 w-5" />
             Categories
           </Link>
+          
           <Link
-            to="/admin/courses"
+            to="/admin-dashboard/users"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin/courses" ? "bg-gray-700" : ""
-            }`}
-          >
-            <Users className="h-5 w-5" />
-            Manage Courses
-          </Link>
-          <Link
-            to="/admin/users"
-            className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin/users" ? "bg-gray-700" : ""
+              location.pathname === "/admin-dashboard/users" ? "bg-gray-700" : ""
             }`}
           >
             <Users className="h-5 w-5" />
             Users
           </Link>
-          <Link
-            to="/admin/payments"
+          {/* <Link
+            to="/admin-dashboard/payments"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin/payments" ? "bg-gray-700" : ""
+              location.pathname === "/admin-dashboard/payments" ? "bg-gray-700" : ""
             }`}
           >
             <LineChart className="h-5 w-5" />
             Payments
-          </Link>
+          </Link> */}
         </nav>
         <div className="p-4">
           <Link
-            to="/admin/profile"
+            to="/admin-dashboard/profile"
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700"
           >
             <Button variant="secondary" className="w-full">
@@ -175,16 +167,16 @@ export function AdminLayout() {
             <SheetContent side="left" className="flex flex-col">
               <nav className="grid gap-2 text-lg font-medium">
                 <Link
-                  to="/admin"
+                  to="/admin-dashboard"
                   className="flex items-center gap-2 text-lg font-semibold"
                 >
                   <img src="/chesed-logo.png" alt="Logo" />
                   <span className="sr-only">Chesed</span>
                 </Link>
                 <Link
-                  to="/admin"
+                  to="/admin-dashboard"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/admin"
+                    location.pathname === "/admin-dashboard"
                       ? "bg-muted text-primary"
                       : ""
                   }`}
@@ -193,9 +185,9 @@ export function AdminLayout() {
                   Dashboard
                 </Link>
                 <Link
-                  to="/admin/lessons"
+                  to="/admin-dashboard/opportunities"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/admin/lessons"
+                    location.pathname === "/admin-dashboard/opportunities"
                       ? "bg-muted text-primary"
                       : ""
                   }`}
@@ -204,9 +196,9 @@ export function AdminLayout() {
                   lessons
                 </Link>
                 <Link
-                  to="/admin/approvetutors"
+                  to="/admin-dashboard/approvetutors"
                   className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-                    location.pathname === "/admin/approvetutors"
+                    location.pathname === "/admin-dashboard/approvetutors"
                       ? "bg-gray-700"
                       : ""
                   }`}
@@ -215,9 +207,9 @@ export function AdminLayout() {
                   Approve Tutors
                 </Link>
                 <Link
-                  to="/admin/categories"
+                  to="/admin-dashboard/categories"
                   className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-                    location.pathname === "/admin/categories"
+                    location.pathname === "/admin-dashboard/categories"
                       ? "bg-gray-700"
                       : ""
                   }`}
@@ -225,21 +217,11 @@ export function AdminLayout() {
                   <Package className="h-5 w-5" />
                   Categories
                 </Link>
+                
                 <Link
-                  to="/admin/courses"
+                  to="/admin-dashboard/users"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/admin/courses"
-                      ? "bg-muted text-primary"
-                      : ""
-                  }`}
-                >
-                  <Users className="h-5 w-5" />
-                  Manage Courses
-                </Link>
-                <Link
-                  to="/admin/users"
-                  className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/admin/users"
+                    location.pathname === "/admin-dashboard/users"
                       ? "bg-muted text-primary"
                       : ""
                   }`}
@@ -247,17 +229,17 @@ export function AdminLayout() {
                   <Users className="h-5 w-5" />
                   Users
                 </Link>
-                <Link
-                  to="/admin/payments"
+                {/* <Link
+                  to="/admin-dashboard/payments"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/admin/payments"
+                    location.pathname === "/admin-dashboard/payments"
                       ? "bg-muted text-primary"
                       : ""
                   }`}
                 >
                   <LineChart className="h-5 w-5" />
                   Payments
-                </Link>
+                </Link> */}
               </nav>
             </SheetContent>
           </Sheet>
@@ -267,11 +249,11 @@ export function AdminLayout() {
           <Routes>
             <Route path="/" element={<DashboardLanding />} />
             <Route
-              path="lessons"
+              path="opportunities"
               element={<ManageLessons lessons={lessons} />}
             />
             <Route path="courses" element={<ManageCourses />} />
-            <Route path="payments" element={<Payments />} />
+            {/* <Route path="payments" element={<Payments />} /> */}
             <Route path="users" element={<UsersSection />} />
             <Route path="approvetutors" element={<ApproveTrainersSection />} />
             <Route path="categories" element={<AdminCategoryManagement />} />

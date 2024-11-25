@@ -12,15 +12,21 @@ router.route("/").get(tutorsController.getApprovedTutors);
 
 router
   .route("/pending")
-  .get(verifyRoles(ROLES_LIST.Admin), tutorsController.getPendingTutors);
+  .get(tutorsController.getPendingTutors);
+
+  // .get(verifyRoles(ROLES_LIST.Admin), tutorsController.getPendingTutors);
 
 router
   .route("/approve")
-  .put(verifyRoles(ROLES_LIST.Admin), tutorsController.approveTutor);
+  .put(tutorsController.approveTutor);
+  // .put(verifyRoles(ROLES_LIST.Admin), tutorsController.approveTutor);
+
 
 router
   .route("/reject")
-  .post(verifyRoles(ROLES_LIST.Admin), tutorsController.rejectTutor);
+  .post( tutorsController.rejectTutor);
+  // .post(verifyRoles(ROLES_LIST.Admin), tutorsController.rejectTutor);
+
 // .delete(verifyRoles(ROLES_LIST.Admin), tutorsController.deleteUser)
 // .put(verifyRoles(ROLES_LIST.Admin), tutorsController.updateUser);
 

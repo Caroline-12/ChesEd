@@ -53,82 +53,59 @@ import RevenueSection from "./components/Tutor/sections/RevenueSection";
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
-        {/* public routes */}
-        {/* <Route path="payment" element={<PaymentMethod />} /> */}
-        <Route path="/lesson/:lessonId" element={<LessonDetail />} />
-        <Route path="login" element={<LoginForm />} />
-        <Route path="register" element={<RegisterForm />} />
-        <Route path="linkpage" element={<LinkPage />} />
-        <Route path="unauthorized" element={<Unauthorized />} />
-        <Route path="become-tutor" element={<BecomeTutor />} />
-        <Route path="waiting-lobby" element={<WaitingLobby />} />
-        <Route path="tutor-registration" element={<TutorRegistrationForm />} />
-        <Route path="/" element={<Landing />} />
-        <Route path="chats" element={<MyChats />} />
+  <Route path="/" element={<Layout />}>
+    {/* Public routes */}
+    <Route path="login" element={<LoginForm />} />
+    <Route path="register" element={<RegisterForm />} />
+    <Route path="unauthorized" element={<Unauthorized />} />
+    <Route path="/" element={<Landing />} />
 
-        {/* we want to protect these routes */}
-        <Route element={<PersistLogin />}>
-          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-            <Route path="dashboard/*" element={<Dashboard />} />
-            <Route path="submit-lesson" element={<Submitlesson />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="courses/:courseId" element={<CourseDetail />} />
-            <Route
-              path="/payment/:courseId/:agreedPrice"
-              element={<PaymentPage />}
-            />
-            {/* <Route path="/payment/:courseId" element={<PaymentMethod />} /> */}
-            <Route path="tutor/:id" element={<TutorProfile />} />
-            {/* <Route path="/lesson/:id" element={<LessonDetails />} /> */}
-            <Route path="/checkout-success" element={<PaymentSuccess />} />
-            <Route path="/payment-failed" element={<PaymentFailed />} />
-          </Route>
-
-          <Route element={<RequireAuth allowedRoles={[ROLES.Tutor]} />}>
-            <Route path="tutor" element={<TutorLayout />}>
-              <Route path="opportunities" element={<ManageLessons />} />
-              <Route path="revenue" element={<RevenueSection />} />
-              <Route path="mylessons" element={<MyLessons />} />
-              <Route path="chat" element={<Chatpage />} />
-              <Route path="tutor-profile" element={<TutorProfileUpdate />} />
-            </Route>
-          </Route>
-
-          <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-            <Route path="admin" element={<AdminLayout />}>
-              {/* <Route path="create-course" element={<CreateCourse />} /> */}
-              <Route path="users" element={<UsersSection />} />
-              <Route path="opportunities" element={<ManageLessons />} />
-              <Route path="courses" element={<Courses />} />
-              <Route path="payments" element={<Payments />} />
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route
-                path="approvetutors"
-                element={<ApproveTrainersSection />}
-              />
-              {/* <Route
-                path="lesson/:lessonId"
-                element={<LessonDetail />}
-              /> */}
-              <Route
-                path="assign-tutor/:lessonId"
-                element={<TutorAssignmentForm />}
-              />
-              <Route path="categories" element={<AdminCategoryManagement />} />
-            </Route>
-          </Route>
-
-          {/* <Route
-            element={<RequireAuth allowedRoles={[ROLES.Tutor, ROLES.Admin]} />}
-          >
-            <Route path="lounge" element={<Lounge />} />
-          </Route> */}
-        </Route>
-
-        {/* catch all */}
-        <Route path="*" element={<Missing />} />
+    {/* Protected routes */}
+    <Route element={<PersistLogin />}>
+      {/* Student Routes */}
+      <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+        <Route path="student-dashboard/*" element={<Dashboard />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="courses/:courseId" element={<CourseDetail />} />
+        <Route
+          path="payment/:courseId/:agreedPrice"
+          element={<PaymentPage />}
+        />
       </Route>
-    </Routes>
+
+      {/* Tutor Routes */}
+      <Route element={<RequireAuth allowedRoles={[ROLES.Tutor]} />}>
+        <Route path="tutor-dashboard/*" element={<TutorLayout />} />
+        <Route path="opportunities" element={<ManageLessons />} />
+        <Route path="revenue" element={<RevenueSection />} />
+        <Route path="mylessons" element={<MyLessons />} />
+        <Route path="chat" element={<Chatpage />} />
+        <Route path="tutor-profile" element={<TutorProfileUpdate />} />
+      </Route>
+
+      {/* Admin Routes */}
+      <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+        <Route path="admin-dashboard/*" element={<AdminLayout />} />
+        <Route path="users" element={<UsersSection />} />
+        <Route path="opportunities" element={<ManageLessons />} />
+        <Route path="courses" element={<Courses />} />
+        <Route path="payments" element={<Payments />} />
+        <Route
+          path="approvetutors"
+          element={<ApproveTrainersSection />}
+        />
+        <Route
+          path="assign-tutor/:lessonId"
+          element={<TutorAssignmentForm />}
+        />
+        <Route path="categories" element={<AdminCategoryManagement />} />
+      </Route>
+    </Route>
+
+    {/* Catch-all route */}
+    <Route path="*" element={<Missing />} />
+  </Route>
+</Routes>
+
   );
 }

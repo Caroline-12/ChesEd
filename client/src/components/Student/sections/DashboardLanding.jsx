@@ -13,83 +13,68 @@ import { BiSolidNotepad } from "react-icons/bi";
 import axios from "axios";
 import useAuth from "@/hooks/useAuth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
-const DashboardLanding = () => {
-  const [courses, setCourses] = useState([]);
+const DashboardLanding = ({lessons}) => {
   const { auth } = useAuth();
-  const [userProfile, setUserProfile] = useState({});
+  const numberOfLessons = lessons.length;
+  const [payments, setPayments] = useState([]);
 
   useEffect(() => {
-    fetchUserProfile();
-    fetchEnrolledCourses();
+    // Function to fetch paid lessons from the backend API
+    const fetchPaidLessons = async () => {
+      try {
+        const response = await axios.get(`/payments/lessons/${auth.ID}/paid`);
+        setPayments(response.data); // Set the fetched data to the state
+      } catch (err) {
+        toast.error("Error fetching paid lessons.");
+      }
+    };
+
+    fetchPaidLessons();
   }, []);
 
-  const fetchUserProfile = async () => {
-    try {
-      const response = await axios.get(`/users/profile/${auth.ID}`, {
-        headers: {
-          Authorization: `Bearer ${auth.accessToken}`,
-        },
-      });
-      setUserProfile(response.data);
-    } catch (err) {
-      console.error("Error fetching user profile:", err);
-    }
-  };
-
-  const fetchEnrolledCourses = async () => {
-    try {
-      const response = await axios.get(`/courses/enrolled/${auth.ID}`, {
-        headers: {
-          Authorization: `Bearer ${auth.accessToken}`,
-        },
-      });
-      setCourses(response.data);
-    } catch (err) {
-      console.error("Error fetching courses:", err);
-    }
-  };
-
+  
   return (
     <div className="space-y-4">
       <Card className="flex flex-col md:flex-row items-center justify-between p-4">
         <div className="flex items-center space-x-4">
           <Avatar>
-            <AvatarImage src={userProfile.avatarUrl} alt="Profile Image" />
+            <AvatarImage src={auth.avatarUrl} alt="Profile Image" />
             <AvatarFallback>
-              {userProfile.name ? userProfile.name[0] : "?"}
+              {auth.username ? auth.username[0] : "?"}
             </AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="text-2xl font-bold">Welcome, {userProfile.name}!</h1>
+            <h1 className="text-2xl font-bold">Welcome, {auth.username}!</h1>
             <p className="text-sm text-muted-foreground">
-              Let's explore your learning journey.
             </p>
           </div>
         </div>
-        <Button variant="secondary" className="mt-4 md:mt-0">
+        <Link to={"/student-dashboard/profile"} variant="secondary" className="mt-4 md:mt-0">
           Edit Profile
-        </Button>
+        </Link>
       </Card>
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
-        <Card className="bg-white shadow-lg">
+        {/* <Card className="bg-white shadow-lg">
           <CardHeader className="flex items-center">
             <FaBookOpen className="h-6 w-6 text-blue-500 mr-2" />
             <CardTitle>Enrolled Courses</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{courses.length}</p>
+            <p className="text-2xl font-bold">3</p>
             <p className="text-sm text-muted-foreground">
               Courses currently enrolled in
             </p>
           </CardContent>
           <CardFooter>
-            <Button variant="link" as="a" href="/dashboard/courses">
+            <Button variant="link" as="a" href="/student-dashboard/lessons">
               View Courses
             </Button>
           </CardFooter>
-        </Card>
+        </Card> */}
 
         <Card className="bg-white shadow-lg">
           <CardHeader className="flex items-center">
@@ -97,17 +82,19 @@ const DashboardLanding = () => {
             <CardTitle>lessons</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">5</p>
-            <p className="text-sm text-muted-foreground">Pending lessons</p>
+            <p className="text-2xl font-bold">{numberOfLessons}</p>
+            <p className="text-sm text-muted-foreground"> lessons</p>
           </CardContent>
           <CardFooter>
-            <Button variant="link" as="a" href="/dashboard/lessons">
+            <Link to="/student-dashboard/lessons">
+            <Button variant="link" as="a" >
               View lessons
             </Button>
+            </Link>
           </CardFooter>
         </Card>
 
-        <Card className="bg-white shadow-lg">
+        {/* <Card className="bg-white shadow-lg">
           <CardHeader className="flex items-center">
             <MdRateReview className="h-6 w-6 text-yellow-500 mr-2" />
             <CardTitle>Reviews</CardTitle>
@@ -117,11 +104,13 @@ const DashboardLanding = () => {
             <p className="text-sm text-muted-foreground">Total reviews given</p>
           </CardContent>
           <CardFooter>
-            <Button variant="link" as="a" href="/dashboard/reviews">
+          <Link to="/student-dashboard/reviews">
+            <Button variant="link" as="a" href="/student-dashboard/reviews">
               View Reviews
             </Button>
+            </Link>
           </CardFooter>
-        </Card>
+        </Card> */}
 
         <Card className="bg-white shadow-lg">
           <CardHeader className="flex items-center">
@@ -129,11 +118,11 @@ const DashboardLanding = () => {
             <CardTitle>Payments</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">$150</p>
+            <p className="text-2xl font-bold">{payments.length}</p>
             <p className="text-sm text-muted-foreground">Pending payments</p>
           </CardContent>
           <CardFooter>
-            <Button variant="link" as="a" href="/dashboard/payments">
+            <Button variant="link" as="a" href="/student-dashboard/payments">
               View Payments
             </Button>
           </CardFooter>

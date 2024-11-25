@@ -298,6 +298,55 @@ const getLessonsForTutor = async (req, res) => {
       .populate("admin", "username")
       .populate("tutor", "username")
       .sort({ createdAt: -1 });
+    res.json(lessons);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch completed Lessons" });
+  }
+};
+
+const getOngoingLessonsForTutor = async (req, res) => {
+  const { tutorId } = req.params;
+
+  if (!tutorId) {
+    return res.status(400).json({ message: "Tutor ID is required" });
+  }
+
+  try {
+    const lessons = await Lesson.find({
+      tutor: tutorId,
+      status: "in_progress",
+    })
+      .populate("student", "username email")
+      .populate("admin", "username")
+      .populate("tutor", "username")
+      .sort({ createdAt: -1 });
+
+    res.json(lessons);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch completed Lessons" });
+  }
+};
+
+const getCompleteLessonsForTutor = async (req, res) => {
+  const { tutorId } = req.params;
+
+  console.log("Tutor ID: ");
+  console.log(tutorId);
+  if (!tutorId) {
+    return res.status(400).json({ message: "Tutor ID is required" });
+  }
+
+  try {
+    const lessons = await Lesson.find({
+      tutor: tutorId,
+      status: "completed",
+    })
+      .populate("student", "username email")
+      .populate("admin", "username")
+      .populate("tutor", "username")
+      .sort({ createdAt: -1 });
 
     res.json(lessons);
   } catch (err) {
@@ -515,4 +564,6 @@ module.exports = {
   changePaymentStatus,
   submitTutorProposal,
   respondToProposal,
+  getOngoingLessonsForTutor,
+  getCompleteLessonsForTutor,
 };

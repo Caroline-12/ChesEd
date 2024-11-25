@@ -17,7 +17,7 @@ import {
   DrawerOverlay,
 } from "@chakra-ui/modal";
 import { Tooltip } from "@chakra-ui/tooltip";
-import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { BellIcon, ChevronDownIcon, SearchIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -53,7 +53,7 @@ function SideDrawer() {
 
   const goToProfile = () => {
     console.log("Go to Profile");
-    navigate("/tutor/tutor-profile");
+    navigate("/tutor-dashboard/tutor-profile");
   };
 
   useEffect(() => {
@@ -137,22 +137,15 @@ function SideDrawer() {
 
   return (
     <>
-      <Box
-        d="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        bg="white"
-        w="100%"
-        p="5px 10px 5px 10px"
-      >
-        <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
+      <div className=" flex flex-row">
+        <div className="border-2 border-gray-400  rounded-full" >
           <Button variant="ghost" onClick={onOpen}>
-            <i className="fas fa-search"></i>
-            <Text d={{ base: "none", md: "flex" }} px={4}>
+            <Text className="text-gray-400 px-4">
+              <SearchIcon />
               Search User
             </Text>
           </Button>
-        </Tooltip>
+        </div>
 
         <div>
           <Menu>
@@ -180,7 +173,7 @@ function SideDrawer() {
               ))}
             </MenuList>
           </Menu>
-          <Menu>
+          {/* <Menu>
             <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
               <Avatar
                 size="sm"
@@ -193,9 +186,9 @@ function SideDrawer() {
               <MenuItem onClick={goToProfile}>My Profile</MenuItem>
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
-          </Menu>
+          </Menu> */}
         </div>
-      </Box>
+      </div>
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />

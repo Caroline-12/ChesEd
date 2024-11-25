@@ -14,6 +14,7 @@ import io from "socket.io-client";
 
 import { ChatState } from "@/context/ChatProvider";
 import useAuth from "@/hooks/useAuth";
+import { SendIcon } from "lucide-react";
 const ENDPOINT = "http://localhost:3500";
 var socket, selectedChatCompare;
 
@@ -247,6 +248,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 />
               </div>
             )}
+            <div className="flex">
             <Input
               variant="filled"
               bg="#E0E0E0"
@@ -254,6 +256,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               value={newMessage}
               onChange={typingHandler}
             />
+            
+            <SendIcon className=" rounded-full h-8 w-8 bg-slate-400" />
+            </div>
           </FormControl>
         </Box>
       </>

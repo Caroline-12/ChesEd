@@ -106,7 +106,7 @@ const UserItem = ({ user }) => {
         <Button
           variant="outline"
           className="text-blue-800 border-blue-800 hover:bg-blue-200"
-          onClick={() => navigate(`/admin/user/${user._id}`)}
+          onClick={() => navigate(`/dashboard/user/${user._id}`)}
         >
           View Details
         </Button>

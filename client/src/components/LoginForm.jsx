@@ -102,6 +102,7 @@ export function LoginForm() {
       setIsLoggedIn(true);
       // console.log("Login successful", response?.data);
       toast.success("Login successful");
+      localStorage.setItem("auth", JSON.stringify(auth));
       setEmail("");
       setPassword("");
 
@@ -133,12 +134,12 @@ export function LoginForm() {
         if (tutorStatus === "pending") {
           navigate("/waiting-lobby", { replace: true });
         } else if (tutorStatus === "approved") {
-          navigate("/tutor", { replace: true });
+          navigate("/tutor-dashboard", { replace: true });
         }
       } else if (roles.includes(5150)) {
-        navigate("/admin", { replace: true });
+        navigate("/admin-dashboard", { replace: true });
       } else {
-        navigate(from, { replace: true });
+        navigate("/student-dashboard", { replace: true });
       }
     } catch (error) {
       // Handle the error here

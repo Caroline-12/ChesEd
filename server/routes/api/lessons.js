@@ -58,6 +58,14 @@ router
   .get(verifyRoles(ROLES_LIST.Tutor), lessonController.getLessonsForTutor);
 
 router
+  .route("/tutor/:tutorId/ongoing")
+  .get(verifyRoles(ROLES_LIST.Tutor), lessonController.getOngoingLessonsForTutor);
+
+router
+  .route("/tutor/:tutorId/completed")
+  .get(verifyRoles(ROLES_LIST.Tutor), lessonController.getCompleteLessonsForTutor);
+
+router
   .route("/complete")
   .put(verifyRoles(ROLES_LIST.Tutor), lessonController.completeLesson);
 

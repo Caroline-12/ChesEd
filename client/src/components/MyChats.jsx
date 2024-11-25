@@ -8,6 +8,7 @@ import { Button } from "@chakra-ui/react";
 import { ChatState } from "@/context/ChatProvider";
 import useAuth from "@/hooks/useAuth";
 import Spinner from "./Spinner";
+import SideDrawer from "./miscellaneous/SideDrawer";
 
 const MyChats = () => {
   const { auth } = useAuth();
@@ -52,24 +53,14 @@ const MyChats = () => {
       w={{ base: "100%", md: "100%" }}
 
     >
-      <Box
-        pb={3}
-        px={3}
-        fontSize={{ base: "28px", md: "30px" }}
-        fontFamily="Work sans"
-        d="flex"
-        w="100%"
-        justifyContent="space-between"
-        alignItems="center"
-        
-      >
-        My Chats
-      </Box>
+      <div className="flex flex-col w-full">
+            <SideDrawer />
+          </div>
+      
       <Box
         d="flex"
         flexDir="column"
         p={3}
-        bg="#F8F8F8"
         w="100%"
         h="100%"
         borderRadius="lg"
@@ -78,13 +69,15 @@ const MyChats = () => {
         {chats ? (
           <Stack overflowY="scroll">
             {chats.map((chat) => (
+              (!chat.latestMessage) ? null :
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
-                bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
+                bg={selectedChat === chat ? "#38B2AC" : ""}
                 color={selectedChat === chat ? "white" : "black"}
                 px={3}
                 py={2}
+                my={2}
                 borderRadius="lg"
                 key={chat._id}
               >

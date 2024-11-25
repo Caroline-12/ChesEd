@@ -75,13 +75,13 @@ export function TutorLayout() {
 
   console.log("lessons", lessons);
   const navItems = [
-    { path: "/tutor", label: "Dashboard", icon: Home },
-    { path: "/tutor/opportunities", label: "Opportunities", icon: Package },
-    { path: "/tutor/chat", label: "Chat", icon: MessageCircle },
-    { path: "/tutor/revenue", label: "Revenue", icon: LineChart },
-    { path: "/tutor/tutor-profile", label: "Profile", icon: CircleUser },
+    { path: "/tutor-dashboard", label: "Dashboard", icon: Home },
+    { path: "/tutor-dashboard/opportunities", label: "Opportunities", icon: Package },
+    { path: "/tutor-dashboard/chat", label: "Chat", icon: MessageCircle },
+    { path: "/tutor-dashboard/revenue", label: "Revenue", icon: LineChart },
+    { path: "/tutor-dashboard/tutor-profile", label: "Profile", icon: CircleUser },
     {
-      path: "/tutor/mylessons",
+      path: "/tutor-dashboard/mylessons",
       label: "My Lessons",
       icon: Search,
     },
@@ -122,7 +122,7 @@ export function TutorLayout() {
             <SheetContent side="left" className="flex flex-col">
               <nav className="grid gap-2 text-lg font-medium">
                 <Link
-                  to="/tutor"
+                  to="/tutor-dashboard"
                   className="flex items-center gap-2 text-lg font-semibold"
                 >
                   <span className="sr-only">ChesedTutor</span>
@@ -138,7 +138,7 @@ export function TutorLayout() {
 
         <main className="flex-1 p-6">
           <Routes>
-            <Route path="/" element={<TutorLanding />} />
+            <Route path="/" element={<TutorLanding lessons={lessons} />} />
             <Route
               path="opportunities"
               element={

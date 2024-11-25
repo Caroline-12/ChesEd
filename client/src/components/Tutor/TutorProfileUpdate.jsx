@@ -3,12 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-// import { updateTutorProfile } from "@/api/tutor"; // Assume an API function for updating
 import useAuth from "@/hooks/useAuth";
 import axios from "@/api/axios";
+import { toast } from "sonner";
+import Spinner from "../Spinner";
 
 export default function TutorProfileUpdate() {
   const { auth } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     username: auth.username || "",
@@ -17,42 +19,31 @@ export default function TutorProfileUpdate() {
     lastName: auth.lastName || "",
     bio: auth.bio || "",
     specialization: auth.specialization || [],
-    profilePhoto: auth.profilePhoto || "",
+    profilePhoto: null,
     calendlyProfile: auth.calendlyProfile || "",
     balance: auth.balance || 0,
   });
 
-  console.log("formData", formData);
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSpecializationChange = (index, value) => {
-    const newSpecializations = [...formData.specialization];
-    newSpecializations[index] = value;
-    setFormData((prev) => ({ ...prev, specialization: newSpecializations }));
-  };
-
-  const handleAddSpecialization = () => {
+    const { name, value, files } = e.target;
     setFormData((prev) => ({
       ...prev,
-      specialization: [...prev.specialization, ""],
+      [name]: files ? files[0] : value,
     }));
-  };
-
-  const handleProfilePhotoChange = (e) => {
-    const file = e.target.files[0];
-    // Assume a function to handle file uploads
-    // uploadFile(file).then(url => setFormData(prev => ({...prev, profilePhoto: url })));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    const updatedData = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      updatedData.append(key, value);
+    });
+
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${auth.accessToken}`,
         },
       };
@@ -61,25 +52,36 @@ export default function TutorProfileUpdate() {
         { ...formData, id: auth.ID },
         config
       );
-      alert("Profile updated successfully");
-      console.log("Updated data:", data);
+      toast.success("Profile updated successfully");
+      setIsSubmitting(false);
     } catch (err) {
-      console.error("Failed to update profile:", err);
+      toast.error("Failed to update profile.");
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <form onSubmit={handleSubmit} className="space-y-6">
+      {isSubmitting && <Spinner />}
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-8 bg-white p-8 rounded-lg shadow-lg"
+      >
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-4">
+          Update Profile
+        </h1>
+
+        {/* Personal Information */}
         <section>
-          <h2 className="text-2xl font-bold">Personal Information</h2>
-          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <h2 className="text-2xl font-semibold text-gray-700">Personal Information</h2>
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
             <Input
               label="First Name"
               name="firstName"
               value={formData.firstName}
               onChange={handleInputChange}
               disabled
+              placeholder="First Name"
             />
             <Input
               label="Last Name"
@@ -87,6 +89,7 @@ export default function TutorProfileUpdate() {
               value={formData.lastName}
               onChange={handleInputChange}
               disabled
+              placeholder="Last Name"
             />
             <Input
               label="Username"
@@ -94,6 +97,7 @@ export default function TutorProfileUpdate() {
               value={formData.username}
               onChange={handleInputChange}
               disabled
+              placeholder="Username"
             />
             <Input
               label="Email"
@@ -101,6 +105,7 @@ export default function TutorProfileUpdate() {
               value={formData.email}
               onChange={handleInputChange}
               disabled
+              placeholder="Email"
             />
             <Input
               label="Calendly Profile"
@@ -112,52 +117,75 @@ export default function TutorProfileUpdate() {
           </div>
         </section>
 
+        {/* Profile Photo */}
         <section>
-          <h2 className="text-2xl font-bold">Profile Photo</h2>
+          <h2 className="text-2xl font-semibold text-gray-700">Profile Photo</h2>
           <div className="mt-4 flex items-center gap-4">
             <Avatar className="h-16 w-16">
               <AvatarImage src={formData.profilePhoto} />
-              <AvatarFallback>{formData.username}</AvatarFallback>
+              <AvatarFallback>
+                {formData.username.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <input
               type="file"
               accept="image/*"
-              onChange={handleProfilePhotoChange}
+              onChange={handleInputChange}
+              className="file-input"
             />
           </div>
         </section>
 
+        {/* Specialization */}
         <section>
-          <h2 className="text-2xl font-bold">Specialization</h2>
-          {formData.specialization.map((specialty, index) => (
-            <div
-              key={index}
-              label={`Specialization ${index + 1}`}
-              // value={specialty}
-              /* // onChange={(e) => */
-              // handleSpecializationChange(index, e.target.value)
-              // }
-              placeholder="Enter area of expertise"
-            >
-              {specialty}
-            </div>
-          ))}
-          {/* <Button type="button" onClick={handleAddSpecialization}>
-            Add Specialization
-          </Button> */}
+          <h2 className="text-2xl font-semibold text-gray-700">Specialization</h2>
+          <div className="mt-4 space-y-2">
+            {formData.specialization.length > 0 ? (
+              formData.specialization.map((specialty, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-100 p-2 rounded-lg shadow-md"
+                >
+                  {specialty}
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">No specializations added yet.</p>
+            )}
+          </div>
         </section>
 
+        {/* About You */}
         <section>
-          <h2 className="text-2xl font-bold">About You</h2>
-          <Textarea
-            name="bio"
-            value={formData.bio}
-            onChange={handleInputChange}
-            placeholder="Write a short bio..."
-          />
-        </section>
+  <h2 className="text-2xl font-semibold text-gray-700">About You</h2>
+  <div className="mt-4">
+    <Textarea
+      name="bio"
+      value={formData.bio}
+      onChange={(e) => {
+        const words = e.target.value.trim().split(/\s+/); // Split text into words
+        if (words.length <= 300) {
+          handleInputChange(e); // Update the value only if within limit
+        } else {
+          toast.error("Maximum word count of 300 reached.");
+        }
+      }}
+      placeholder="Write a short bio (max 300 words)..."
+      className="mt-4"
+    />
+    <p className="text-sm text-gray-500 mt-2">
+      {formData.bio.trim().split(/\s+/).length} / 300 words
+    </p>
+  </div>
+</section>
 
-        <Button type="submit">Update Profile</Button>
+
+        <Button
+          type="submit"
+          className=" font-semibold py-3 rounded-lg"
+        >
+          Update Profile
+        </Button>
       </form>
     </div>
   );

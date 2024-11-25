@@ -133,7 +133,7 @@ const LessonDetails = () => {
 
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
-      navigate(auth.roles.includes(1984) ? "/tutor/chat/" : "/dashboard/chats");
+      navigate(auth.roles.includes(1984) ? "/tutor-dashboard/chat/" : "/tutor-dashboard/chats");
     } catch (error) {
       toast({
         title: "Error fetching the chat",
