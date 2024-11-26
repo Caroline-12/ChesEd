@@ -58,7 +58,7 @@ const TutorAssignmentForm = ({ assignmentId }) => {
         }
       );
       toast.success("Tutor assigned successfully");
-      navigate("/admin");
+      navigate("/admin-dashboard");
     } catch (err) {
       console.error("Error assigning tutor:", err);
       setError("Failed to assign tutor. Please try again later.");

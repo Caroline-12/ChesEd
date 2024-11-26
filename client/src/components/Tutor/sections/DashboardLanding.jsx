@@ -33,7 +33,7 @@ const TutorDashboard = () => {
       };
 
       const response = await axios.get(
-        `/tutor/dashboard/${auth.userId}`,
+        `/dashboard/dashboard/${auth.userId}`,
         config
       );
       setDashboardData(response.data);

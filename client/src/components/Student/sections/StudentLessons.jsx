@@ -37,7 +37,7 @@ function StudentLessons({ lessons }) {
   const currentLessons = reversedLessons.slice(offset, offset + lessonsPerPage);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container ">
       <Card>
         <div className="text-center py-10 text-black rounded-lg mb-10">
           <h1 className="text-5xl font-bold mb-4">

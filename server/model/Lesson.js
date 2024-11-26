@@ -20,7 +20,7 @@ const LessonSchema = new mongoose.Schema(
     },
     documents: [
       {
-        type: String, // This will store file paths or URLs
+        type: String,
       },
     ],
     student: {

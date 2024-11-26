@@ -17,7 +17,7 @@ import {
   DrawerOverlay,
 } from "@chakra-ui/modal";
 import { Tooltip } from "@chakra-ui/tooltip";
-import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { BellIcon, ChevronDownIcon, SearchIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -31,6 +31,7 @@ import { Effect } from "react-notification-badge";
 import UserListItem from "../userAvatar/UserListItem";
 import { ChatState } from "@/context/ChatProvider";
 import useAuth from "@/hooks/useAuth";
+import { useEffect } from "react";
 
 function SideDrawer() {
   const [search, setSearch] = useState("");
@@ -52,20 +53,23 @@ function SideDrawer() {
 
   const goToProfile = () => {
     console.log("Go to Profile");
-    navigate("/tutor/tutor-profile");
+    navigate("/tutor-dashboard/tutor-profile");
   };
 
+  useEffect(() => {
+    handleSearch();
+  }, []);
   const handleSearch = async () => {
-    if (!search) {
-      toast({
-        title: "Please Enter something in search",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top-left",
-      });
-      return;
-    }
+    // if (!search) {
+    //   toast({
+    //     title: "Please Enter something in search",
+    //     status: "warning",
+    //     duration: 5000,
+    //     isClosable: true,
+    //     position: "top-left",
+    //   });
+    //   return;
+    // }
 
     try {
       setLoading(true);
@@ -109,40 +113,39 @@ function SideDrawer() {
         config
       );
 
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      if (!chats.find((c) => c._id === data._id)) {
+        setChats([data, ...chats]);
+      }
+      
       setSelectedChat(data);
       setLoadingChat(false);
       onClose();
     } catch (error) {
+      console.error("Error accessing chat:", error); // Log for debugging
       toast({
         title: "Error fetching the chat",
-        description: error.message,
+        description:
+          error.response?.data?.message || "Unable to access the chat",
         status: "error",
         duration: 5000,
         isClosable: true,
         position: "bottom-left",
       });
     }
+    
   };
 
   return (
     <>
-      <Box
-        d="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        bg="white"
-        w="100%"
-        p="5px 10px 5px 10px"
-      >
-        <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
+      <div className=" flex flex-row">
+        <div className="border-2 border-gray-400  rounded-full" >
           <Button variant="ghost" onClick={onOpen}>
-            <i className="fas fa-search"></i>
-            <Text d={{ base: "none", md: "flex" }} px={4}>
+            <Text className="text-gray-400 px-4">
+              <SearchIcon />
               Search User
             </Text>
           </Button>
-        </Tooltip>
+        </div>
 
         <div>
           <Menu>
@@ -170,7 +173,7 @@ function SideDrawer() {
               ))}
             </MenuList>
           </Menu>
-          <Menu>
+          {/* <Menu>
             <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
               <Avatar
                 size="sm"
@@ -183,9 +186,9 @@ function SideDrawer() {
               <MenuItem onClick={goToProfile}>My Profile</MenuItem>
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
-          </Menu>
+          </Menu> */}
         </div>
-      </Box>
+      </div>
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />

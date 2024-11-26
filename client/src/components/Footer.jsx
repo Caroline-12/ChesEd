@@ -116,9 +116,6 @@ const Footer = () => {
               Subscribe
             </button>
           </div>
-          <Button className=" text-sm text-white p-2 rounded-r">
-            <Link to="/admin">Admin </Link>
-          </Button>
         </div>
       </div>
       <div className="text-center mt-10 text-gray-500 text-sm">

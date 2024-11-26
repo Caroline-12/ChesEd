@@ -1,4 +1,21 @@
 const User = require("../model/User");
+const multer = require("multer");
+const path = require("path");
+
+// Configure multer for file upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Make sure this directory exists
+  },
+  filename: function (req, profilePhoto, cb) {
+    cb(null, profilePhoto.originalname); // Appending extension
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// Middleware to handle file upload
+const uploadMiddleware = upload.single("ProfilePhoto");
 
 const getAllUsers = async (req, res) => {
   const users = await User.find();
@@ -50,40 +67,53 @@ const getUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const {
-    id,
-    name,
-    email,
-    bio,
-    specialization,
-    calendlyProfile,
-    profilePhoto,
-  } = req.body;
-  console.log(profilePhoto);
+  uploadMiddleware(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ message: "ProfilePhoto upload error" });
+    } else if (err) {
+      return res
+        .status(500)
+        .json({ message: "Unknown error occurred during file upload" });
+    }
+    const {
+      id,
+      name,
+      email,
+      bio,
+      specialization,
+      calendlyProfile,
+      profilePhoto,
+    } = req.body;
 
-  if (!id) return res.status(400).json({ message: "User ID required" });
+    // what is the path of the uploaded file
+    console.log(req.ProfilePhoto.path);
 
-  const user = await User.findOne({ _id: id }).exec();
-  if (!user) {
-    return res.status(204).json({ message: `User ID ${id} not found` });
-  }
+    if (!id) return res.status(400).json({ message: "User ID required" });
 
-  // Update each field if provided, else retain the existing values
-  user.name = name || user.name;
-  user.email = email || user.email;
-  user.bio = bio || user.bio;
-  user.specialization = specialization || user.specialization;
-  user.calendlyProfile = calendlyProfile || user.calendlyProfile;
-  user.profilePhoto = profilePhoto || user.profilePhoto;
+    const user = await User.findOne({ _id: id }).exec();
+    if (!user) {
+      return res.status(204).json({ message: `User ID ${id} not found` });
+    }
 
-  try {
-    const updatedUser = await user.save();
-    res.json(updatedUser);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to update user profile", error: err });
-  }
+    // Update each field if provided, else retain the existing values
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.bio = bio || user.bio;
+    user.specialization = specialization || user.specialization;
+    user.calendlyProfile = calendlyProfile || user.calendlyProfile;
+    user.profilePhoto = req.ProfilePhoto
+      ? req.ProfilePhoto.path
+      : null || user.profilePhoto;
+
+    try {
+      const updatedUser = await user.save();
+      res.json(updatedUser);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Failed to update user profile", error: err });
+    }
+  });
 };
 
 // delete all users

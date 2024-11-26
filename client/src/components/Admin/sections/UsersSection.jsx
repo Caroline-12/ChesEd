@@ -1,15 +1,18 @@
 import useAuth from "@/hooks/useAuth";
 import axios from "@/api/axios";
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
 import Spinner from "@/components/Spinner";
-
+import { useNavigate } from "react-router-dom";
 export default function UsersSection() {
   const { auth } = useAuth();
   const [tutors, setTutors] = useState([]);
   const [students, setStudents] = useState([]);
+  const [filteredTutors, setFilteredTutors] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activePanel, setActivePanel] = useState("students"); // State to toggle between panels
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,6 +22,24 @@ export default function UsersSection() {
     fetchAllStudents();
   }, []);
 
+  useEffect(() => {
+    setFilteredTutors(
+      tutors.filter(
+        (tutor) =>
+          tutor.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          tutor.email.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+
+    setFilteredStudents(
+      students.filter(
+        (student) =>
+          student.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          student.email.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, tutors, students]);
+
   const fetchAllTutors = async () => {
     try {
       const response = await axios.get("/tutors", {
@@ -27,9 +48,10 @@ export default function UsersSection() {
         },
       });
       setTutors(response.data);
+      setFilteredTutors(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching users:", err);
+      console.error("Error fetching tutors:", err);
       setError("Failed to load tutors. Please try again later.");
       setLoading(false);
     }
@@ -43,85 +65,108 @@ export default function UsersSection() {
         },
       });
       setStudents(response.data);
+      setFilteredStudents(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching users:", err);
-      setError("Failed to load tutors. Please try again later.");
+      console.error("Error fetching students:", err);
+      setError("Failed to load students. Please try again later.");
       setLoading(false);
     }
   };
 
-  console.log(tutors);
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <Spinner />;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="container mx-auto p-4 space-y-8">
-      {loading && <Spinner />}
-      <Card>
-        <CardHeader>
-          <CardTitle>Students</CardTitle>
-        </CardHeader>
-        <CardContent>
+      {/* Search Bar */}
+      <Input
+        type="text"
+        placeholder="Search users by name or email..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-4"
+      />
+
+      {/* Panel Navigation Buttons */}
+      <div className="flex space-x-4">
+        <Button
+          variant={activePanel === "students" ? "solid" : "outline"}
+          onClick={() => setActivePanel("students")}
+          className={activePanel === "students" ? "bg-blue-600 text-white" : ""}
+        >
+          Students
+        </Button>
+        <Button
+          variant={activePanel === "tutors" ? "solid" : "outline"}
+          onClick={() => setActivePanel("tutors")}
+          className={activePanel === "tutors" ? "bg-blue-600 text-white" : ""}
+        >
+          Tutors
+        </Button>
+      </div>
+
+      {/* Active Panel Content */}
+      <div className="mt-4">
+        {activePanel === "students" && (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-left bg-white">
-              <thead>
+            <h2 className="text-xl font-bold mb-4">Students</h2>
+            <table className="min-w-full text-left bg-white border border-gray-200">
+              <thead className="bg-gray-100">
                 <tr>
-                  <th className="py-2">Name</th>
-                  <th className="py-2">Email</th>
-                  <th className="py-2">Actions</th>
+                  <th className="py-2 px-4">Name</th>
+                  <th className="py-2 px-4">Email</th>
+                  <th className="py-2 px-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {students.length > 0 ? (
-                  students.map(
+                {filteredStudents.length > 0 ? (
+                  filteredStudents.map(
                     (student) =>
-                      // search for this question mark implimentation
                       student.roles?.User && (
                         <UserItem key={student._id} user={student} />
                       )
                   )
                 ) : (
                   <tr>
-                    <td colSpan="3">No students found.</td>
+                    <td colSpan="3" className="py-4 text-center">
+                      No students found.
+                    </td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Tutors</CardTitle>
-        </CardHeader>
-        <CardContent>
+        )}
+
+        {activePanel === "tutors" && (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-left bg-white">
-              <thead>
+            <h2 className="text-xl font-bold mb-4">Tutors</h2>
+            <table className="min-w-full text-left bg-white border border-gray-200">
+              <thead className="bg-gray-100">
                 <tr>
-                  <th className="py-2">Name</th>
-                  <th className="py-2">Email</th>
-                  <th className="py-2">Actions</th>
+                  <th className="py-2 px-4">Name</th>
+                  <th className="py-2 px-4">Email</th>
+                  <th className="py-2 px-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {tutors.length > 0 ? (
-                  tutors.map((tutor) => (
+                {filteredTutors.length > 0 ? (
+                  filteredTutors.map((tutor) => (
                     <UserItem key={tutor._id} user={tutor} />
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="3">No tutors found.</td>
+                    <td colSpan="3" className="py-4 text-center">
+                      No tutors found.
+                    </td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
-        </CardContent>
-      </Card>
+        )}
+      </div>
     </div>
   );
 }
@@ -137,7 +182,7 @@ const UserItem = ({ user }) => {
         <Button
           variant="outline"
           className="text-blue-800 border-blue-800 hover:bg-blue-200"
-          onClick={() => navigate(`/admin/user/${user._id}`)}
+          onClick={() => navigate(`/dashboard/user/${user._id}`)}
         >
           View Details
         </Button>

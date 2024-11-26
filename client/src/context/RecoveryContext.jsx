@@ -19,9 +19,7 @@ export const RecoveryProvider = ({ children }) => {
   // }
 
   return (
-    <RecoveryContext.Provider
-      value={{ page, setPage, otp, setOTP, setEmail, email }}
-    >
+    <RecoveryContext.Provider value={{ otp, setOTP, setEmail, email }}>
       {children}
     </RecoveryContext.Provider>
   );

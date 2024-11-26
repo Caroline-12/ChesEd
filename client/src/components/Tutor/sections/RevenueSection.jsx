@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from "@/api/axios";
 import useAuth from "@/hooks/useAuth";
 
-const Payments = () => {
+const RevenueSection = () => {
   const { auth } = useAuth();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,4 +107,4 @@ const Payments = () => {
   );
 };
 
-export default Payments;
+export default RevenueSection;

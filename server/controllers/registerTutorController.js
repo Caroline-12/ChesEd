@@ -46,7 +46,7 @@ const handleNewUser = async (req, res) => {
 
     const {
       email,
-      pwd,
+      password,
       username,
       firstName,
       lastName,
@@ -59,7 +59,7 @@ const handleNewUser = async (req, res) => {
       englishProficiency,
     } = req.body;
 
-    if (!username || !pwd || !email || !firstName || !lastName || !roles) {
+    if (!username || !password || !email || !firstName || !lastName || !roles) {
       return res
         .status(400)
         .json({ message: "Please input all required details." });
@@ -71,7 +71,7 @@ const handleNewUser = async (req, res) => {
 
     try {
       // Encrypt the password
-      const hashedPwd = await bcrypt.hash(pwd, 10);
+      const hashedPassword = await bcrypt.hash(password, 10);
 
       // Prepare file paths
       const profilePhotoPath = req.files["profilePhoto"]
@@ -87,7 +87,7 @@ const handleNewUser = async (req, res) => {
       // Create and store the new user
       const result = await User.create({
         username,
-        password: hashedPwd,
+        password: hashedPassword,
         email,
         firstName,
         lastName,
@@ -103,7 +103,7 @@ const handleNewUser = async (req, res) => {
         documents: documentPaths,
       });
 
-      console.log(result);
+      console.log(profilePhotoPath, governmentIdPath, documentPaths);
 
       (async function () {
         const { data, error } = await resend.emails.send({

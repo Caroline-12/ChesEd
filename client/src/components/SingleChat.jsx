@@ -14,6 +14,7 @@ import io from "socket.io-client";
 
 import { ChatState } from "@/context/ChatProvider";
 import useAuth from "@/hooks/useAuth";
+import { SendIcon } from "lucide-react";
 const ENDPOINT = "http://localhost:3500";
 var socket, selectedChatCompare;
 
@@ -182,82 +183,86 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     <>
       {selectedChat ? (
         <>
-          <Text
-            fontSize={{ base: "28px", md: "30px" }}
-            pb={3}
-            px={2}
-            w="100%"
-            fontFamily="Work sans"
-            d="flex"
-            justifyContent={{ base: "space-between" }}
-            alignItems="center"
-            bg="#ffffff"
+        <Text
+          fontSize={{ base: "28px", md: "30px" }}
+          pb={3}
+          px={2}
+          w="100%"
+          fontFamily="Work sans"
+          display="flex"
+          justifyContent={{ base: "space-between" }}
+          alignItems="center"
+          bg="#ffffff"
+        >
+          <IconButton
+            display={{ base: "flex", md: "none" }}
+            icon={<ArrowBackIcon />}
+            onClick={() => setSelectedChat("")}
+          />
+          {messages && !selectedChat.isGroupChat && (
+            <>
+              {getSender(auth, selectedChat.users)}
+              <ProfileModal user={getSenderFull(auth, selectedChat.users)} />
+            </>
+          )}
+        </Text>
+        <Box
+          display="flex"
+          flexDir="column"
+          justifyContent="flex-end"
+          p={3}
+          bg="#E8E8E8"
+          w="100%"
+          h="calc(100vh - 220px)" // Adjust height dynamically
+          borderRadius="lg"
+          overflowY="hidden"
+        >
+          {loading ? (
+            <Spinner size="xl" w={20} h={20} alignSelf="center" margin="auto" />
+          ) : (
+            <div
+              className="messages"
+              style={{
+                display: "flex",
+                flexDirection: "column-reverse", // Ensures newest messages show first
+                overflowY: "scroll",
+                height: "100%",
+              }}
+            >
+              <ScrollableChat messages={messages} />
+            </div>
+          )}
+      
+          <FormControl
+            onKeyDown={sendMessage}
+            id="first-name"
+            isRequired
+            mt={3}
           >
-            <IconButton
-              d={{ base: "flex", md: "none" }}
-              icon={<ArrowBackIcon />}
-              onClick={() => setSelectedChat("")}
-            />
-            {messages && !selectedChat.isGroupChat && (
-              <>
-                {getSender(auth, selectedChat.users)}
-                <ProfileModal user={getSenderFull(auth, selectedChat.users)} />
-              </>
-            )}
-          </Text>
-          <Box
-            d="flex"
-            flexDir="column"
-            justifyContent="flex-end"
-            p={3}
-            bg="#E8E8E8"
-            w="100%"
-            h="100%"
-            borderRadius="lg"
-            overflowY="hidden"
-          >
-            {loading ? (
-              <Spinner
-                size="xl"
-                w={20}
-                h={20}
-                alignSelf="center"
-                margin="auto"
-              />
-            ) : (
-              <div className="messages">
-                <ScrollableChat messages={messages} />
+            {istyping && (
+              <div>
+                <Lottie
+                  options={defaultOptions}
+                  width={70}
+                  style={{ marginBottom: 15, marginLeft: 0 }}
+                />
               </div>
             )}
-
-            <FormControl
-              onKeyDown={sendMessage}
-              id="first-name"
-              isRequired
-              mt={3}
-            >
-              {istyping ? (
-                <div>
-                  <Lottie
-                    options={defaultOptions}
-                    // height={50}
-                    width={70}
-                    style={{ marginBottom: 15, marginLeft: 0 }}
-                  />
-                </div>
-              ) : (
-                <></>
-              )}
-              <Input
-                variant="filled"
-                bg="#E0E0E0"
-                placeholder="Enter a message.."
-                value={newMessage}
-                onChange={typingHandler}
-              />
-            </FormControl>
-          </Box>
-        </>
+            <div className="flex">
+            <Input
+              variant="filled"
+              bg="#E0E0E0"
+              placeholder="Enter a message..."
+              value={newMessage}
+              onChange={typingHandler}
+            />
+            
+            <SendIcon className=" rounded-full h-8 w-8 bg-slate-400" />
+            </div>
+          </FormControl>
+        </Box>
+      </>
+      
       ) : (
         // to get socket.io on same page
         <Box d="flex" alignItems="center" justifyContent="center" h="100%">

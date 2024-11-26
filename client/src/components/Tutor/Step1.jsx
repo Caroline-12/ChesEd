@@ -15,8 +15,8 @@ const Step1 = ({ formData, onChange, nextStep }) => {
         "firstName",
         "lastName",
         "email",
-        "pwd",
-        "confirmPassword",
+        "password",
+        "confirmpassword",
       ].map((field) => (
         <div key={field} className="space-y-2">
           <Label htmlFor={field}>
@@ -25,7 +25,7 @@ const Step1 = ({ formData, onChange, nextStep }) => {
           <Input
             id={field}
             name={field}
-            type={field.includes("pwd") ? "password" : "text"}
+            type={field.includes("password") ? "password" : "text"}
             value={formData[field]}
             onChange={handleChange}
             required

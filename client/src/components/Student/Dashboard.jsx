@@ -58,51 +58,41 @@ export default function Dashboard() {
       <aside className="w-64 bg-gray-800 text-white flex flex-col">
         <div className="p-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
-            <img src="/chesed-logo.png" alt="Logo" className="h-8 w-8" />
-            <span>Chesed</span>
+            <img src="/chesed-logo.png" alt="Logo" className="h-12 w-full" />
           </Link>
         </div>
         <nav className="flex-1 px-2 py-4">
           <Link
-            to="/dashboard"
+            to="/student-dashboard"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/dashboard" ? "bg-gray-700" : ""
+              location.pathname === "/student-dashboard" ? "bg-gray-700" : ""
             }`}
           >
             <Home className="h-5 w-5" />
             Dashboard
           </Link>
           <Link
-            to="/dashboard/lessons"
+            to="/student-dashboard/lessons"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/dashboard/lessons" ? "bg-gray-700" : ""
+              location.pathname === "/student-dashboard/lessons" ? "bg-gray-700" : ""
             }`}
           >
             <Package className="h-5 w-5" />
             My lessons
           </Link>
           <Link
-            to="/dashboard/chats"
+            to="/student-dashboard/chats"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/dashboard/chats" ? "bg-gray-700" : ""
+              location.pathname === "/student-dashboard/chats" ? "bg-gray-700" : ""
             }`}
           >
             <Package className="h-5 w-5" />
             My Chats
           </Link>
           <Link
-            to="/dashboard/courses"
+            to="/student-dashboard/payments"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/dashboard/courses" ? "bg-gray-700" : ""
-            }`}
-          >
-            <Users className="h-5 w-5" />
-            Courses
-          </Link>
-          <Link
-            to="/dashboard/payments"
-            className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/dashboard/payments" ? "bg-gray-700" : ""
+              location.pathname === "/student-dashboard/payments" ? "bg-gray-700" : ""
             }`}
           >
             <LineChart className="h-5 w-5" />
@@ -111,7 +101,7 @@ export default function Dashboard() {
         </nav>
         <div className="p-4">
           <Link
-            to="/dashboard/profile"
+            to="/student-dashboard/profile"
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700"
           >
             <Button variant="secondary" className="w-full">
@@ -138,16 +128,16 @@ export default function Dashboard() {
             <SheetContent side="left" className="flex flex-col">
               <nav className="grid gap-2 text-lg font-medium">
                 <Link
-                  to="/dashboard"
+                  to="/student-dashboard"
                   className="flex items-center gap-2 text-lg font-semibold"
                 >
                   <img src="/chesed-logo.png" alt="Logo" />
                   <span className="sr-only">Chesed</span>
                 </Link>
                 <Link
-                  to="/dashboard"
+                  to="/student-dashboard"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/dashboard"
+                    location.pathname === "/student-dashboard"
                       ? "bg-muted text-primary"
                       : ""
                   }`}
@@ -156,9 +146,9 @@ export default function Dashboard() {
                   Dashboard
                 </Link>
                 <Link
-                  to="/dashboard/lessons"
+                  to="/student-dashboard/lessons"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/dashboard/lessons"
+                    location.pathname === "/student-dashboard/lessons"
                       ? "bg-muted text-primary"
                       : ""
                   }`}
@@ -167,9 +157,9 @@ export default function Dashboard() {
                   My lessons
                 </Link>
                 <Link
-                  to="/dashboard/courses"
+                  to="/student-dashboard/courses"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/dashboard/courses"
+                    location.pathname === "/student-dashboard/courses"
                       ? "bg-muted text-primary"
                       : ""
                   }`}
@@ -178,9 +168,9 @@ export default function Dashboard() {
                   Courses
                 </Link>
                 <Link
-                  to="/dashboard/payments"
+                  to="/student-dashboard/payments"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/dashboard/payments"
+                    location.pathname === "/student-dashboard/payments"
                       ? "bg-muted text-primary"
                       : ""
                   }`}
@@ -192,20 +182,19 @@ export default function Dashboard() {
             </SheetContent>
           </Sheet>
 
-          <div className="flex flex-col w-full">
+          {/* <div className="flex flex-col w-full">
             <SideDrawer />
-          </div>
+          </div> */}
         </header>
 
         <main className="flex-1 p-6">
           <Routes>
-            <Route path="/" element={<DashboardLanding />} />
+            <Route path="/" element={<DashboardLanding lessons={lessons}/>} />
             <Route
               path="/lessons"
               element={<StudentLessons lessons={lessons} />}
             />
-            <Route path="chats" element={<Chatpage />} />
-
+            <Route path="/chats" element={<Chatpage />} />
             <Route path="/courses" element={<PopularCourses />} />
             <Route path="/payments" element={<Payments />} />
             <Route path="/profile" element={<Profile />} />
