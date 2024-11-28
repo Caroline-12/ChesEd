@@ -4,14 +4,20 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import Modal from "@/components/Modal";
 import TutorAssignmentForm from "../TutorAssignmentForm";
+import ReactPaginate from "react-paginate";
 
 const ManageLessons = ({ lessons }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedlessonId, setSelectedlessonId] = useState(null);
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const lessonsPerPage = 10;
   const handleAssignTutor = (lessonId) => {
     setSelectedlessonId(lessonId);
     setShowModal(true);
+  };
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
   };
 
   const closeModal = () => {
@@ -19,7 +25,9 @@ const ManageLessons = ({ lessons }) => {
     setSelectedlessonId(null);
   };
 
-  console.log(lessons);
+  const reversedLessons = [...lessons].reverse();
+  const offset = currentPage * lessonsPerPage;
+  const currentLessons = reversedLessons.slice(offset, offset + lessonsPerPage);
 
   return (
     <div>
@@ -39,7 +47,7 @@ const ManageLessons = ({ lessons }) => {
             </tr>
           </thead>
           <tbody>
-  {lessons.map((lesson) => (
+  {currentLessons.map((lesson) => (
     <tr key={lesson._id} className="text-center">
       <td className="text-left py-2 px-4 border-b">{lesson.title}</td>
       <td className="text-left py-2 px-4 border-b">{lesson.description}</td>
@@ -55,7 +63,7 @@ const ManageLessons = ({ lessons }) => {
             href={`http://localhost:3500/${lesson.documents[0]}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
+            className="text-orange-500 hover:underline"
           >
             {lesson.documents[0].split("/").pop()} {/* Display only the filename */}
           </a>
@@ -79,6 +87,27 @@ const ManageLessons = ({ lessons }) => {
       </td>
     </tr>
   ))}
+  <ReactPaginate
+            previousLabel={"< previous"}
+            nextLabel={"next >"}
+            breakLabel={"..."}
+            pageCount={Math.ceil(lessons.length / lessonsPerPage)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination flex justify-center mt-4"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link px-3 py-1 border rounded-md mx-1"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link px-3 py-1 border rounded-md mx-1"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link px-3 py-1 border rounded-md mx-1"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link px-3 py-1 border rounded-md mx-1"}
+            activeClassName={"active"}
+            activeLinkClassName={"bg-orange-500 text-white"}
+            renderOnZeroPageCount={null}
+          />
 </tbody>
 
         </table>

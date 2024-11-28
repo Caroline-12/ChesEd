@@ -239,7 +239,7 @@ export function RegisterForm() {
           </div>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
-            <Link to={"/sign-in"} className="underline">
+            <Link to={"/login"} className="underline">
               Sign in
             </Link>
           </div>

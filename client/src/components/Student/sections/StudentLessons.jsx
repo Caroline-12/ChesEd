@@ -91,7 +91,7 @@ function StudentLessons({ lessons }) {
             breakClassName={"page-item"}
             breakLinkClassName={"page-link px-3 py-1 border rounded-md mx-1"}
             activeClassName={"active"}
-            activeLinkClassName={"bg-blue-500 text-white"}
+            activeLinkClassName={"bg-orange-500 text-white"}
             renderOnZeroPageCount={null}
           />
         </CardContent>

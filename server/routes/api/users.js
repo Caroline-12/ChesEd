@@ -11,10 +11,6 @@ router
   .put(usersController.updateUser);
 
 router
-  .route("/:id")
-  .get(verifyRoles(ROLES_LIST.Admin), usersController.getUser);
-
-router
   .route("/students")
   .get(verifyRoles(ROLES_LIST.Admin), usersController.getAllStudents);
 
@@ -23,7 +19,15 @@ router
   .get(verifyRoles(ROLES_LIST.Admin), usersController.getAllTutors);
 
 router
+  .route("/admins")
+  .get(verifyRoles(ROLES_LIST.Admin), usersController.getAllAdmins);
+
+router
   .route("/deleteAll")
   .delete(verifyRoles(ROLES_LIST.Admin), usersController.deleteAllUsers);
+
+router
+  .route("/:id")
+  .get(verifyRoles(ROLES_LIST.Admin), usersController.getUser);
 
 module.exports = router;

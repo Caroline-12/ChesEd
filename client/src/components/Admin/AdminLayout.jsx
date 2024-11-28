@@ -128,7 +128,7 @@ export function AdminLayout() {
             <Users className="h-5 w-5" />
             Users
           </Link>
-          {/* <Link
+          <Link
             to="/admin-dashboard/payments"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
               location.pathname === "/admin-dashboard/payments" ? "bg-gray-700" : ""
@@ -136,7 +136,7 @@ export function AdminLayout() {
           >
             <LineChart className="h-5 w-5" />
             Payments
-          </Link> */}
+          </Link>
         </nav>
         <div className="p-4">
           <Link
@@ -229,7 +229,7 @@ export function AdminLayout() {
                   <Users className="h-5 w-5" />
                   Users
                 </Link>
-                {/* <Link
+                <Link
                   to="/admin-dashboard/payments"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
                     location.pathname === "/admin-dashboard/payments"
@@ -239,7 +239,7 @@ export function AdminLayout() {
                 >
                   <LineChart className="h-5 w-5" />
                   Payments
-                </Link> */}
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>
@@ -253,7 +253,7 @@ export function AdminLayout() {
               element={<ManageLessons lessons={lessons} />}
             />
             <Route path="courses" element={<ManageCourses />} />
-            {/* <Route path="payments" element={<Payments />} /> */}
+            <Route path="payments" element={<Payments />} />
             <Route path="users" element={<UsersSection />} />
             <Route path="approvetutors" element={<ApproveTrainersSection />} />
             <Route path="categories" element={<AdminCategoryManagement />} />

@@ -41,6 +41,16 @@ const getAllStudents = async (req, res) => {
   res.json(users);
 };
 
+// Get all admins
+const getAllAdmins = async (req, res) => {
+  console.log("Getting all admins");
+  const users = await User.find({ "roles.Admin": { $exists: true } });
+  if (!users || users.length === 0) {
+    return res.status(204).json({ message: "No users with Admin role found" });
+  }
+  res.json(users);
+};
+
 const deleteUser = async (req, res) => {
   if (!req?.body?.id)
     return res.status(400).json({ message: "User ID required" });
@@ -137,4 +147,5 @@ module.exports = {
   getAllStudents,
   deleteAllUsers,
   // deleteAllTutors,
+  getAllAdmins,
 };
