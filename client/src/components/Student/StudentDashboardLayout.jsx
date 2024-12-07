@@ -11,18 +11,13 @@ import {
   LineChart,
   Search,
   Users,
+  MessageCircle,
   LogOut,
+  GraduationCap,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,17 +27,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import AdminDashboard from "./AdminDashboard";
-import UsersSection from "./sections/UsersSection";
-import ManageLessons from "./sections/ManageLessons";
-import ManageCourses from "./sections/ManageCourses";
-import Payments from "./sections/Payments";
-import DashboardLanding from "./AdminDashboard";
-import { CreateCourse } from "./CreateCourse";
-import ApproveTrainersSection from "./sections/ApproveTrainersSection";
-import AdminCategoryManagement from "./sections/AdminCategoryManagement";
+import StudentLessons from "./sections/StudentLessons";
+import Payments from "./sections/StudentPayments";
+import DashboardLanding from "./sections/DashboardLanding";
+import PopularCourses from "../PopularCourses";
+import Chatpage from "./Chatpage";
+import SideDrawer from "../miscellaneous/SideDrawer";
+import Profile from "./Profile";
+import BrowseTutors from "./sections/BrowseTutors";
+import TutorListing from "./sections/TutorListing";
 
-export function AdminLayout() {
+export default function Dashboard() {
   const { auth } = useAuth();
   const [lessons, setlessons] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,15 +50,11 @@ export function AdminLayout() {
 
   const fetchAlllessons = async () => {
     try {
-      const config = {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      };
-      if (auth?.accessToken) {
-        config.headers.Authorization = `Bearer ${auth.accessToken}`;
-      }
-
-      const response = await axios.get(`/lessons`, config);
+      const response = await axios.get(`/lessons/student/${auth.ID}`, {
+        headers: {
+          Authorization: `Bearer ${auth.accessToken}`,
+        },
+      });
       setlessons(response.data);
       setLoading(false);
     } catch (err) {
@@ -79,59 +70,59 @@ export function AdminLayout() {
         <div className="p-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
             <img src="/chesed-logo.png" alt="Logo" className="h-8 w-8" />
-            <span>ChesedAdmin</span>
+            <span>ChesedStudent</span>
           </Link>
         </div>
         <nav className="flex-1 px-2 py-4 overflow-y-auto">
           <Link
-            to="/admin-dashboard"
+            to="/student-dashboard"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin-dashboard" ? "bg-gray-700" : ""
+              location.pathname === "/student-dashboard" ? "bg-gray-700" : ""
             }`}
           >
             <Home className="h-5 w-5" />
             Dashboard
           </Link>
           <Link
-            to="/admin-dashboard/opportunities"
+            to="/student-dashboard/lessons"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin-dashboard/opportunities" ? "bg-gray-700" : ""
+              location.pathname === "/student-dashboard/lessons" ? "bg-gray-700" : ""
             }`}
           >
             <Package className="h-5 w-5" />
-            lessons
+            My Lessons
           </Link>
           <Link
-            to="/admin-dashboard/approvetutors"
+            to="/student-dashboard/browse-tutors"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin-dashboard/approvetutors" ? "bg-gray-700" : ""
+              location.pathname === "/student-dashboard/browse-tutors" ? "bg-gray-700" : ""
             }`}
           >
-            <Package className="h-5 w-5" />
-            Approve Tutors
+            <GraduationCap className="h-5 w-5" />
+            Browse Tutors
           </Link>
           <Link
-            to="/admin-dashboard/categories"
+            to="/student-dashboard/tutors"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin-dashboard/categories" ? "bg-gray-700" : ""
-            }`}
-          >
-            <Package className="h-5 w-5" />
-            Categories
-          </Link>
-          <Link
-            to="/admin-dashboard/users"
-            className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin-dashboard/users" ? "bg-gray-700" : ""
+              location.pathname === "/student-dashboard/tutors" ? "bg-gray-700" : ""
             }`}
           >
             <Users className="h-5 w-5" />
-            Users
+            All Tutors
           </Link>
           <Link
-            to="/admin-dashboard/payments"
+            to="/student-dashboard/chats"
             className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-              location.pathname === "/admin-dashboard/payments" ? "bg-gray-700" : ""
+              location.pathname === "/student-dashboard/chats" ? "bg-gray-700" : ""
+            }`}
+          >
+            <MessageCircle className="h-5 w-5" />
+            Chats
+          </Link>
+          <Link
+            to="/student-dashboard/payments"
+            className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
+              location.pathname === "/student-dashboard/payments" ? "bg-gray-700" : ""
             }`}
           >
             <LineChart className="h-5 w-5" />
@@ -140,7 +131,7 @@ export function AdminLayout() {
         </nav>
         <div className="p-4 border-t border-gray-700">
           <Link
-            to="/admin-dashboard/profile"
+            to="/student-dashboard/profile"
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 mb-2"
           >
             <CircleUser className="h-5 w-5" />
@@ -172,62 +163,71 @@ export function AdminLayout() {
                 <div className="flex flex-col h-full bg-gray-800 text-white">
                   <div className="p-4 flex items-center gap-2">
                     <img src="/chesed-logo.png" alt="Logo" className="h-8 w-8" />
-                    <span className="text-xl font-bold">ChesedAdmin</span>
+                    <span className="text-xl font-bold">ChesedStudent</span>
                   </div>
                   <nav className="flex-1 px-2 py-4">
                     <Link
-                      to="/admin-dashboard"
+                      to="/student-dashboard"
                       className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700"
                     >
                       <Home className="h-5 w-5" />
                       Dashboard
                     </Link>
                     <Link
-                      to="/admin-dashboard/opportunities"
-                      className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-                        location.pathname === "/admin-dashboard/opportunities" ? "bg-gray-700" : ""
-                      }`}
+                      to="/student-dashboard/lessons"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700"
                     >
                       <Package className="h-5 w-5" />
-                      lessons
+                      My Lessons
                     </Link>
                     <Link
-                      to="/admin-dashboard/approvetutors"
-                      className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-                        location.pathname === "/admin-dashboard/approvetutors" ? "bg-gray-700" : ""
-                      }`}
+                      to="/student-dashboard/browse-tutors"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700"
                     >
-                      <Package className="h-5 w-5" />
-                      Approve Tutors
+                      <GraduationCap className="h-5 w-5" />
+                      Browse Tutors
                     </Link>
                     <Link
-                      to="/admin-dashboard/categories"
-                      className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-                        location.pathname === "/admin-dashboard/categories" ? "bg-gray-700" : ""
-                      }`}
-                    >
-                      <Package className="h-5 w-5" />
-                      Categories
-                    </Link>
-                    <Link
-                      to="/admin-dashboard/users"
-                      className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-                        location.pathname === "/admin-dashboard/users" ? "bg-gray-700" : ""
-                      }`}
+                      to="/student-dashboard/tutors"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700"
                     >
                       <Users className="h-5 w-5" />
-                      Users
+                      All Tutors
                     </Link>
                     <Link
-                      to="/admin-dashboard/payments"
-                      className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
-                        location.pathname === "/admin-dashboard/payments" ? "bg-gray-700" : ""
-                      }`}
+                      to="/student-dashboard/chats"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700"
+                    >
+                      <MessageCircle className="h-5 w-5" />
+                      Chats
+                    </Link>
+                    <Link
+                      to="/student-dashboard/payments"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700"
                     >
                       <LineChart className="h-5 w-5" />
                       Payments
                     </Link>
                   </nav>
+                  <div className="p-4 border-t border-gray-700">
+                    <Link
+                      to="/student-dashboard/profile"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 mb-2"
+                    >
+                      <CircleUser className="h-5 w-5" />
+                      Profile
+                    </Link>
+                    <Link
+                      to="/login"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 text-red-400 hover:text-red-300"
+                      onClick={() => {
+                        localStorage.removeItem("user");
+                      }}
+                    >
+                      <LogOut className="h-5 w-5" />
+                      Logout
+                    </Link>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -250,20 +250,28 @@ export function AdminLayout() {
         </header>
         <main className="flex-1 p-6 overflow-y-auto">
           <Routes>
-            <Route path="/" element={<AdminDashboard />} />
             <Route
-              path="opportunities"
-              element={<ManageLessons lessons={lessons} loading={loading} error={error} />}
+              path="/"
+              element={<DashboardLanding lessons={lessons} />}
             />
-            <Route path="users" element={<UsersSection />} />
+            <Route
+              path="lessons"
+              element={
+                <StudentLessons
+                  lessons={lessons}
+                  loading={loading}
+                  error={error}
+                />
+              }
+            />
+            <Route path="browse-tutors" element={<BrowseTutors />} />
+            <Route path="tutors" element={<TutorListing />} />
+            <Route path="chats" element={<Chatpage />} />
             <Route path="payments" element={<Payments />} />
-            <Route path="approvetutors" element={<ApproveTrainersSection />} />
-            <Route path="categories" element={<AdminCategoryManagement />} />
+            <Route path="profile" element={<Profile />} />
           </Routes>
         </main>
       </div>
     </div>
   );
 }
-
-export default AdminLayout;

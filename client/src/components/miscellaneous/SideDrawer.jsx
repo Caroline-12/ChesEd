@@ -195,14 +195,28 @@ function SideDrawer() {
         <DrawerContent>
           <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
           <DrawerBody>
-            <Box d="flex" pb={2}>
-              <Input
-                placeholder="Search by name or email"
-                mr={2}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <Button onClick={handleSearch}>Go</Button>
+            <Box
+              className="flex items-center px-4 py-2 border-b border-gray-100"
+            >
+              <div className="relative flex-1">
+                <Input
+                  placeholder="Search users"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-50 border-gray-200 focus:ring-2 focus:ring-orange-200 focus:border-orange-500"
+                  _hover={{ bg: "#F5F5F5" }}
+                  _focus={{ bg: "white", borderColor: "#FF6B00" }}
+                />
+                <SearchIcon 
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4"
+                />
+              </div>
+              <Button
+                onClick={handleSearch}
+                className="ml-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-full text-sm transition-colors duration-200"
+              >
+                Go
+              </Button>
             </Box>
             {loading ? (
               <ChatLoading />

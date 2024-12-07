@@ -1,132 +1,213 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import useAuth from "@/hooks/useAuth";
+import axios from "@/api/axios";
 import {
   Card,
   CardContent,
-  CardTitle,
+  CardDescription,
   CardHeader,
-  CardFooter,
+  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FaBookOpen, FaHandHoldingDollar } from "react-icons/fa6";
-import { MdRateReview } from "react-icons/md";
-import { BiSolidNotepad } from "react-icons/bi";
-import axios from "axios";
-import useAuth from "@/hooks/useAuth";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { BookOpen, GraduationCap, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
 
-const DashboardLanding = ({lessons}) => {
+const DashboardLanding = () => {
   const { auth } = useAuth();
-  const numberOfLessons = lessons.length;
-  const [payments, setPayments] = useState([]);
+  const [stats, setStats] = useState({
+    totalLessons: 0,
+    completedLessons: 0,
+    activeLessons: 0,
+    payments: [],
+    recentNotifications: [],
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Function to fetch paid lessons from the backend API
-    const fetchPaidLessons = async () => {
+    const fetchDashboardStats = async () => {
       try {
-        const response = await axios.get(`/payments/lessons/${auth.ID}/paid`);
-        setPayments(response.data); // Set the fetched data to the state
-      } catch (err) {
-        toast.error("Error fetching paid lessons.");
+        const [lessonsRes, paymentsRes] = await Promise.all([
+          axios.get("/lessons/student/" + auth.ID, {
+            headers: { Authorization: `Bearer ${auth.accessToken}` },
+          }),
+          axios.get("/payments/lessons/" + auth.ID + "/paid", {
+            headers: { Authorization: `Bearer ${auth.accessToken}` },
+          }),
+        ]);
+
+        // Calculate completed and active lessons
+        const completedLessons = lessonsRes.data.filter(
+          (lesson) => lesson.status === "completed"
+        ).length;
+        const activeLessons = lessonsRes.data.filter(
+          (lesson) => lesson.status === "active"
+        ).length;
+
+        setStats({
+          totalLessons: lessonsRes.data.length,
+          completedLessons,
+          activeLessons,
+          payments: paymentsRes.data,
+          recentNotifications: [
+            {
+              id: 1,
+              title: "Active Lessons",
+              message: `${activeLessons} lessons in progress`,
+              time: "Just now",
+              icon: <BookOpen className="h-4 w-4" />,
+            },
+            {
+              id: 2,
+              title: "Completed Lessons",
+              message: `${completedLessons} lessons completed`,
+              time: "Updated now",
+              icon: <CheckCircle className="h-4 w-4" />,
+            },
+            {
+              id: 3,
+              title: "Payments",
+              message: `${paymentsRes.data.length} payments processed`,
+              time: "Updated now",
+              icon: <GraduationCap className="h-4 w-4" />,
+            },
+          ],
+        });
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching dashboard stats:", error);
+        setLoading(false);
       }
     };
 
-    fetchPaidLessons();
-  }, []);
+    fetchDashboardStats();
+  }, [auth.accessToken, auth.ID]);
 
-  
+  const capitalizeFirstLetter = (string) => {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full">Loading...</div>
+    );
+  }
+
   return (
-    <div className="space-y-4">
-      <Card className="flex flex-col md:flex-row items-center justify-between p-4">
-        <div className="flex items-center space-x-4">
-          <Avatar>
-            <AvatarImage src={auth.avatarUrl} alt="Profile Image" />
-            <AvatarFallback>
-              {auth.username ? auth.username[0] : "?"}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <h1 className="text-2xl font-bold">Welcome, {auth.username}!</h1>
-            <p className="text-sm text-muted-foreground">
-            </p>
+    <div className="flex">
+      <div className="flex-1 space-y-8 pr-6">
+        {/* Welcome Section */}
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-lg p-8 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-semibold mb-2">
+                Welcome back, {capitalizeFirstLetter(auth?.firstName)}! 👋
+              </h1>
+              <p className="text-orange-100">
+                Here's your learning overview for{" "}
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
+            <div className="hidden md:block">
+              <Avatar className="h-16 w-16">
+                <AvatarImage src={auth?.avatarUrl} />
+                <AvatarFallback>
+                  {auth?.firstName?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </div>
           </div>
         </div>
-        <Link to={"/student-dashboard/profile"} variant="secondary" className="mt-4 md:mt-0">
-          Edit Profile
-        </Link>
-      </Card>
 
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
-        {/* <Card className="bg-white shadow-lg">
-          <CardHeader className="flex items-center">
-            <FaBookOpen className="h-6 w-6 text-blue-500 mr-2" />
-            <CardTitle>Enrolled Courses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">3</p>
-            <p className="text-sm text-muted-foreground">
-              Courses currently enrolled in
-            </p>
-          </CardContent>
-          <CardFooter>
-            <Button variant="link" as="a" href="/student-dashboard/lessons">
-              View Courses
-            </Button>
-          </CardFooter>
-        </Card> */}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Card className="bg-white hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Total Lessons</CardTitle>
+              <BookOpen className="h-4 w-4 text-orange-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalLessons}</div>
+              <p className="text-xs text-gray-500">Enrolled lessons</p>
+              <Progress
+                value={(stats.totalLessons / 10) * 100}
+                className="mt-2 bg-orange-100"
+              />
+            </CardContent>
+          </Card>
 
-        <Card className="bg-white shadow-lg">
-          <CardHeader className="flex items-center">
-            <BiSolidNotepad className="h-6 w-6 text-green-500 mr-2" />
-            <CardTitle>lessons</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{numberOfLessons}</p>
-            <p className="text-sm text-muted-foreground"> lessons</p>
-          </CardContent>
-          <CardFooter>
-            <Link to="/student-dashboard/lessons">
-            <Button variant="link" as="a" >
-              View lessons
-            </Button>
-            </Link>
-          </CardFooter>
-        </Card>
+          <Card className="bg-white hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">
+                Active Lessons
+              </CardTitle>
+              <GraduationCap className="h-4 w-4 text-orange-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.activeLessons}</div>
+              <p className="text-xs text-gray-500">Lessons in progress</p>
+              <Progress
+                value={(stats.activeLessons / stats.totalLessons) * 100}
+                className="mt-2 bg-orange-100"
+              />
+            </CardContent>
+          </Card>
 
-        {/* <Card className="bg-white shadow-lg">
-          <CardHeader className="flex items-center">
-            <MdRateReview className="h-6 w-6 text-yellow-500 mr-2" />
-            <CardTitle>Reviews</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">12</p>
-            <p className="text-sm text-muted-foreground">Total reviews given</p>
-          </CardContent>
-          <CardFooter>
-          <Link to="/student-dashboard/reviews">
-            <Button variant="link" as="a" href="/student-dashboard/reviews">
-              View Reviews
-            </Button>
-            </Link>
-          </CardFooter>
-        </Card> */}
+          <Card className="bg-white hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">
+                Completed Lessons
+              </CardTitle>
+              <CheckCircle className="h-4 w-4 text-orange-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.completedLessons}</div>
+              <p className="text-xs text-gray-500">Successfully completed</p>
+              <Progress
+                value={(stats.completedLessons / stats.totalLessons) * 100}
+                className="mt-2 bg-orange-100"
+              />
+            </CardContent>
+          </Card>
+        </div>
 
-        <Card className="bg-white shadow-lg">
-          <CardHeader className="flex items-center">
-            <FaHandHoldingDollar className="h-6 w-6 text-red-500 mr-2" />
-            <CardTitle>Payments</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{payments.length}</p>
-            <p className="text-sm text-muted-foreground">Pending payments</p>
-          </CardContent>
-          <CardFooter>
-            <Button variant="link" as="a" href="/student-dashboard/payments">
-              View Payments
-            </Button>
-          </CardFooter>
-        </Card>
+        {/* Recent Activity */}
+        <div className="grid grid-cols-1 gap-6">
+          <Card className="bg-white hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>Your latest updates and notifications</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-8">
+                {stats.recentNotifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className="flex items-center space-x-4"
+                  >
+                    <div className="bg-orange-100 p-2 rounded-full">
+                      {notification.icon}
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <p className="text-sm font-medium">{notification.title}</p>
+                      <p className="text-sm text-gray-500">
+                        {notification.message}
+                      </p>
+                    </div>
+                    <p className="text-sm text-gray-500">{notification.time}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

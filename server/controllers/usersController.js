@@ -5,17 +5,29 @@ const path = require("path");
 // Configure multer for file upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Make sure this directory exists
+    const uploadPath = path.join(__dirname, '..', 'uploads');
+    cb(null, uploadPath);
   },
-  filename: function (req, profilePhoto, cb) {
-    cb(null, profilePhoto.originalname); // Appending extension
+  filename: function (req, file, cb) {
+    // Generate a unique filename using timestamp and original extension
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ 
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    // Accept images only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+      return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+  }
+});
 
 // Middleware to handle file upload
-const uploadMiddleware = upload.single("ProfilePhoto");
+const uploadMiddleware = upload.single("profilePhoto"); // Changed to match client-side field name
 
 const getAllUsers = async (req, res) => {
   const users = await User.find();
@@ -77,53 +89,67 @@ const getUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  uploadMiddleware(req, res, async function (err) {
-    if (err instanceof multer.MulterError) {
-      return res.status(400).json({ message: "ProfilePhoto upload error" });
-    } else if (err) {
-      return res
-        .status(500)
-        .json({ message: "Unknown error occurred during file upload" });
-    }
+  try {
+    console.log('Update user request body:', req.body);
+    console.log('Update user request file:', req.file);
+    
     const {
       id,
-      name,
+      firstName,
+      lastName,
       email,
       bio,
       specialization,
       calendlyProfile,
-      profilePhoto,
     } = req.body;
 
-    // what is the path of the uploaded file
-    console.log(req.ProfilePhoto.path);
-
-    if (!id) return res.status(400).json({ message: "User ID required" });
+    if (!id) {
+      console.log('No ID provided in request');
+      return res.status(400).json({ message: "User ID required" });
+    }
 
     const user = await User.findOne({ _id: id }).exec();
     if (!user) {
-      return res.status(204).json({ message: `User ID ${id} not found` });
+      console.log(`User ID ${id} not found`);
+      return res.status(404).json({ message: `User ID ${id} not found` });
     }
 
-    // Update each field if provided, else retain the existing values
-    user.name = name || user.name;
-    user.email = email || user.email;
-    user.bio = bio || user.bio;
-    user.specialization = specialization || user.specialization;
-    user.calendlyProfile = calendlyProfile || user.calendlyProfile;
-    user.profilePhoto = req.ProfilePhoto
-      ? req.ProfilePhoto.path
-      : null || user.profilePhoto;
-
-    try {
-      const updatedUser = await user.save();
-      res.json(updatedUser);
-    } catch (err) {
-      res
-        .status(500)
-        .json({ message: "Failed to update user profile", error: err });
+    // Update each field if provided
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (email) user.email = email;
+    if (bio) user.bio = bio;
+    if (specialization) {
+      try {
+        // Handle specialization as JSON string if needed
+        user.specialization = typeof specialization === 'string' 
+          ? JSON.parse(specialization) 
+          : specialization;
+      } catch (err) {
+        console.error('Error parsing specialization:', err);
+        return res.status(400).json({ message: "Invalid specialization format" });
+      }
     }
-  });
+    if (calendlyProfile) user.calendlyProfile = calendlyProfile;
+    
+    // Handle profile photo if uploaded
+    if (req.file) {
+      const filePath = `/uploads/${req.file.filename}`;
+      console.log('Setting profile photo path:', filePath);
+      user.profilePhoto = filePath;
+    }
+
+    console.log('Saving updated user:', user);
+    const updatedUser = await user.save();
+    console.log('User updated successfully:', updatedUser);
+    res.json(updatedUser);
+  } catch (err) {
+    console.error('Error in updateUser:', err);
+    res.status(500).json({ 
+      message: "Failed to update user",
+      error: err.message 
+    });
+  }
 };
 
 // delete all users
@@ -148,4 +174,5 @@ module.exports = {
   deleteAllUsers,
   // deleteAllTutors,
   getAllAdmins,
+  uploadMiddleware
 };

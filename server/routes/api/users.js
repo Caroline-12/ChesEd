@@ -3,12 +3,16 @@ const router = express.Router();
 const usersController = require("../../controllers/usersController");
 const ROLES_LIST = require("../../config/roles_list");
 const verifyRoles = require("../../middleware/verifyRoles");
+const verifyJWT = require("../../middleware/verifyJWT");
+
+// Protected routes that require authentication
+router.use(verifyJWT);
 
 router
   .route("/")
   .get(verifyRoles(ROLES_LIST.Admin), usersController.getAllUsers)
   .delete(verifyRoles(ROLES_LIST.Admin), usersController.deleteUser)
-  .put(usersController.updateUser);
+  .put(usersController.uploadMiddleware, usersController.updateUser); // Allow authenticated users to update their profile
 
 router
   .route("/students")

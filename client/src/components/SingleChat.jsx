@@ -234,7 +234,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           )}
       
           <FormControl
-            onKeyDown={sendMessage}
             id="first-name"
             isRequired
             mt={3}
@@ -248,16 +247,23 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 />
               </div>
             )}
-            <div className="flex">
-            <Input
-              variant="filled"
-              bg="#E0E0E0"
-              placeholder="Enter a message..."
-              value={newMessage}
-              onChange={typingHandler}
-            />
-            
-            <SendIcon className=" rounded-full h-8 w-8 bg-slate-400" />
+            <div className="flex items-center space-x-2">
+              <Input
+                variant="filled"
+                bg="#F5F5F5"
+                placeholder="Enter a message..."
+                value={newMessage}
+                onChange={typingHandler}
+                className="rounded-full py-6 px-4 focus:ring-2 focus:ring-orange-200 focus:border-orange-500"
+                _hover={{ bg: "#F0F0F0" }}
+                _focus={{ bg: "white", borderColor: "#FF6B00" }}
+              />
+              <button 
+                className="p-2 rounded-full bg-orange-500 hover:bg-orange-600 transition-colors duration-200 flex items-center justify-center flex-shrink-0"
+                onClick={() => sendMessage({ key: "Enter" })}
+              >
+                <SendIcon className="h-5 w-5 text-white" />
+              </button>
             </div>
           </FormControl>
         </Box>

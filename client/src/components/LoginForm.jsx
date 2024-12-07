@@ -162,7 +162,12 @@ export function LoginForm() {
   console.log(auth);
   return (
     <div className="flex justify-center items-center h-screen flex-col">
-      <h1 className="text-4xl font-bold mb-8 text-orange-600"> ChesEd</h1>
+      <h1 
+        className="text-4xl font-bold mb-8 text-orange-600 cursor-pointer hover:text-orange-700" 
+        onClick={() => navigate('/')}
+      > 
+        ChesEd
+      </h1>
       <Card className="mx-auto max-w-sm">
         <Toaster />
         <CardHeader>

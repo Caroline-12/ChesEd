@@ -95,6 +95,11 @@ export default function DashboardLanding() {
     fetchDashboardStats();
   }, [auth.accessToken]);
 
+  const capitalizeFirstLetter = (string) => {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   if (loading) {
     return <div className="flex justify-center items-center h-full">Loading...</div>;
   }
@@ -107,8 +112,8 @@ export default function DashboardLanding() {
         <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-lg p-8 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold mb-2">
-                Welcome back, {auth?.user?.firstName || auth.username}! 👋
+              <h1 className="text-3xl font-semibold mb-2">
+                Welcome back, {auth?.user?.firstName ? capitalizeFirstLetter(auth?.user?.firstName) : capitalizeFirstLetter(auth.username)}! 👋
               </h1>
               <p className="text-orange-100">
                 Here's your platform overview for{" "}

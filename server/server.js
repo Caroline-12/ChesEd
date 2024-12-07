@@ -12,6 +12,7 @@ const cookieParser = require("cookie-parser");
 const credentials = require("./middleware/credentials");
 const mongoose = require("mongoose");
 const connectDB = require("./config/dbConn");
+const ensureUploadDirectoryExists = require("./utils/ensureUploadDir");
 const PORT = process.env.PORT || 3500;
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const chatRoutes = require("./routes/api/chats");
@@ -34,22 +35,28 @@ const io = require("socket.io")(server, {
   },
 });
 
-// app.post("/create-checkout-session", async (req, res) => {
-//   const session = await stripe.checkout.sessions.create({
-//     line_items: [
-//       {
-//         // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-//         price: "{{PRICE_ID}}",
-//         quantity: 1,
-//       },
-//     ],
-//     mode: "payment",
-//     success_url: `${YOUR_DOMAIN}?success=true`,
-//     cancel_url: `${YOUR_DOMAIN}?canceled=true`,
-//   });
+// Create uploads directory if it doesn't exist
+ensureUploadDirectoryExists();
 
-//   res.redirect(303, session.url);
-// });
+// Serve static files from the uploads directory
+const uploadsPath = path.join(__dirname, 'uploads');
+console.log('Uploads directory path:', uploadsPath);
+
+// Log middleware for debugging file requests
+app.use('/uploads', (req, res, next) => {
+  console.log('File request:', {
+    url: req.url,
+    path: path.join(uploadsPath, req.url)
+  });
+  next();
+});
+
+app.use('/uploads', express.static(uploadsPath, {
+  setHeaders: (res, path) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+}));
 
 // Connect to MongoDB
 connectDB();
@@ -75,8 +82,6 @@ app.use(cookieParser());
 
 //serve static files
 app.use("/", express.static(path.join(__dirname, "/public")));
-// Serve static files from the uploads directory
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/", require("./routes/root"));
 app.use("/register", require("./routes/register"));
@@ -86,13 +91,11 @@ app.use("/logout", require("./routes/logout"));
 app.use("/payments", require("./routes/api/payments"));
 app.use("/recover", require("./routes/api/recoveryemail"));
 app.use("/tutors", require("./routes/api/tutors"));
-
-// app.use("/forgot", require("./routes/forgot"));
-// app.use("/reset", require("./routes/reset"));
+app.use("/users", require("./routes/api/users")); // Users route with its own auth
 app.use("/categories", require("./routes/api/category"));
 app.use("/popular-courses", require("./routes/api/public"));
+
 app.use(verifyJWT);
-app.use("/users", require("./routes/api/users"));
 app.use("/courses", require("./routes/api/courses"));
 app.use("/lessons", require("./routes/api/lessons"));
 app.use("/chat", chatRoutes);
