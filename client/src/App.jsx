@@ -74,6 +74,7 @@ export default function App() {
           <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
             <Route path="student-dashboard/*" element={<Dashboard />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="submit-lesson" element={<Submitlesson />} />
             <Route path="courses/:courseId" element={<CourseDetail />} />
             <Route
               path="payment/:courseId/:agreedPrice"
