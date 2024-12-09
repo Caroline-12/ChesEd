@@ -56,9 +56,14 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         {/* Public routes */}
+        <Route path="/lesson/:lessonId" element={<LessonDetail />} />
         <Route path="login" element={<LoginForm />} />
         <Route path="register" element={<RegisterForm />} />
+        <Route path="linkpage" element={<LinkPage />} />
         <Route path="unauthorized" element={<Unauthorized />} />
+        <Route path="become-tutor" element={<BecomeTutor />} />
+        <Route path="waiting-lobby" element={<WaitingLobby />} />
+        <Route path="tutor-registration" element={<TutorRegistrationForm />} />
         <Route path="/" element={<Landing />} />
         <Route path="tutors" element={<TutorListing />} />
         <Route path="tutors/:tutorId" element={<TutorDetail />} />
