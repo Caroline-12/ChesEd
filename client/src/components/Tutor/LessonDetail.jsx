@@ -282,7 +282,7 @@ const LessonDetails = () => {
                 : lesson.tutor._id;
                 console.log(participantId);
               accessChat(participantId);
-              navigate("/dashboard/chats")
+              navigate("/tutor-dashboard/chats")
             }}
           >
             Start Chat

@@ -96,7 +96,7 @@ const Lessons = ({ lessons }) => {
       );
       console.log(`lesson ${lesson._id} accepted successfully`);
       toast.success("lesson accepted successfully!");
-      navigate("/dashboard/mylessons");
+      navigate("/tutor-dashboard/mylessons");
     } catch (error) {
       console.error("Error accepting lesson:", error);
       toast.error("Failed to accept lesson");

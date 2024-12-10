@@ -129,7 +129,7 @@ export default function SubmitLesson() {
           }
         );
       setIsSubmitting(false);
-      navigate("/dashboard/lessons");
+      navigate("/student-dashboard/lessons");
     } catch (error) {
       toast.error(
         "Submission failed: " + error.response?.data?.message || error.message

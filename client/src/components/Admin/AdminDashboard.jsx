@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import axios from "@/api/axios";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -16,6 +17,7 @@ import { Bell, Users, BookOpen, GraduationCap, CheckCircle } from "lucide-react"
 
 export default function DashboardLanding() {
   const { auth } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalStudents: 0,
     totalTutors: 0,
@@ -262,10 +264,10 @@ export default function DashboardLanding() {
         <div className="mt-8">
           <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
           <div className="space-y-2">
-            <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white">
+            <Button onClick={() => navigate('/admin-dashboard/approvetutors')} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
               Review Applications
             </Button>
-            <Button variant="outline" className="w-full border-orange-500 text-orange-500 hover:bg-orange-50">
+            <Button variant="outline" onClick={() => navigate('/admin-dashboard/reports')} className="w-full border-orange-500 text-orange-500 hover:bg-orange-50">
               View Reports
             </Button>
           </div>
