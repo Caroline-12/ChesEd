@@ -1,4 +1,4 @@
-import { Link, Routes, Route, useLocation } from "react-router-dom";
+import { Link, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "@/api/axios";
 import useAuth from "@/hooks/useAuth";
@@ -26,6 +26,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getProfilePhotoUrl, getInitials } from "@/utils/profileUtils";
 import StudentLessons from "./sections/StudentLessons";
 import Payments from "./sections/StudentPayments";
 import DashboardLanding from "./sections/DashboardLanding";
@@ -36,11 +38,12 @@ import Profile from "./Profile";
 import TutorListing from "./TutorListing";
 
 export default function Dashboard() {
-  const { auth } = useAuth();
+  const { auth, logout } = useAuth();
   const [lessons, setlessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchAlllessons();
@@ -55,15 +58,19 @@ export default function Dashboard() {
       });
       setlessons(response.data);
       setLoading(false);
-    } catch (err) {
-      console.error("Error fetching lessons:", err);
-      setError("Failed to load lessons. Please try again later.");
+    } catch (error) {
+      setError(error);
       setLoading(false);
     }
   };
 
+  const handleLogout = () => {
+    logout(); // Use the logout method from AuthContext
+    navigate('/login'); // Redirect to login page after logout
+  };
+
   return (
-    <div className="flex min-h-screen">
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <aside className="w-64 bg-gray-800 text-white flex flex-col h-screen sticky top-0">
         <div className="p-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
@@ -129,17 +136,15 @@ export default function Dashboard() {
           <Link
             to="/login"
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 text-red-400 hover:text-red-300"
-            onClick={() => {
-              localStorage.removeItem("user");
-            }}
+            onClick={handleLogout}
           >
             <LogOut className="h-5 w-5" />
             Logout
           </Link>
         </div>
       </aside>
-      <div className="flex-1 flex flex-col h-screen">
-        <header className="flex items-center justify-between p-4 bg-white shadow-md sticky top-0 z-10">
+      <div className="flex flex-col">
+        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <div className="flex items-center">
             <Sheet>
               <SheetTrigger asChild>
@@ -202,9 +207,7 @@ export default function Dashboard() {
                     <Link
                       to="/login"
                       className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 text-red-400 hover:text-red-300"
-                      onClick={() => {
-                        localStorage.removeItem("user");
-                      }}
+                      onClick={handleLogout}
                     >
                       <LogOut className="h-5 w-5" />
                       Logout
@@ -226,6 +229,37 @@ export default function Dashboard() {
                 <DropdownMenuLabel>Notifications</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {/* Add notification items here */}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <div className="flex items-center ml-auto">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="cursor-pointer">
+                  <AvatarImage
+                    src={getProfilePhotoUrl(auth.user)}
+                    alt={`${auth.user?.firstName}'s profile`}
+                  />
+                  <AvatarFallback>
+                    {getInitials(auth.user)}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Link to="/student-dashboard/profile" className="flex items-center">
+                    <CircleUser className="mr-2 h-4 w-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
