@@ -42,7 +42,7 @@ import Chatpage from "../Student/Chatpage";
 import SideDrawer from "../miscellaneous/SideDrawer";
 import TutorProfileUpdate from "./TutorProfileUpdate";
 export function TutorLayout() {
-  const { auth } = useAuth();
+  const { auth, logout } = useAuth();
   const [lessons, setlessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -113,16 +113,13 @@ export function TutorLayout() {
             <CircleUser className="h-5 w-5" />
             Profile
           </Link>
-          <Link
-            to="/login"
+          <button
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 text-red-400 hover:text-red-300"
-            onClick={() => {
-              localStorage.removeItem("user");
-            }}
+            onClick={logout}
           >
             <LogOut className="h-5 w-5" />
             Logout
-          </Link>
+          </button>
         </div>
       </aside>
       <div className="flex-1 flex flex-col h-screen">

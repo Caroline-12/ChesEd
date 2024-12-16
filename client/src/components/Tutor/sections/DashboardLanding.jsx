@@ -120,9 +120,9 @@ const DashboardLanding = () => {
               <p>Active lessons in progress.</p>
             </CardContent>
             <CardFooter>
-              <Button variant="link" as={Link} to="/tutor-dashboard/lessons/ongoing">
+              <Link className=" text-orange-500 hover:underline" to="/tutor-dashboard/mylessons">
                 View Details
-              </Button>
+              </Link>
             </CardFooter>
           </Card>
 
@@ -135,9 +135,9 @@ const DashboardLanding = () => {
               <p>Lessons successfully completed.</p>
             </CardContent>
             <CardFooter>
-              <Button variant="link" as={Link} to="/tutor-dashboard/lessons/completed">
+              <Link className=" text-orange-500 hover:underline" to="/tutor-dashboard/lessons/completed">
                 View Details
-              </Button>
+              </Link>
             </CardFooter>
           </Card>
 
@@ -149,9 +149,9 @@ const DashboardLanding = () => {
               <p>Your earnings so far.</p>
             </CardContent>
             <CardFooter>
-              <Button variant="link" as={Link} to="/tutor-dashboard/payments">
+              <Link className=" text-orange-500 hover:underline" to="/tutor-dashboard/payments">
                 View Payments
-              </Button>
+              </Link>
             </CardFooter>
           </Card>
 
@@ -163,13 +163,13 @@ const DashboardLanding = () => {
               <p>View your upcoming lessons and plan ahead.</p>
             </CardContent>
             <CardFooter>
-            <Button variant="link">
+            <Link className=" text-orange-500 hover:underline" >
               <PopupButton
                 url="https://calendly.com/fidelotieno11/30min?back=1&primary=false"
                 rootElement={document.getElementById("root")}
                 text="View your calendly schedule"
               />
-            </Button>
+            </Link>
             </CardFooter>
           </Card>
 

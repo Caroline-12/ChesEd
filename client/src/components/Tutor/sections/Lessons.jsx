@@ -78,7 +78,7 @@ const Lessons = ({ lessons }) => {
   // }, [auth.accessToken]);
 
   const filteredlessons = lessons.filter((lesson) =>
-    selectedCategory === "All" ? true : lesson.category === selectedCategory
+    selectedCategory === "All" ? lesson.status === "pending" : lesson.category === selectedCategory && lesson.status === "pending"
   );
 
   const handleAccept = async (lesson) => {
@@ -281,125 +281,6 @@ const Lessons = ({ lessons }) => {
                         </Button>
                       </div>
                     </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" className="ml-2">
-                      Actions
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="w-full max-w-3xl">
-                    <DialogHeader>
-                      <DialogTitle>lesson Actions</DialogTitle>
-                    </DialogHeader>
-                    <Tabs defaultValue="lesson">
-                      <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="lesson">Submit Lesson</TabsTrigger>
-                        <TabsTrigger value="schedule">
-                          Schedule Call
-                        </TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="lesson">
-                        <form
-                          onSubmit={handleSubmitWrittenLesson(lesson)}
-                          className="space-y-6"
-                          encType="multipart/form-data"
-                          method="POST"
-                        >
-                          {" "}
-                          <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label
-                                htmlFor="lesson-file"
-                                className="text-right"
-                              >
-                                Lesson File
-                              </Label>
-                              <Input
-                                id="lesson-file"
-                                type="file"
-                                onChange={handleFileChange}
-                                className="col-span-3"
-                              />
-                            </div>
-                          </div>
-                          <DialogFooter>
-                            <Button
-                              type="submit"
-                              disabled={lesson.status === "completed"}
-                            >
-                              Submit Lesson
-                            </Button>
-                          </DialogFooter>
-                        </form>
-                      </TabsContent>
-                      <TabsContent value="schedule">
-                        {/* {session ? (
-                          <div className="space-y-4">
-                            <h3 className="text-lg font-semibold">
-                              Hey {session.user.email}, schedule a call with the
-                              student
-                            </h3>
-                            <div className="grid grid-cols-1 gap-4">
-                              <Label htmlFor="date-time">
-                                Start of your event
-                              </Label>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full justify-start text-left font-normal",
-                                      !start && "text-muted-foreground"
-                                    )}
-                                  >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {start ? (
-                                      format(start, "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0">
-                                  <Calendar
-                                    mode="single"
-                                    selected={start}
-                                    onSelect={setStart}
-                                    initialFocus
-                                  />
-                                </PopoverContent>
-                              </Popover>
-                              <Label htmlFor="time">Time</Label>
-                              <Input
-                                type="time"
-                                id="time"
-                                value={format(start, "HH:mm")}
-                                onChange={handleTimeChange} // Update this line
-                              />
-                              <Button
-                                onClick={() => createCalendarEvent(lesson)}
-                              >
-                                Schedule Call
-                              </Button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="space-y-4">
-                            <Label>
-                              Connect to Google Calendar to create an event
-                            </Label>
-                            <Button
-                              onClick={() => googleSignIn()}
-                              className="w-full"
-                            >
-                              Connect to Google
-                            </Button>
-                          </div>
-                        )} */}
-                      </TabsContent>
-                    </Tabs>
                   </DialogContent>
                 </Dialog>
               </TableCell>
