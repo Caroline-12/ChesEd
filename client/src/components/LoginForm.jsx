@@ -151,6 +151,12 @@ export function LoginForm() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e);
+    }
+  };
+
   const togglePersist = () => {
     setPersist((prev) => !prev);
   };
@@ -177,7 +183,10 @@ export function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
+          <div className="grid gap-4"
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
+          >
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input

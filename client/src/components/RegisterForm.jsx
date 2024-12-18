@@ -135,6 +135,12 @@ export function RegisterForm() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e);
+    }
+  };
+
   // console.log(user);
   return (
     <div className="flex justify-center items-center h-screen flex-col">
@@ -153,7 +159,11 @@ export function RegisterForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
+          <div 
+            className="grid gap-4"
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
+          >
             <div className="grid gap-2">
               <Label htmlFor="email">Username</Label>
               <Input

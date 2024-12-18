@@ -107,7 +107,7 @@ export default function TutorProfileUpdate() {
       
       setIsLocalFile(false); // Reset local file flag
       toast.success("Profile updated successfully!");
-      navigate('/profile'); // Redirect to profile page after successful update
+      navigate('/tutor-dashboard'); // Redirect to profile page after successful update
     } catch (error) {
       console.error('Update error:', error);
       console.error('Response:', error.response);

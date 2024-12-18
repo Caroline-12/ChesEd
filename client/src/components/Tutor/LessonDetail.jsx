@@ -7,7 +7,7 @@ import Spinner from "../Spinner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useCalendlyEventListener } from "react-calendly";
+import { InlineWidget, useCalendlyEventListener } from "react-calendly";
 import { toast, Toaster } from "sonner";
 import { ChatState } from "@/context/ChatProvider";
 import { PopupButton } from "react-calendly";
@@ -209,7 +209,7 @@ const LessonDetails = () => {
             {lesson.paymentStatus ? "Paid" : "Unpaid"}
           </p>
 
-          {lesson.status === "in_progress" && !lesson.paymentStatus && (
+          {auth.roles.includes(2001) && lesson.status === "in_progress" && !lesson.paymentStatus && (
             <div className="mt-4">
               <h4 className="text-lg font-semibold text-gray-800 mb-2">
                 Make Payment
@@ -313,24 +313,38 @@ const LessonDetails = () => {
         {/* File Upload - Only for Tutor */}
         {auth.roles.includes(1984) && (
           <section className="md:col-span-2 p-6 bg-gray-100 rounded-lg shadow-sm">
-            <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
-              Upload Written Lesson
-            </h3>
-            <form onSubmit={handleSubmitWrittenLesson}>
-              <Label
-                htmlFor="file-upload"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Upload File
-              </Label>
-              <Input
-                type="file"
-                id="file-upload"
-                onChange={handleFileChange}
-                className="mb-4"
-              />
-              <Button type="submit">Submit Lesson</Button>
-            </form>
+            {lesson.modeOfDelivery === "offline" ? (
+              <>
+                <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
+                  Upload Written Lesson
+                </h3>
+                <form onSubmit={handleSubmitWrittenLesson}>
+                  <Label
+                    htmlFor="file-upload"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Upload File
+                  </Label>
+                  <Input
+                    type="file"
+                    id="file-upload"
+                    onChange={handleFileChange}
+                    className="mb-4"
+                  />
+                  <Button type="submit">Submit Lesson</Button>
+                </form>
+              </>
+            ) : (
+              <>
+                <h3 className="text-xl font-semibold text-blue-600 border-b border-gray-300 pb-2 mb-4">
+                  Book a Session with the Tutor
+                </h3>
+                <p>
+                  Please book a session with the tutor to complete the lesson.
+                </p>
+                <InlineWidget url={lesson.tutor?.calendlyProfile} />
+              </>
+            )}
           </section>
         )}
 

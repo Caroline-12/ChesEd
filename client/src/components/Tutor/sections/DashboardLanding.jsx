@@ -149,7 +149,7 @@ const DashboardLanding = () => {
               <p>Your earnings so far.</p>
             </CardContent>
             <CardFooter>
-              <Link className=" text-orange-500 hover:underline" to="/tutor-dashboard/payments">
+              <Link className=" text-orange-500 hover:underline" to="/tutor-dashboard/revenue">
                 View Payments
               </Link>
             </CardFooter>
@@ -165,7 +165,7 @@ const DashboardLanding = () => {
             <CardFooter>
             <Link className=" text-orange-500 hover:underline" >
               <PopupButton
-                url="https://calendly.com/fidelotieno11/30min?back=1&primary=false"
+                url={auth.calendlyProfile}
                 rootElement={document.getElementById("root")}
                 text="View your calendly schedule"
               />
@@ -174,7 +174,7 @@ const DashboardLanding = () => {
           </Card>
 
           <Card>
-          <InlineWidget url="https://calendly.com/fidelotieno11" />
+          <InlineWidget url={auth.calendlyProfile} />
           </Card>
         </div>
       </div>
@@ -218,31 +218,6 @@ const DashboardLanding = () => {
             <Button variant="outline" className="w-full border-orange-500 text-orange-500 hover:bg-orange-50">
               View Reports
             </Button>
-          </div>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="mt-8">
-          <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <div className="bg-orange-100 p-2 rounded-full">
-                <GraduationCap className="h-4 w-4 text-orange-500" />
-              </div>
-              <div>
-                <p className="text-sm font-medium">New Tutor Registered</p>
-                <p className="text-xs text-gray-500">2 minutes ago</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="bg-orange-100 p-2 rounded-full">
-                <BookOpen className="h-4 w-4 text-orange-500" />
-              </div>
-              <div>
-                <p className="text-sm font-medium">Lesson Completed</p>
-                <p className="text-xs text-gray-500">1 hour ago</p>
-              </div>
-            </div>
           </div>
         </div>
 </div>
